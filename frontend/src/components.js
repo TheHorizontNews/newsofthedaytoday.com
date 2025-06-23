@@ -128,9 +128,11 @@ export const HeroSection = ({ heroData }) => {
             </span>
           </div>
           
-          <h1 className="text-3xl lg:text-5xl font-bold mb-6 leading-tight">
-            {heroData.title}
-          </h1>
+          <Link to={heroData.url}>
+            <h1 className="text-3xl lg:text-5xl font-bold mb-6 leading-tight hover:text-red-200 transition-colors cursor-pointer">
+              {heroData.title}
+            </h1>
+          </Link>
           
           <div className="flex flex-wrap items-center text-sm text-gray-300 space-x-6">
             <span className="flex items-center">
