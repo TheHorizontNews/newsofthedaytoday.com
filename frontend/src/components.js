@@ -247,27 +247,29 @@ export const SidebarNews = ({ sidebarData }) => {
       
       <div className="space-y-4">
         {sidebarData.map((item) => (
-          <article key={item.id} className="group cursor-pointer">
-            <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors duration-200 leading-snug">
-              {item.title}
-            </h4>
-            <div className="flex items-center justify-between text-xs text-gray-500">
-              <span className="flex items-center">
-                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-                {item.time}
-              </span>
-              <span className="flex items-center">
-                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                </svg>
-                {item.views.toLocaleString()}
-              </span>
-            </div>
-            <hr className="mt-4 border-gray-200" />
-          </article>
+          <Link key={item.id} to={item.url}>
+            <article className="group cursor-pointer">
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors duration-200 leading-snug">
+                {item.title}
+              </h4>
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span className="flex items-center">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  </svg>
+                  {item.time}
+                </span>
+                <span className="flex items-center">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                  </svg>
+                  {item.views.toLocaleString()}
+                </span>
+              </div>
+              <hr className="mt-4 border-gray-200" />
+            </article>
+          </Link>
         ))}
       </div>
     </aside>
