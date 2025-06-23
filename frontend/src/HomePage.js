@@ -1,0 +1,223 @@
+import React from 'react';
+import { HeroSection, MainNews, SidebarNews, TrendingSection, PublicationsSection } from './components';
+
+// Mock data for the news website
+const mockNewsData = {
+  hero: {
+    id: 'hero-1',
+    title: "США вдарили по ядерних об'єктах Ірану: чому це не вступ у війну та чи спалахне Близький Схід",
+    category: "Світ",
+    time: "18:15, 23.06.25",
+    views: 2690,
+    author: "Христина Зеленюк",
+    image: "https://images.pexels.com/photos/11622844/pexels-photo-11622844.jpeg",
+    url: "/article/hero-1"
+  },
+  mainNews: [
+    {
+      id: 1,
+      title: "Іран та Ізраїль погодилися на повне припинення вогню — Трамп",
+      category: "Світ",
+      time: "16:25, 23.06.25",
+      views: 1456,
+      author: "Олександр Кваша",
+      image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+      url: "/article/1"
+    },
+    {
+      id: 2,
+      title: "Росія атакує Україну БпЛА: напрямок воротних цілей",
+      category: "Війна",
+      time: "15:18, 23.06.25",
+      views: 2187,
+      author: "Віра Хмельницька",
+      image: "https://images.pexels.com/photos/11477798/pexels-photo-11477798.jpeg",
+      url: "/article/2"
+    },
+    {
+      id: 3,
+      title: "Трамп попередив Іран за \"слабку відповідь\" на удари США по ядерних об'єктах",
+      category: "Svět", 
+      time: "14:32, 23.06.25",
+      views: 3521,
+      author: "Максим Борисенко",
+      image: "https://images.unsplash.com/photo-1684513143343-e7e5def7ea1b",
+      url: "/article/3"
+    },
+    {
+      id: 4,
+      title: "Україну очікує \"прекрасення припону\" на саміті НАТО в Гаазі — Політико",
+      category: "Політика",
+      time: "13:45, 23.06.25", 
+      views: 1876,
+      author: "Андрій Петренко",
+      image: "https://images.pexels.com/photos/11397188/pexels-photo-11397188.jpeg",
+      url: "/article/4"
+    },
+    {
+      id: 5,
+      title: "Донбас і дружина під завалами: що розповів батько загиблих у Києві",
+      category: "Україна",
+      time: "12:15, 23.06.25",
+      views: 4562,
+      author: "Марина Гавриленко",
+      image: "https://images.unsplash.com/photo-1546544537-fb983c8ac82a",
+      url: "/article/5"
+    }
+  ],
+  sidebarNews: [
+    {
+      id: 1,
+      title: "Щоб в оселі не було спекотно: ці бабусині методи чудово працюють",
+      time: "02:23, 24.06.25",
+      views: 98000,
+      url: "/article/sidebar-1"
+    },
+    {
+      id: 2,
+      title: "РФ атакувала дронами Сумщину вночі: є постраждалі — ОВА",
+      time: "02:00, 24.06.25", 
+      views: 826,
+      url: "/article/sidebar-2"
+    },
+    {
+      id: 3,
+      title: "Без електрикуну: енергетична криза у Дніпровських районах",
+      time: "01:45, 24.06.25",
+      views: 1234,
+      url: "/article/sidebar-3"
+    },
+    {
+      id: 4,
+      title: "Нові гуманітарні коридори для евакуації громадян",
+      time: "01:30, 24.06.25",
+      views: 567,
+      url: "/article/sidebar-4"
+    },
+    {
+      id: 5,
+      title: "Куртізані системи авто-2025 у футболі: 5М без викосу на дотацію",
+      time: "01:15, 24.06.25",
+      views: 789,
+      url: "/article/sidebar-5"
+    },
+    {
+      id:6,
+      title: "Україна обстрілює Росію НІЛНу: наприкінці ворожих цілей",
+      time: "01:00, 24.06.25",
+      views: 2345,
+      url: "/article/sidebar-6"
+    },
+    {
+      id: 7,
+      title: "Курс долара змінився міцно: що чекає грошову систему",
+      time: "00:45, 24.06.25",
+      views: 1567,
+      url: "/article/sidebar-7"
+    }
+  ],
+  trending: [
+    {
+      id: 1,
+      title: "Час від часу баюсь новинної думанки працює чи ще бактерії",
+      time: "20:15, 23.06.25",
+      views: 12432,
+      image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773",
+      url: "/article/trending-1"
+    },
+    {
+      id: 2,
+      title: "5 корисна страва поніжчення тільки тієї кухетує сутичний мотикул",
+      time: "19:45, 23.06.25", 
+      views: 8765,
+      image: "https://images.pexels.com/photos/5702098/pexels-photo-5702098.jpeg",
+      url: "/article/trending-2"
+    },
+    {
+      id: 3, 
+      title: "Страхи за наше майбутнє: чому медлич деян воду до парообразних олив",
+      time: "19:22, 23.06.25",
+      views: 6543,
+      image: "https://images.pexels.com/photos/32636715/pexels-photo-32636715.jpeg",
+      url: "/article/trending-3"
+    },
+    {
+      id: 4,
+      title: "Автомобіль був одного разу розвинений програмні частини будинку",
+      time: "18:55, 23.06.25",
+      views: 4321,
+      image: "https://images.unsplash.com/photo-1601132531233-0b5e07c99b57",
+      url: "/article/trending-4"
+    },
+    {
+      id: 5,
+      title: "Лекарства Росія Польща 2 році є тим пікніком крон в пострадання",
+      time: "18:30, 23.06.25",
+      views: 9876,
+      image: "https://images.unsplash.com/photo-1645940516176-895efb443c1f",
+      url: "/article/trending-5"
+    },
+    {
+      id: 6,
+      title: "Астрологічний пореми-метод очілен надмуванням зі Львова",
+      time: "18:15, 23.06.25",
+      views: 5432,
+      image: "https://images.pexels.com/photos/5725589/pexels-photo-5725589.jpeg",
+      url: "/article/trending-6"
+    }
+  ],
+  publications: [
+    {
+      id: 1,
+      title: "Від партизанщини до військової елітн як \"Азов\" більशого змінив українську армію",
+      time: "17:30, 23.06.25",
+      views: 15000,
+      category: "Військо",
+      author: "Сергій Казанський",
+      image: "https://images.pexels.com/photos/11477798/pexels-photo-11477798.jpeg",
+      url: "/article/pub-1"
+    },
+    {
+      id: 2,
+      title: "Люди-ту хто рятує глобальна катастрофа: смерч на Землі стрімко впевнимо киснів",
+      time: "16:45, 23.06.25",
+      views: 8750,
+      category: "Екологія",
+      author: "Ольга Романенко",
+      image: "https://images.pexels.com/photos/32636715/pexels-photo-32636715.jpeg",
+      url: "/article/pub-2"
+    },
+    {
+      id: 3,
+      title: "Вчені виявили найстаріший загублений континент на Землі",
+      time: "15:20, 23.06.25", 
+      views: 12300,
+      category: "Наука",
+      author: "Дмитро Ковальчук",
+      image: "https://images.unsplash.com/photo-1601132531233-0b5e07c99b57",
+      url: "/article/pub-3"
+    }
+  ]
+};
+
+function HomePage() {
+  return (
+    <>
+      <HeroSection heroData={mockNewsData.hero} />
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <MainNews newsData={mockNewsData.mainNews} />
+            <TrendingSection trendingData={mockNewsData.trending} />
+            <PublicationsSection publicationsData={mockNewsData.publications} />
+          </div>
+          <div className="lg:col-span-1">
+            <SidebarNews sidebarData={mockNewsData.sidebarNews} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default HomePage;
