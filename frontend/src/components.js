@@ -481,3 +481,167 @@ export const Footer = () => {
     </footer>
   );
 };
+
+// Article Page Components
+
+// Article Meta Component
+export const ArticleMeta = ({ article }) => {
+  return (
+    <div className="flex items-center space-x-6 text-sm text-gray-300 mb-6">
+      <div className="flex items-center space-x-2">
+        <img 
+          src={article.authorImage} 
+          alt={article.author}
+          className="w-8 h-8 rounded-full"
+        />
+        <span>{article.author}</span>
+      </div>
+      <span className="flex items-center">
+        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+        </svg>
+        {article.time}
+      </span>
+      <span className="flex items-center">
+        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+        </svg>
+        {article.views?.toLocaleString() || '0'}
+      </span>
+    </div>
+  );
+};
+
+// Social Share Component
+export const SocialShare = ({ article }) => {
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  
+  return (
+    <div className="flex items-center space-x-4">
+      <span className="text-sm text-gray-300">Поділитися:</span>
+      <a 
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400 hover:text-blue-300 transition-colors"
+      >
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </a>
+      <a 
+        href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400 hover:text-blue-300 transition-colors"
+      >
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+        </svg>
+      </a>
+      <a 
+        href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400 hover:text-blue-300 transition-colors"
+      >
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+        </svg>
+      </a>
+    </div>
+  );
+};
+
+// Article Content Component
+export const ArticleContent = ({ article }) => {
+  return (
+    <article className="bg-white rounded-lg shadow-sm p-8">
+      <div className="prose prose-lg max-w-none">
+        {article.content && article.content.map((paragraph, index) => (
+          <p key={index} className="mb-6 text-gray-800 leading-relaxed text-lg">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+
+      {/* Tags */}
+      {article.tags && article.tags.length > 0 && (
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <h4 className="text-sm font-semibold text-gray-600 mb-3">Теги:</h4>
+          <div className="flex flex-wrap gap-2">
+            {article.tags.map((tag, index) => (
+              <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Article Footer */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <img 
+              src={article.authorImage} 
+              alt={article.author}
+              className="w-12 h-12 rounded-full"
+            />
+            <div>
+              <p className="font-semibold text-gray-900">{article.author}</p>
+              <p className="text-sm text-gray-500">Журналіст ТСН</p>
+            </div>
+          </div>
+          <SocialShare article={article} />
+        </div>
+      </div>
+    </article>
+  );
+};
+
+// Related Articles Component
+export const RelatedArticles = ({ articles }) => {
+  return (
+    <aside className="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <h3 className="text-xl font-bold mb-6 text-gray-900">Читайте також</h3>
+      
+      <div className="space-y-6">
+        {articles && articles.map((article) => (
+          <Link key={article.id} to={`/article/${article.id}`}>
+            <article className="group cursor-pointer flex gap-4">
+              <div className="w-24 h-16 flex-shrink-0">
+                <img 
+                  src={article.image} 
+                  alt={article.title}
+                  className="w-full h-full object-cover rounded group-hover:opacity-80 transition-opacity"
+                />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors leading-tight">
+                  {article.title}
+                </h4>
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <span className="flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                    {article.time}
+                  </span>
+                  <span className="flex items-center">
+                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                    {article.views.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </article>
+          </Link>
+        ))}
+      </div>
+    </aside>
+  );
+};
