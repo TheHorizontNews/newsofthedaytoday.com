@@ -191,22 +191,23 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
+  version: "2.0"
+  test_sequence: 2
   run_ui: true
 
 test_plan:
   current_focus:
-    - "Main Homepage Navigation"
-    - "Article Page Navigation"
-    - "Article Page Layout"
-    - "Responsive Design"
-    - "Interactive Elements"
-    - "Navigation Flow"
+    - "Admin Login & Navigation"
+    - "Rich Text Editor Testing"
+    - "Media Library Testing"
+    - "Advanced Article Features"
+    - "Settings Page"
+    - "Enhanced UI Elements"
+    - "Error Handling & Usability"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
 
 agent_communication:
     -agent: "testing"
-    -message: "I've completed comprehensive testing of the TSN.ua replica website. All features are working correctly. The website successfully displays Ukrainian content, has proper navigation between pages, and is responsive on different screen sizes. Screenshots have been captured for the main homepage, article page, and mobile view."
+    -message: "Starting comprehensive testing of Edge Chronicle admin panel Phase 3 features. Will test admin login, navigation, rich text editor, media library, advanced article features, settings page, UI enhancements, and error handling."
