@@ -7,6 +7,7 @@ const AdminLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [seoMenuOpen, setSeoMenuOpen] = useState(false);
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
@@ -31,6 +32,10 @@ const AdminLayout = ({ children }) => {
     navigate('/admin/login');
   };
 
+  const isActiveSubmenu = (submenu) => {
+    return submenu.some(item => location.pathname === item.href);
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -42,14 +47,44 @@ const AdminLayout = ({ children }) => {
         
         <nav className="sidebar-nav">
           {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`nav-item ${location.pathname === item.href ? 'active' : ''}`}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              {item.name}
-            </Link>
+            <div key={item.name}>
+              {item.submenu ? (
+                <div>
+                  <button
+                    onClick={() => setSeoMenuOpen(!seoMenuOpen)}
+                    className={`nav-item w-full text-left ${isActiveSubmenu(item.submenu) ? 'active' : ''}`}
+                  >
+                    <span className="nav-icon">{item.icon}</span>
+                    {item.name}
+                    <span className="ml-auto">
+                      {seoMenuOpen ? '▼' : '▶'}
+                    </span>
+                  </button>
+                  {seoMenuOpen && (
+                    <div className="ml-4">
+                      {item.submenu.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          to={subItem.href}
+                          className={`nav-item text-sm ${location.pathname === subItem.href ? 'active' : ''}`}
+                        >
+                          <span className="nav-icon">{subItem.icon}</span>
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to={item.href}
+                  className={`nav-item ${location.pathname === item.href ? 'active' : ''}`}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  {item.name}
+                </Link>
+              )}
+            </div>
           ))}
         </nav>
       </div>
