@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import { articlesAPI, categoriesAPI } from '../services/api';
 import RichTextEditor from './RichTextEditor';
 import MediaLibrary from './MediaLibrary';
+import TagInput from './TagInput';
+import { useAnalytics } from '../../utils/analytics';
 
 const AdvancedArticleEditor = () => {
   const { id } = useParams();
