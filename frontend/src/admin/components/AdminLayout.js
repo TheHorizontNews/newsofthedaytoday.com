@@ -11,9 +11,11 @@ const AdminLayout = ({ children }) => {
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
     { name: 'Articles', href: '/admin/articles', icon: '📝' },
+    { name: 'Media', href: '/admin/media', icon: '🖼️' },
     { name: 'Users', href: '/admin/users', icon: '👥' },
     { name: 'Categories', href: '/admin/categories', icon: '📁' },
     { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
+    { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
   const handleLogout = () => {
