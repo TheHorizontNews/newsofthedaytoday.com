@@ -121,10 +121,10 @@ export const HeroSection = ({ heroData }) => {
         <div className="max-w-4xl">
           <div className="flex items-center space-x-2 mb-4">
             <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
-              ТСН
+              Edge Chronicle
             </span>
             <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
-              ТІЛЬКИ В ТСН
+              BREAKING NEWS
             </span>
           </div>
           
