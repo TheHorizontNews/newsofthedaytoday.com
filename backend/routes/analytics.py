@@ -6,10 +6,10 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from bson import ObjectId
 
-from ..auth import get_current_active_user, require_admin
-from ..database import get_analytics_collection, get_articles_collection
-from ..models import User, Analytics
-from ..utils import get_date_range, validate_object_id
+from auth import get_current_active_user, require_admin
+from database import get_analytics_collection, get_articles_collection
+from models import User, Analytics
+from utils import get_date_range, validate_object_id
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
