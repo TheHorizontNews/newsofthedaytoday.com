@@ -609,39 +609,44 @@ export const RelatedArticles = ({ articles }) => {
     <aside className="bg-white rounded-lg shadow-sm p-6 mb-8">
       <h3 className="text-xl font-bold mb-6 text-gray-900">Читайте також</h3>
       
-      <div className="space-y-6">
-        {articles && articles.map((article) => (
-          <Link key={article.id} to={`/article/${article.id}`}>
-            <article className="group cursor-pointer flex gap-4">
-              <div className="w-24 h-16 flex-shrink-0">
-                <img 
-                  src={article.image} 
-                  alt={article.title}
-                  className="w-full h-full object-cover rounded group-hover:opacity-80 transition-opacity"
-                />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors leading-tight">
-                  {article.title}
-                </h4>
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span className="flex items-center">
-                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                    </svg>
-                    {article.time}
-                  </span>
-                  <span className="flex items-center">
-                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                    </svg>
-                    {article.views.toLocaleString()}
-                  </span>
+      <div className="space-y-8">
+        {articles && articles.map((article, index) => (
+          <div key={article.id}>
+            <Link to={`/article/${article.id}`}>
+              <article className="group cursor-pointer flex gap-4">
+                <div className="w-24 h-16 flex-shrink-0">
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-full object-cover rounded group-hover:opacity-80 transition-opacity"
+                  />
                 </div>
-              </div>
-            </article>
-          </Link>
+                <div className="flex-1">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors leading-tight">
+                    {article.title}
+                  </h4>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span className="flex items-center">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                      </svg>
+                      {article.time}
+                    </span>
+                    <span className="flex items-center">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                      </svg>
+                      {article.views.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </Link>
+            {index < articles.length - 1 && (
+              <hr className="mt-6 border-gray-200" />
+            )}
+          </div>
         ))}
       </div>
     </aside>
