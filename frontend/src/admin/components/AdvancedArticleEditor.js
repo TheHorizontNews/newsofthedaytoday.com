@@ -66,6 +66,23 @@ const AdvancedArticleEditor = () => {
       setValue('seo_title', article.seo_title || '');
       setValue('seo_description', article.seo_description || '');
     }
+
+  // Auto-generate SEO fields
+  const generateSEOFields = () => {
+    const title = watch('title');
+    const content = watch('content');
+    
+    if (title && !watch('seo_title')) {
+      setValue('seo_title', title);
+    }
+    
+    if (content && !watch('seo_description')) {
+      // Extract first 160 characters from content, strip HTML
+      const textContent = content.replace(/<[^>]*>/g, '');
+      const description = textContent.slice(0, 157) + (textContent.length > 157 ? '...' : '');
+      setValue('seo_description', description);
+    }
+  };
   }, [article, setValue]);
 
   // Auto-save functionality
