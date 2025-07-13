@@ -593,7 +593,7 @@ export const ArticleContent = ({ article }) => {
             />
             <div>
               <p className="font-semibold text-gray-900">{article.author}</p>
-              <p className="text-sm text-gray-500">Журналіст ТСН</p>
+              <p className="text-sm text-gray-500">Edge Chronicle Reporter</p>
             </div>
           </div>
           <SocialShare article={article} />
