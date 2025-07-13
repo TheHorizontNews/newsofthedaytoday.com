@@ -6,10 +6,10 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from bson import ObjectId
 
-from ..auth import get_current_active_user, require_admin
-from ..database import get_categories_collection
-from ..models import Category, CategoryCreate, CategoryUpdate, User
-from ..utils import create_slug, ensure_unique_slug, paginate_results, validate_object_id
+from auth import get_current_active_user, require_admin
+from database import get_categories_collection
+from models import Category, CategoryCreate, CategoryUpdate, User
+from utils import create_slug, ensure_unique_slug, paginate_results, validate_object_id
 
 router = APIRouter(prefix="/api/categories", tags=["categories"])
 
