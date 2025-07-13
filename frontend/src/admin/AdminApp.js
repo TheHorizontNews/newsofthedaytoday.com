@@ -49,53 +49,53 @@ function AdminApp() {
       <AuthProvider>
         <div className="admin-app">
           <Routes>
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin" element={
+            <Route path="login" element={<Login />} />
+            <Route path="" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             } />
-            <Route path="/admin/dashboard" element={
+            <Route path="dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             } />
-            <Route path="/admin/articles" element={
+            <Route path="articles" element={
               <ProtectedRoute>
                 <Articles />
               </ProtectedRoute>
             } />
-            <Route path="/admin/articles/new" element={
+            <Route path="articles/new" element={
               <ProtectedRoute>
                 <AdvancedArticleEditor />
               </ProtectedRoute>
             } />
-            <Route path="/admin/articles/edit/:id" element={
+            <Route path="articles/edit/:id" element={
               <ProtectedRoute>
                 <AdvancedArticleEditor />
               </ProtectedRoute>
             } />
-            <Route path="/admin/users" element={
+            <Route path="users" element={
               <ProtectedRoute>
                 <Users />
               </ProtectedRoute>
             } />
-            <Route path="/admin/categories" element={
+            <Route path="categories" element={
               <ProtectedRoute>
                 <Categories />
               </ProtectedRoute>
             } />
-            <Route path="/admin/analytics" element={
+            <Route path="analytics" element={
               <ProtectedRoute>
                 <Analytics />
               </ProtectedRoute>
             } />
-            <Route path="/admin/media" element={
+            <Route path="media" element={
               <ProtectedRoute>
                 <MediaLibrary />
               </ProtectedRoute>
             } />
-            <Route path="/admin/settings" element={
+            <Route path="settings" element={
               <ProtectedRoute>
                 <Settings />
               </ProtectedRoute>
