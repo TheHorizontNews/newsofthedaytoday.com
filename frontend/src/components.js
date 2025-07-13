@@ -178,10 +178,10 @@ export const MainNews = ({ newsData }) => {
     <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
       <h2 className="text-2xl font-bold mb-6 text-gray-900">Головні новини</h2>
       
-      <div className="space-y-6">
+      <div className="space-y-8">
         {newsData.map((article, index) => (
           <Link key={article.id} to={article.url}>
-            <article className={`group cursor-pointer ${index === 0 ? 'border-b pb-6' : ''}`}>
+            <article className={`group cursor-pointer pb-6 ${index !== newsData.length - 1 ? 'border-b border-gray-200' : ''}`}>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="md:w-1/3">
                   <div className="relative overflow-hidden rounded-lg aspect-[4/3]">
