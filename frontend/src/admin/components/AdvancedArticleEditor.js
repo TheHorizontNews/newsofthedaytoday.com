@@ -60,6 +60,7 @@ const AdvancedArticleEditor = () => {
       setValue('content', article.content);
       setValue('category_id', article.category.id);
       setValue('tags', article.tags || []);
+      setTags(article.tags || []);
       setValue('featured_image', article.featured_image || '');
       setValue('status', article.status);
       setValue('seo_title', article.seo_title || '');
