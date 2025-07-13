@@ -15,6 +15,14 @@ const AdminLayout = ({ children }) => {
     { name: 'Users', href: '/admin/users', icon: '👥' },
     { name: 'Categories', href: '/admin/categories', icon: '📁' },
     { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
+    { 
+      name: 'SEO', 
+      icon: '🔍',
+      submenu: [
+        { name: 'SEO Analytics', href: '/admin/seo/analytics', icon: '📊' },
+        { name: 'Tag Manager', href: '/admin/seo/tags', icon: '🏷️' },
+      ]
+    },
     { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
