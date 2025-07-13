@@ -281,7 +281,7 @@ Disallow: /*?q=
     )
 
 @router.post("/submit-url")
-async def submit_url_for_indexing(url_data: dict, background_tasks: BackgroundTasks):
+async def submit_url_for_indexing(url_data: dict, background_tasks: BackgroundTasks, current_user: User = Depends(require_admin())):
     """Submit URL to search engines for indexing"""
     url = url_data.get("url")
     if not url:
@@ -294,34 +294,115 @@ async def submit_url_for_indexing(url_data: dict, background_tasks: BackgroundTa
 
 async def submit_to_search_engines(url: str):
     """Background task to submit URL to search engines"""
-    # This would integrate with Google Search Console API, Bing Webmaster Tools, etc.
-    # For now, we'll just log it
-    print(f"Submitting URL for indexing: {url}")
-    
-    # In a real implementation, you would:
-    # 1. Use Google Search Console API to submit URL
-    # 2. Use Bing Webmaster Tools API
-    # 3. Submit to other search engines
-    # 4. Log the submission for tracking
+    # Submit to Google Search Console
+    result = await search_console.submit_url(url)
+    print(f"Search Console submission result for {url}: {result}")
 
-@router.get("/analytics/search-console")
-async def get_search_console_data(start_date: str, end_date: str):
+@router.get("/search-console/analytics")
+async def get_search_console_data(
+    start_date: str, 
+    end_date: str,
+    current_user: User = Depends(get_current_active_user)
+):
     """Get Google Search Console analytics data"""
-    # This would integrate with Search Console API
-    # For now, return mock data
+    try:
+        result = await search_console.get_search_analytics(start_date, end_date)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching Search Console data: {str(e)}")
+
+@router.get("/search-console/sitemaps")
+async def get_search_console_sitemaps(current_user: User = Depends(get_current_active_user)):
+    """Get submitted sitemaps from Google Search Console"""
+    try:
+        result = await search_console.get_sitemaps()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching sitemaps: {str(e)}")
+
+@router.post("/search-console/submit-sitemap")
+async def submit_sitemap_to_search_console(
+    sitemap_data: dict,
+    current_user: User = Depends(require_admin())
+):
+    """Submit sitemap to Google Search Console"""
+    sitemap_url = sitemap_data.get("sitemap_url")
+    if not sitemap_url:
+        raise HTTPException(status_code=400, detail="sitemap_url is required")
     
-    return {
-        "clicks": 1250,
-        "impressions": 45600,
-        "ctr": 2.74,
-        "position": 12.5,
-        "queries": [
-            {"query": "edge chronicle news", "clicks": 150, "impressions": 2000, "ctr": 7.5, "position": 3.2},
-            {"query": "breaking news today", "clicks": 120, "impressions": 5000, "ctr": 2.4, "position": 8.1},
-            {"query": "ukraine war updates", "clicks": 200, "impressions": 8000, "ctr": 2.5, "position": 6.3}
-        ],
-        "pages": [
-            {"page": "/article/ukraine-latest", "clicks": 300, "impressions": 3500, "ctr": 8.6, "position": 4.2},
-            {"page": "/article/breaking-news", "clicks": 250, "impressions": 4200, "ctr": 5.9, "position": 7.1}
+    try:
+        result = await search_console.submit_sitemap(sitemap_url)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error submitting sitemap: {str(e)}")
+
+@router.get("/analytics/dashboard")
+async def get_analytics_dashboard(current_user: User = Depends(get_current_active_user)):
+    """Get comprehensive analytics dashboard data"""
+    try:
+        # Get Search Console data for last 30 days
+        end_date = datetime.utcnow().strftime("%Y-%m-%d")
+        start_date = (datetime.utcnow() - timedelta(days=30)).strftime("%Y-%m-%d")
+        
+        search_console_data = await search_console.get_search_analytics(start_date, end_date)
+        sitemaps_data = await search_console.get_sitemaps()
+        
+        # Get database analytics
+        db = get_db()
+        
+        # Get article counts
+        total_articles = await db.articles.count_documents({})
+        published_articles = await db.articles.count_documents({"status": "published"})
+        draft_articles = await db.articles.count_documents({"status": "draft"})
+        
+        # Get recent articles
+        recent_articles = await db.articles.find(
+            {"status": "published"}
+        ).sort("published_at", -1).limit(10).to_list(10)
+        
+        # Get category breakdown
+        category_pipeline = [
+            {"$match": {"status": "published"}},
+            {"$group": {"_id": "$category_id", "count": {"$sum": 1}}},
+            {"$lookup": {
+                "from": "categories",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "category"
+            }},
+            {"$unwind": "$category"},
+            {"$project": {
+                "category_name": "$category.name",
+                "count": 1
+            }}
         ]
-    }
+        
+        category_stats = await db.articles.aggregate(category_pipeline).to_list(100)
+        
+        return {
+            "search_console": search_console_data,
+            "sitemaps": sitemaps_data,
+            "articles": {
+                "total": total_articles,
+                "published": published_articles,
+                "draft": draft_articles,
+                "recent": [
+                    {
+                        "id": str(article["_id"]),
+                        "title": article["title"],
+                        "published_at": article.get("published_at"),
+                        "views": article.get("views", 0)
+                    } for article in recent_articles
+                ]
+            },
+            "categories": category_stats,
+            "last_updated": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching dashboard data: {str(e)}")
+
+# Legacy endpoint for backward compatibility
+@router.get("/analytics/search-console")
+async def get_search_console_data_legacy(start_date: str, end_date: str, current_user: User = Depends(get_current_active_user)):
+    """Legacy endpoint - use /search-console/analytics instead"""
+    return await get_search_console_data(start_date, end_date, current_user)
