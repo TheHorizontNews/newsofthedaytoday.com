@@ -45,9 +45,8 @@ function AdminApp() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router>
-          <div className="admin-app">
-            <Routes>
+        <div className="admin-app">
+          <Routes>
               <Route path="/admin/login" element={<Login />} />
               <Route path="/admin" element={
                 <ProtectedRoute>
