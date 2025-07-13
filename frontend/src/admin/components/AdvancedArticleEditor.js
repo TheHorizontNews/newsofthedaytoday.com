@@ -377,15 +377,11 @@ const AdvancedArticleEditor = () => {
 
                     <div className="form-group">
                       <label className="form-label">Tags</label>
-                      <input
-                        type="text"
-                        className="form-input"
-                        placeholder="tag1, tag2, tag3"
-                        {...register('tags')}
+                      <TagInput
+                        value={tags}
+                        onChange={setTags}
+                        placeholder="Add tags to help categorize this article..."
                       />
-                      <div className="text-xs text-gray-500 mt-1">
-                        Separate tags with commas
-                      </div>
                     </div>
 
                     <div className="form-group">
