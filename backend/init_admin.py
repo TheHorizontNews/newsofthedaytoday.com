@@ -2,25 +2,28 @@
 Initialize admin user for Edge Chronicle
 """
 import asyncio
-import sys
 import os
-
-# Add the backend directory to the Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 from datetime import datetime
-from database import init_db, get_users_collection, get_categories_collection
-from auth import get_password_hash
-from models import UserRole
+from motor.motor_asyncio import AsyncIOMotorClient
+from passlib.context import CryptContext
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_password_hash(password: str) -> str:
+    """Hash a password"""
+    return pwd_context.hash(password)
 
 async def create_admin_user():
     """Create default admin user"""
     print("Initializing Edge Chronicle Admin...")
     
-    # Initialize database
-    await init_db()
+    # Connect to MongoDB
+    mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+    client = AsyncIOMotorClient(mongo_url)
+    db = client.edge_chronicle
     
-    users_collection = get_users_collection()
+    users_collection = db.users
     
     # Check if admin user already exists
     admin_user = await users_collection.find_one({"role": "admin"})
@@ -33,7 +36,7 @@ async def create_admin_user():
         "username": "admin",
         "email": "admin@edgechronicle.com",
         "password_hash": get_password_hash("admin123"),
-        "role": UserRole.ADMIN,
+        "role": "admin",
         "profile": {
             "name": "Administrator",
             "bio": "System Administrator",
@@ -51,7 +54,7 @@ async def create_admin_user():
         "username": "editor",
         "email": "editor@edgechronicle.com", 
         "password_hash": get_password_hash("editor123"),
-        "role": UserRole.EDITOR,
+        "role": "editor",
         "profile": {
             "name": "John Editor",
             "bio": "Chief Editor",
@@ -69,7 +72,7 @@ async def create_admin_user():
         "username": "reporter",
         "email": "reporter@edgechronicle.com",
         "password_hash": get_password_hash("reporter123"),
-        "role": UserRole.REPORTER,
+        "role": "reporter",
         "profile": {
             "name": "Jane Reporter",
             "bio": "News Reporter",
@@ -87,6 +90,9 @@ async def create_admin_user():
     print("Editor: editor / editor123")
     print("Reporter: reporter / reporter123")
     print("\nAdmin panel is ready!")
+    
+    # Close connection
+    client.close()
 
 if __name__ == "__main__":
     asyncio.run(create_admin_user())
