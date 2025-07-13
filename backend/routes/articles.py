@@ -6,13 +6,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from bson import ObjectId
 
-from ..auth import get_current_active_user, require_editor_or_admin
-from ..database import get_articles_collection, get_users_collection, get_categories_collection
-from ..models import (
+from auth import get_current_active_user, require_editor_or_admin
+from database import get_articles_collection, get_users_collection, get_categories_collection
+from models import (
     Article, ArticleCreate, ArticleUpdate, ArticleResponse, 
     User, ArticleStatus, UserResponse, Category
 )
-from ..utils import create_slug, ensure_unique_slug, paginate_results, format_article_response, validate_object_id
+from utils import create_slug, ensure_unique_slug, paginate_results, format_article_response, validate_object_id
 
 router = APIRouter(prefix="/api/articles", tags=["articles"])
 
