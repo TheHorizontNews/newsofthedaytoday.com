@@ -6,10 +6,10 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from bson import ObjectId
 
-from ..auth import get_current_active_user, require_admin, get_password_hash
-from ..database import get_users_collection
-from ..models import User, UserCreate, UserUpdate, UserResponse, UserRole
-from ..utils import paginate_results, validate_object_id
+from auth import get_current_active_user, require_admin, get_password_hash
+from database import get_users_collection
+from models import User, UserCreate, UserUpdate, UserResponse, UserRole
+from utils import paginate_results, validate_object_id
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
