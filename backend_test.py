@@ -288,8 +288,7 @@ class BackendTester:
         print("=" * 60)
         
         # Core endpoints
-        await self.test_health_endpoint()
-        await self.test_root_endpoint()
+        await self.test_health_and_root_endpoints()
         
         # SEO endpoints
         await self.test_sitemap_xml()
