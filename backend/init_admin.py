@@ -2,6 +2,12 @@
 Initialize admin user for Edge Chronicle
 """
 import asyncio
+import sys
+import os
+
+# Add the backend directory to the Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from datetime import datetime
 from database import init_db, get_users_collection, get_categories_collection
 from auth import get_password_hash
