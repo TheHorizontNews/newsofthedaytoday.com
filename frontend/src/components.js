@@ -428,7 +428,7 @@ export const Footer = () => {
           {/* Logo and Description */}
           <div className="md:col-span-1">
             <div className="bg-red-600 text-white px-3 py-2 font-bold text-xl rounded inline-block mb-4">
-              ТСН
+              Edge Chronicle
             </div>
             <p className="text-gray-400 text-sm mb-4">
               Новини України та світу онлайн. Найсвіжіші новини політики, економіки, спорту, культури.
