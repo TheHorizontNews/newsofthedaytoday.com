@@ -1,6 +1,7 @@
 """
 User management routes
 """
+from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from bson import ObjectId
