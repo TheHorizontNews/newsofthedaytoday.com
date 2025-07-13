@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
+import analytics from '../utils/analytics';
 
 const SEOManager = ({ 
   title,
@@ -15,21 +16,39 @@ const SEOManager = ({
   tags = [],
   canonicalUrl,
   noIndex = false,
-  customSchema
+  customSchema,
+  articleId
 }) => {
   const location = useLocation();
   
   // Default values
   const siteTitle = "Edge Chronicle";
   const siteDescription = "Breaking news and analysis from around the world. Stay informed with the latest developments in politics, economics, sports, and culture.";
-  const siteUrl = "https://edgechronicle.com";
+  const siteUrl = process.env.REACT_APP_SITE_URL || "https://edgechronicle.com";
   const defaultImage = `${siteUrl}/og-default.jpg`;
+  const gaTrackingId = process.env.REACT_APP_GA_MEASUREMENT_ID || 'G-PLACEHOLDER123';
   
   // Build full title
   const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
   
   // Build canonical URL
   const canonical = canonicalUrl || `${siteUrl}${location.pathname}`;
+  
+  // Build meta keywords from tags and keywords
+  const metaKeywords = [
+    ...(keywords ? keywords.split(',').map(k => k.trim()) : []),
+    ...tags,
+    'Edge Chronicle',
+    'news',
+    'breaking news'
+  ].filter(Boolean).slice(0, 10).join(', ');
+
+  // Track article view when component mounts
+  useEffect(() => {
+    if (article && articleId && title) {
+      analytics.trackArticleView(articleId, title, category, author);
+    }
+  }, [article, articleId, title, category, author]);
   
   // Build structured data
   const generateStructuredData = () => {
@@ -175,7 +194,7 @@ const SEOManager = ({
       {/* Basic Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description || siteDescription} />
-      {keywords && <meta name="keywords" content={keywords} />}
+      {metaKeywords && <meta name="keywords" content={metaKeywords} />}
       <meta name="author" content={author || "Edge Chronicle"} />
       <link rel="canonical" href={canonical} />
       
@@ -218,6 +237,24 @@ const SEOManager = ({
       <meta name="geo.region" content="US" />
       <meta name="geo.placename" content="United States" />
       <meta name="theme-color" content="#dc2626" />
+      
+      {/* Google Analytics */}
+      {gaTrackingId && gaTrackingId !== 'G-PLACEHOLDER123' && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}></script>
+          <script>
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaTrackingId}', {
+                page_title: '${fullTitle}',
+                page_location: '${canonical}'
+              });
+            `}
+          </script>
+        </>
+      )}
       
       {/* Preconnect for performance */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
