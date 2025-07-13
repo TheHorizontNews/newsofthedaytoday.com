@@ -10,8 +10,8 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from bson import ObjectId
 
-from .database import get_users_collection
-from .models import User, TokenData, UserRole
+from database import get_users_collection
+from models import User, TokenData, UserRole
 
 # Security configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")
