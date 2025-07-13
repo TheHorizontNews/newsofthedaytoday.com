@@ -145,9 +145,9 @@ class BackendTester:
                         root = ET.fromstring(content)
                         if root.tag.endswith('urlset'):
                             urls = root.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}url')
-                            # Check for AI-specific metadata
-                            ai_elements = root.findall('.//*[@*[contains(., "ai:")]]')
-                            self.log_result("LLMS Sitemap XML", True, f"Valid XML with {len(urls)} URLs and AI metadata")
+                            # Check for AI-specific metadata by looking for ai: namespace elements
+                            ai_elements = [elem for elem in root.iter() if 'ai:' in elem.tag]
+                            self.log_result("LLMS Sitemap XML", True, f"Valid XML with {len(urls)} URLs and {len(ai_elements)} AI metadata elements")
                         else:
                             self.log_result("LLMS Sitemap XML", False, f"Invalid XML structure, root tag: {root.tag}")
                     except ET.ParseError as e:
