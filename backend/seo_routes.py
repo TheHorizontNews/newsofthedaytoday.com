@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
-router = APIRouter(prefix="/seo", tags=["seo"])
+router = APIRouter(prefix="/api/seo", tags=["seo"])
 
 # Get database connection
 def get_db():
