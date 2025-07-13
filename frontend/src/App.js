@@ -24,14 +24,20 @@ function App() {
         <Route path="/admin/*" element={<AdminApp />} />
         
         {/* Public routes */}
-        <Route path="/*" element={
+        <Route path="/" element={
           <div className="App min-h-screen bg-gray-100">
             <Header currentTime={currentTime} />
             <main>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/article/:id" element={<ArticlePage />} />
-              </Routes>
+              <HomePage />
+            </main>
+            <Footer />
+          </div>
+        } />
+        <Route path="/article/:id" element={
+          <div className="App min-h-screen bg-gray-100">
+            <Header currentTime={currentTime} />
+            <main>
+              <ArticlePage />
             </main>
             <Footer />
           </div>
