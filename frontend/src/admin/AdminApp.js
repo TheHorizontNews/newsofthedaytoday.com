@@ -102,6 +102,21 @@ function AdminApp() {
                 <Settings />
               </ProtectedRoute>
             } />
+            <Route path="seo" element={
+              <ProtectedRoute>
+                <SEOAnalytics />
+              </ProtectedRoute>
+            } />
+            <Route path="seo/analytics" element={
+              <ProtectedRoute>
+                <SEOAnalytics />
+              </ProtectedRoute>
+            } />
+            <Route path="seo/tags" element={
+              <ProtectedRoute>
+                <TagManager />
+              </ProtectedRoute>
+            } />
           </Routes>
         </div>
       </AuthProvider>
