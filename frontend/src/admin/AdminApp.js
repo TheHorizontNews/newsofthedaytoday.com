@@ -90,7 +90,6 @@ function AdminApp() {
               } />
             </Routes>
           </div>
-        </Router>
       </AuthProvider>
     </QueryClientProvider>
   );
