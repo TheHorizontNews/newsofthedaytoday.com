@@ -1,13 +1,17 @@
 """
 SEO and Search Engine Optimization routes
 """
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
 from fastapi.responses import Response, PlainTextResponse
 from datetime import datetime, timedelta
 from typing import List, Optional
 import xml.etree.ElementTree as ET
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+
+from auth import get_current_active_user, require_admin
+from models import User
+from utils.google_search_console import search_console
 
 router = APIRouter(prefix="/api/seo", tags=["seo"])
 
