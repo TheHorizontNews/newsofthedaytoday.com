@@ -4,6 +4,7 @@ import './App.css';
 import { Header, Footer } from './components';
 import HomePage from './HomePage';
 import ArticlePage from './ArticlePage';
+import AdminApp from './admin/AdminApp';
 
 function App() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -18,16 +19,24 @@ function App() {
 
   return (
     <Router>
-      <div className="App min-h-screen bg-gray-100">
-        <Header currentTime={currentTime} />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/article/:id" element={<ArticlePage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <Routes>
+        {/* Admin routes */}
+        <Route path="/admin/*" element={<AdminApp />} />
+        
+        {/* Public routes */}
+        <Route path="/*" element={
+          <div className="App min-h-screen bg-gray-100">
+            <Header currentTime={currentTime} />
+            <main>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/article/:id" element={<ArticlePage />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        } />
+      </Routes>
     </Router>
   );
 }
