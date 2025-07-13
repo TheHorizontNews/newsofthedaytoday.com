@@ -152,18 +152,18 @@ export const HeroSection = ({ heroData }) => {
           </div>
 
           {/* Related News Thumbnails */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-black/50 p-3 rounded-lg backdrop-blur-sm">
-              <img src="https://images.pexels.com/photos/11397188/pexels-photo-11397188.jpeg" alt="Related news" className="w-full h-20 object-cover rounded mb-2" />
-              <p className="text-sm">Модернізовані безпілотники РФ: у чому їхня загроза</p>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-black/50 p-4 rounded-lg backdrop-blur-sm">
+              <img src="https://images.pexels.com/photos/11397188/pexels-photo-11397188.jpeg" alt="Related news" className="w-full h-20 object-cover rounded mb-3" />
+              <p className="text-sm leading-relaxed">Модернізовані безпілотники РФ: у чому їхня загроза</p>
             </div>
-            <div className="bg-black/50 p-3 rounded-lg backdrop-blur-sm">
-              <img src="https://images.unsplash.com/photo-1684513143343-e7e5def7ea1b" alt="Related news" className="w-full h-20 object-cover rounded mb-2" />
-              <p className="text-sm">Росія готувала ліквідацію Зеленського та Буданова</p>
+            <div className="bg-black/50 p-4 rounded-lg backdrop-blur-sm">
+              <img src="https://images.unsplash.com/photo-1684513143343-e7e5def7ea1b" alt="Related news" className="w-full h-20 object-cover rounded mb-3" />
+              <p className="text-sm leading-relaxed">Росія готувала ліквідацію Зеленського та Буданова</p>
             </div>
-            <div className="bg-black/50 p-3 rounded-lg backdrop-blur-sm">
-              <img src="https://images.unsplash.com/photo-1645940516176-895efb443c1f" alt="Related news" className="w-full h-20 object-cover rounded mb-2" />
-              <p className="text-sm">Україна очікує рішення на саміті НАТО</p>
+            <div className="bg-black/50 p-4 rounded-lg backdrop-blur-sm">
+              <img src="https://images.unsplash.com/photo-1645940516176-895efb443c1f" alt="Related news" className="w-full h-20 object-cover rounded mb-3" />
+              <p className="text-sm leading-relaxed">Україна очікує рішення на саміті НАТО</p>
             </div>
           </div>
         </div>
