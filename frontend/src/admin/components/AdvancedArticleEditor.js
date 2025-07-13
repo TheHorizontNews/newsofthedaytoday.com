@@ -13,12 +13,14 @@ const AdvancedArticleEditor = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEditing = Boolean(id);
+  const analytics = useAnalytics();
 
   const [activeTab, setActiveTab] = useState('content');
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false);
   const [autoSaving, setAutoSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [tags, setTags] = useState([]);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
