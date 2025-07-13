@@ -6,10 +6,12 @@ import AdminLayout from './components/AdminLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Articles from './pages/Articles';
-import ArticleEditor from './pages/ArticleEditor';
+import AdvancedArticleEditor from './components/AdvancedArticleEditor';
 import Users from './pages/Users';
 import Categories from './pages/Categories';
 import Analytics from './pages/Analytics';
+import MediaLibrary from './pages/MediaLibraryPage';
+import Settings from './pages/Settings';
 import './Admin.css';
 
 // Create a client
@@ -47,49 +49,59 @@ function AdminApp() {
       <AuthProvider>
         <div className="admin-app">
           <Routes>
-              <Route path="/admin/login" element={<Login />} />
-              <Route path="/admin" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/articles" element={
-                <ProtectedRoute>
-                  <Articles />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/articles/new" element={
-                <ProtectedRoute>
-                  <ArticleEditor />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/articles/edit/:id" element={
-                <ProtectedRoute>
-                  <ArticleEditor />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/users" element={
-                <ProtectedRoute>
-                  <Users />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/categories" element={
-                <ProtectedRoute>
-                  <Categories />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/analytics" element={
-                <ProtectedRoute>
-                  <Analytics />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </div>
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/articles" element={
+              <ProtectedRoute>
+                <Articles />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/articles/new" element={
+              <ProtectedRoute>
+                <AdvancedArticleEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/articles/edit/:id" element={
+              <ProtectedRoute>
+                <AdvancedArticleEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users" element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/categories" element={
+              <ProtectedRoute>
+                <Categories />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/analytics" element={
+              <ProtectedRoute>
+                <Analytics />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/media" element={
+              <ProtectedRoute>
+                <MediaLibrary />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/settings" element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   );
