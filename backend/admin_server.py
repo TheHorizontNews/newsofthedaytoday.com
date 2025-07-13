@@ -1,12 +1,16 @@
 """
 Admin API Server for Edge Chronicle
 """
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from .database import init_db, Database
-from .routes import auth, articles, users, categories, analytics
+from database import init_db, Database
+from routes import auth, articles, users, categories, analytics
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
