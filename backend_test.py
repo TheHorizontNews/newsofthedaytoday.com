@@ -185,28 +185,30 @@ class BackendTester:
             self.log_result("Robots.txt", False, f"Exception: {str(e)}")
     
     async def test_api_routes(self):
-        """Test existing API routes"""
+        """Test existing API routes - expect authentication errors for protected routes"""
         routes_to_test = [
-            "/api/categories",
-            "/api/users", 
-            "/api/articles",
-            "/api/auth/me"
+            ("/api/categories", "Categories endpoint"),
+            ("/api/users", "Users endpoint"), 
+            ("/api/articles", "Articles endpoint"),
+            ("/api/auth/me", "Auth me endpoint")
         ]
         
-        for route in routes_to_test:
+        for route, description in routes_to_test:
             try:
                 async with self.session.get(f"{BACKEND_URL}{route}") as response:
-                    # Accept both 200 (success) and 401 (unauthorized) as valid responses
-                    # since some routes require authentication
-                    if response.status in [200, 401, 422]:
-                        if response.status == 200:
-                            try:
-                                data = await response.json()
-                                self.log_result(f"API Route {route}", True, f"HTTP {response.status}")
-                            except:
-                                self.log_result(f"API Route {route}", True, f"HTTP {response.status} (non-JSON response)")
-                        else:
-                            self.log_result(f"API Route {route}", True, f"HTTP {response.status} (expected for protected route)")
+                    # These routes require authentication, so 403/401 is expected and correct
+                    if response.status in [401, 403]:
+                        self.log_result(f"API Route {route}", True, f"HTTP {response.status} (correctly protected)")
+                    elif response.status == 307:
+                        # Handle redirect
+                        async with self.session.get(f"{BACKEND_URL}{route}/") as redirect_response:
+                            if redirect_response.status in [401, 403]:
+                                self.log_result(f"API Route {route}", True, f"HTTP {redirect_response.status} (correctly protected after redirect)")
+                            else:
+                                self.log_result(f"API Route {route}", False, f"HTTP {redirect_response.status} after redirect")
+                    elif response.status == 200:
+                        # Unexpected success without auth
+                        self.log_result(f"API Route {route}", False, f"HTTP {response.status} (should require authentication)")
                     else:
                         self.log_result(f"API Route {route}", False, f"HTTP {response.status}")
             except Exception as e:
