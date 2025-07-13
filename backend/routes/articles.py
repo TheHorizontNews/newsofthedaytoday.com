@@ -12,7 +12,7 @@ from models import (
     Article, ArticleCreate, ArticleUpdate, ArticleResponse, 
     User, ArticleStatus, UserResponse, Category
 )
-from utils import create_slug, ensure_unique_slug, paginate_results, format_article_response, validate_object_id
+import utils
 
 router = APIRouter(prefix="/api/articles", tags=["articles"])
 
@@ -38,10 +38,10 @@ async def get_articles(
         query["status"] = status
     
     if category_id:
-        query["category_id"] = validate_object_id(category_id)
+        query["category_id"] = utils.validate_object_id(category_id)
     
     if author_id:
-        query["author_id"] = validate_object_id(author_id)
+        query["author_id"] = utils.validate_object_id(author_id)
     
     if search:
         query["$or"] = [
@@ -54,7 +54,7 @@ async def get_articles(
     if current_user.role != "admin":
         query["author_id"] = current_user.id
     
-    skip, limit = paginate_results(skip, limit)
+    skip, limit = utils.paginate_results(skip, limit)
     
     # Get articles
     articles_cursor = articles_collection.find(query).sort("created_at", -1).skip(skip).limit(limit)
@@ -69,7 +69,7 @@ async def get_articles(
         category = await categories_collection.find_one({"_id": article["category_id"]})
         
         if author and category:
-            result.append(format_article_response(article, author, category))
+            result.append(utils.format_article_response(article, author, category))
     
     return result
 
@@ -83,7 +83,7 @@ async def get_article(
     users_collection = get_users_collection()
     categories_collection = get_categories_collection()
     
-    article = await articles_collection.find_one({"_id": validate_object_id(article_id)})
+    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
@@ -99,7 +99,7 @@ async def get_article(
     if not author or not category:
         raise HTTPException(status_code=500, detail="Article data incomplete")
     
-    return format_article_response(article, author, category)
+    return utils.format_article_response(article, author, category)
 
 @router.post("/", response_model=ArticleResponse)
 async def create_article(
@@ -112,13 +112,13 @@ async def create_article(
     categories_collection = get_categories_collection()
     
     # Validate category exists
-    category = await categories_collection.find_one({"_id": validate_object_id(article_data.category_id)})
+    category = await categories_collection.find_one({"_id": utils.validate_object_id(article_data.category_id)})
     if not category:
         raise HTTPException(status_code=400, detail="Category not found")
     
     # Create slug
-    slug = create_slug(article_data.title)
-    slug = await ensure_unique_slug(articles_collection, slug)
+    slug = utils.create_slug(article_data.title)
+    slug = await utils.ensure_unique_slug(articles_collection, slug)
     
     # Create article
     article_dict = {
@@ -126,7 +126,7 @@ async def create_article(
         "subtitle": article_data.subtitle,
         "content": article_data.content,
         "author_id": current_user.id,
-        "category_id": validate_object_id(article_data.category_id),
+        "category_id": utils.validate_object_id(article_data.category_id),
         "tags": article_data.tags,
         "featured_image": article_data.featured_image,
         "status": article_data.status,
@@ -148,7 +148,7 @@ async def create_article(
     # Get author info
     author = await users_collection.find_one({"_id": current_user.id})
     
-    return format_article_response(article_dict, author, category)
+    return utils.format_article_response(article_dict, author, category)
 
 @router.put("/{article_id}", response_model=ArticleResponse)
 async def update_article(
@@ -162,7 +162,7 @@ async def update_article(
     categories_collection = get_categories_collection()
     
     # Get existing article
-    article = await articles_collection.find_one({"_id": validate_object_id(article_id)})
+    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
@@ -177,8 +177,8 @@ async def update_article(
     if article_data.title is not None:
         update_data["title"] = article_data.title
         # Update slug if title changed
-        new_slug = create_slug(article_data.title)
-        update_data["slug"] = await ensure_unique_slug(articles_collection, new_slug, article_id)
+        new_slug = utils.create_slug(article_data.title)
+        update_data["slug"] = await utils.ensure_unique_slug(articles_collection, new_slug, article_id)
     
     if article_data.subtitle is not None:
         update_data["subtitle"] = article_data.subtitle
@@ -188,10 +188,10 @@ async def update_article(
     
     if article_data.category_id is not None:
         # Validate category exists
-        category = await categories_collection.find_one({"_id": validate_object_id(article_data.category_id)})
+        category = await categories_collection.find_one({"_id": utils.validate_object_id(article_data.category_id)})
         if not category:
             raise HTTPException(status_code=400, detail="Category not found")
-        update_data["category_id"] = validate_object_id(article_data.category_id)
+        update_data["category_id"] = utils.validate_object_id(article_data.category_id)
     
     if article_data.tags is not None:
         update_data["tags"] = article_data.tags
@@ -213,18 +213,18 @@ async def update_article(
     
     # Update article
     await articles_collection.update_one(
-        {"_id": validate_object_id(article_id)},
+        {"_id": utils.validate_object_id(article_id)},
         {"$set": update_data}
     )
     
     # Get updated article
-    updated_article = await articles_collection.find_one({"_id": validate_object_id(article_id)})
+    updated_article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     
     # Get author and category info
     author = await users_collection.find_one({"_id": updated_article["author_id"]})
     category = await categories_collection.find_one({"_id": updated_article["category_id"]})
     
-    return format_article_response(updated_article, author, category)
+    return utils.format_article_response(updated_article, author, category)
 
 @router.delete("/{article_id}")
 async def delete_article(
@@ -235,7 +235,7 @@ async def delete_article(
     articles_collection = get_articles_collection()
     
     # Get article
-    article = await articles_collection.find_one({"_id": validate_object_id(article_id)})
+    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
@@ -244,7 +244,7 @@ async def delete_article(
         raise HTTPException(status_code=403, detail="Not enough permissions")
     
     # Delete article
-    await articles_collection.delete_one({"_id": validate_object_id(article_id)})
+    await articles_collection.delete_one({"_id": utils.validate_object_id(article_id)})
     
     return {"message": "Article deleted successfully"}
 
@@ -257,13 +257,13 @@ async def publish_article(
     articles_collection = get_articles_collection()
     
     # Get article
-    article = await articles_collection.find_one({"_id": validate_object_id(article_id)})
+    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
     # Update status to published
     await articles_collection.update_one(
-        {"_id": validate_object_id(article_id)},
+        {"_id": utils.validate_object_id(article_id)},
         {"$set": {
             "status": ArticleStatus.PUBLISHED,
             "published_at": datetime.utcnow(),
@@ -282,13 +282,13 @@ async def unpublish_article(
     articles_collection = get_articles_collection()
     
     # Get article
-    article = await articles_collection.find_one({"_id": validate_object_id(article_id)})
+    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
     # Update status to draft
     await articles_collection.update_one(
-        {"_id": validate_object_id(article_id)},
+        {"_id": utils.validate_object_id(article_id)},
         {"$set": {
             "status": ArticleStatus.DRAFT,
             "updated_at": datetime.utcnow()
