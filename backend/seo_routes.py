@@ -406,3 +406,156 @@ async def get_analytics_dashboard(current_user: User = Depends(get_current_activ
 async def get_search_console_data_legacy(start_date: str, end_date: str, current_user: User = Depends(get_current_active_user)):
     """Legacy endpoint - use /search-console/analytics instead"""
     return await get_search_console_data(start_date, end_date, current_user)
+
+# Tag Management Endpoints
+@router.get("/tags")
+async def get_all_tags(current_user: User = Depends(get_current_active_user)):
+    """Get all unique tags from articles"""
+    try:
+        db = get_db()
+        
+        # Get all unique tags from published articles
+        pipeline = [
+            {"$match": {"status": "published", "tags": {"$exists": True, "$ne": []}}},
+            {"$unwind": "$tags"},
+            {"$group": {
+                "_id": "$tags",
+                "count": {"$sum": 1},
+                "articles": {"$addToSet": {"id": "$_id", "title": "$title"}}
+            }},
+            {"$sort": {"count": -1}},
+            {"$project": {
+                "tag": "$_id",
+                "count": 1,
+                "articles": {"$slice": ["$articles", 5]}  # Show only first 5 articles
+            }}
+        ]
+        
+        tags = await db.articles.aggregate(pipeline).to_list(1000)
+        
+        return {
+            "tags": tags,
+            "total_tags": len(tags),
+            "generated_at": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching tags: {str(e)}")
+
+@router.get("/tags/popular")
+async def get_popular_tags(limit: int = 20, current_user: User = Depends(get_current_active_user)):
+    """Get most popular tags"""
+    try:
+        db = get_db()
+        
+        pipeline = [
+            {"$match": {"status": "published", "tags": {"$exists": True, "$ne": []}}},
+            {"$unwind": "$tags"},
+            {"$group": {
+                "_id": "$tags",
+                "count": {"$sum": 1}
+            }},
+            {"$sort": {"count": -1}},
+            {"$limit": limit},
+            {"$project": {
+                "tag": "$_id",
+                "count": 1
+            }}
+        ]
+        
+        popular_tags = await db.articles.aggregate(pipeline).to_list(limit)
+        
+        return {
+            "popular_tags": popular_tags,
+            "limit": limit,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching popular tags: {str(e)}")
+
+@router.post("/tags/cleanup")
+async def cleanup_tags(current_user: User = Depends(require_admin())):
+    """Clean up unused or duplicate tags"""
+    try:
+        db = get_db()
+        
+        # Get all articles with tags
+        articles = await db.articles.find({"tags": {"$exists": True, "$ne": []}}).to_list(10000)
+        
+        updated_count = 0
+        for article in articles:
+            # Clean up tags: remove duplicates, empty strings, and normalize
+            original_tags = article.get("tags", [])
+            cleaned_tags = []
+            seen_tags = set()
+            
+            for tag in original_tags:
+                if isinstance(tag, str):
+                    # Normalize tag
+                    normalized_tag = tag.strip().lower()
+                    if normalized_tag and normalized_tag not in seen_tags:
+                        cleaned_tags.append(tag.strip())  # Keep original case
+                        seen_tags.add(normalized_tag)
+            
+            # Update if tags were cleaned
+            if cleaned_tags != original_tags:
+                await db.articles.update_one(
+                    {"_id": article["_id"]},
+                    {"$set": {"tags": cleaned_tags}}
+                )
+                updated_count += 1
+        
+        return {
+            "message": "Tag cleanup completed",
+            "articles_updated": updated_count,
+            "completed_at": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error cleaning up tags: {str(e)}")
+
+@router.get("/meta-tags/{article_id}")
+async def get_article_meta_tags(article_id: str, current_user: User = Depends(get_current_active_user)):
+    """Get SEO meta tags for a specific article"""
+    try:
+        db = get_db()
+        
+        # Get article
+        from utils import validate_object_id
+        article = await db.articles.find_one({"_id": validate_object_id(article_id)})
+        
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        
+        # Get author and category
+        author = await db.users.find_one({"_id": article["author_id"]})
+        category = await db.categories.find_one({"_id": article["category_id"]})
+        
+        base_url = os.getenv("SITE_URL", "https://edgechronicle.com")
+        
+        meta_tags = {
+            "title": article.get("seo_title") or article.get("title"),
+            "description": article.get("seo_description") or article.get("subtitle"),
+            "keywords": ", ".join(article.get("tags", [])),
+            "author": author.get("profile", {}).get("name", "Edge Chronicle Team") if author else "Edge Chronicle Team",
+            "canonical_url": f"{base_url}/article/{article_id}",
+            "og_title": article.get("title"),
+            "og_description": article.get("seo_description") or article.get("subtitle"),
+            "og_image": article.get("featured_image"),
+            "og_url": f"{base_url}/article/{article_id}",
+            "og_type": "article",
+            "twitter_card": "summary_large_image",
+            "twitter_title": article.get("title"),
+            "twitter_description": article.get("seo_description") or article.get("subtitle"),
+            "twitter_image": article.get("featured_image"),
+            "article_published_time": article.get("published_at"),
+            "article_modified_time": article.get("updated_at"),
+            "article_section": category.get("name") if category else None,
+            "article_tags": article.get("tags", [])
+        }
+        
+        return {
+            "article_id": article_id,
+            "meta_tags": meta_tags,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating meta tags: {str(e)}")
