@@ -113,17 +113,28 @@ const AdvancedArticleEditor = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Convert tags string to array
       const processedData = {
         ...data,
-        tags: typeof data.tags === 'string' ? data.tags.split(',').map(tag => tag.trim()) : data.tags
+        tags: tags // Use the tags state instead of form data
       };
 
       if (isEditing) {
         await updateMutation.mutateAsync({ id, data: processedData });
+        analytics.trackAdminAction('article_updated', { 
+          article_id: id, 
+          title: data.title,
+          status: data.status,
+          tags_count: tags.length
+        });
         navigate('/admin/articles');
       } else {
-        await createMutation.mutateAsync(processedData);
+        const newArticle = await createMutation.mutateAsync(processedData);
+        analytics.trackAdminAction('article_created', { 
+          title: data.title,
+          status: data.status,
+          tags_count: tags.length
+        });
+        navigate('/admin/articles');
       }
     } catch (error) {
       console.error('Failed to save article:', error);
