@@ -431,7 +431,7 @@ export const Footer = () => {
               Edge Chronicle
             </div>
             <p className="text-gray-400 text-sm mb-4">
-              Новини України та світу онлайн. Найсвіжіші новини політики, економіки, спорту, культури.
+              Breaking news and analysis from around the world. Stay informed with the latest developments in politics, economics, sports, and culture.
             </p>
           </div>
 
