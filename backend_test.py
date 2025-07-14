@@ -466,22 +466,34 @@ class BackendTester:
     
     async def run_all_tests(self):
         """Run all backend tests"""
-        print(f"🚀 Starting Backend API Tests for Edge Chronicle")
+        print(f"🚀 Starting Backend API Tests for Edge Chronicle Phase 4 SEO")
         print(f"Backend URL: {BACKEND_URL}")
         print("=" * 60)
         
         # Core endpoints
         await self.test_health_and_root_endpoints()
         
-        # SEO endpoints
+        # Basic SEO endpoints
         await self.test_sitemap_xml()
         await self.test_llms_txt()
         await self.test_llms_sitemap_xml()
         await self.test_robots_txt()
+        
+        # Enhanced Phase 4 SEO endpoints
+        await self.test_enhanced_seo_endpoints()
+        await self.test_google_search_console_mock_endpoints()
+        
+        # SEO file MIME types
+        await self.test_seo_files_mime_types()
+        
+        # Legacy analytics endpoint
         await self.test_seo_analytics_endpoint()
         
-        # API routes
+        # API routes authentication
         await self.test_api_routes()
+        
+        # Error handling and edge cases
+        await self.test_error_handling_edge_cases()
         
         # Database integration
         await self.test_database_integration()
