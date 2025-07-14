@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import api from '../api';
+import api from '../services/api';
 
 const TagInput = ({ value = [], onChange, placeholder = "Add tags..." }) => {
   const [inputValue, setInputValue] = useState('');
