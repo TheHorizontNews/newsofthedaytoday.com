@@ -270,15 +270,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Login & Navigation"
-    - "Rich Text Editor Testing"
-    - "Media Library Testing"
-    - "Advanced Article Features"
-    - "Settings Page"
-    - "Enhanced UI Elements"
-    - "Error Handling & Usability"
+    - "SEO Analytics Dashboard"
+    - "Tag Manager"
+    - "Enhanced Tag Input Component"
+    - "SEO Metadata Injection"
+    - "Google Analytics Integration"
+    - "Public SEO Endpoints"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
