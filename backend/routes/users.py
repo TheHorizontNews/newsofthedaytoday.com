@@ -9,7 +9,8 @@ from bson import ObjectId
 from auth import get_current_active_user, require_admin, get_password_hash
 from database import get_users_collection
 from models import User, UserCreate, UserUpdate, UserResponse, UserRole
-from utils import paginate_results, validate_object_id
+from utils import validate_object_id
+import utils
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -37,7 +38,7 @@ async def get_users(
             {"profile.name": {"$regex": search, "$options": "i"}}
         ]
     
-    skip, limit = paginate_results(skip, limit)
+    skip, limit = utils.paginate_results(skip, limit)
     
     # Get users
     users_cursor = users_collection.find(query).sort("created_at", -1).skip(skip).limit(limit)
