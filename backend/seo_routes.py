@@ -11,9 +11,70 @@ import os
 
 from auth import get_current_active_user, require_admin
 from models import User
-from utils.google_search_console import search_console
 
 router = APIRouter(prefix="/api/seo", tags=["seo"])
+
+# Mock Search Console functions for now
+class MockSearchConsole:
+    def __init__(self):
+        self.mock_mode = True
+    
+    async def submit_url(self, url: str):
+        return {
+            "status": "success",
+            "message": f"Mock submission successful for {url}",
+            "submitted_at": datetime.utcnow().isoformat()
+        }
+    
+    async def get_search_analytics(self, start_date: str, end_date: str):
+        return {
+            "status": "success",
+            "data": {
+                "clicks": 1250,
+                "impressions": 45600,
+                "ctr": 2.74,
+                "position": 12.5,
+                "rows": [
+                    {
+                        "keys": ["edge chronicle news"],
+                        "clicks": 150,
+                        "impressions": 2000,
+                        "ctr": 0.075,
+                        "position": 3.2
+                    },
+                    {
+                        "keys": ["breaking news today"],
+                        "clicks": 120,
+                        "impressions": 5000,
+                        "ctr": 0.024,
+                        "position": 8.1
+                    }
+                ]
+            }
+        }
+    
+    async def get_sitemaps(self):
+        return {
+            "status": "success",
+            "sitemaps": [
+                {
+                    "path": f"{os.getenv('SITE_URL', 'https://edgechronicle.com')}/api/seo/sitemap.xml",
+                    "lastSubmitted": datetime.utcnow().isoformat(),
+                    "isPending": False,
+                    "warnings": 0,
+                    "errors": 0
+                }
+            ]
+        }
+    
+    async def submit_sitemap(self, sitemap_url: str):
+        return {
+            "status": "success",
+            "message": f"Mock sitemap submission successful for {sitemap_url}",
+            "submitted_at": datetime.utcnow().isoformat()
+        }
+
+search_console = MockSearchConsole()
 
 # Get database connection
 def get_db():
