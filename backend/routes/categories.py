@@ -9,7 +9,7 @@ from bson import ObjectId
 from auth import get_current_active_user, require_admin
 from database import get_categories_collection
 from models import Category, CategoryCreate, CategoryUpdate, User
-from utils import create_slug, ensure_unique_slug, paginate_results, validate_object_id
+import utils
 
 router = APIRouter(prefix="/api/categories", tags=["categories"])
 
@@ -32,24 +32,18 @@ async def get_categories(
             {"description": {"$regex": search, "$options": "i"}}
         ]
     
-    skip, limit = paginate_results(skip, limit)
+    skip, limit = utils.paginate_results(skip, limit)
     
     # Get categories
-    categories_cursor = categories_collection.find(query).sort("name", 1).skip(skip).limit(limit)
+    categories_cursor = categories_collection.find(query).sort("created_at", -1).skip(skip).limit(limit)
     categories = await categories_cursor.to_list(length=limit)
     
-    # Format responses
-    result = []
+    # Convert ObjectId to string for response
     for category in categories:
-        result.append(Category(
-            id=str(category["_id"]),
-            name=category["name"],
-            slug=category["slug"],
-            description=category.get("description"),
-            created_at=category["created_at"]
-        ))
+        category["id"] = str(category["_id"])
+        del category["_id"]
     
-    return result
+    return categories
 
 @router.get("/{category_id}", response_model=Category)
 async def get_category(
@@ -59,18 +53,16 @@ async def get_category(
     """Get single category by ID"""
     categories_collection = get_categories_collection()
     
-    category = await categories_collection.find_one({"_id": validate_object_id(category_id)})
+    category = await categories_collection.find_one({"_id": utils.validate_object_id(category_id)})
     
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
-    return Category(
-        id=str(category["_id"]),
-        name=category["name"],
-        slug=category["slug"],
-        description=category.get("description"),
-        created_at=category["created_at"]
-    )
+    # Convert ObjectId to string for response
+    category["id"] = str(category["_id"])
+    del category["_id"]
+    
+    return category
 
 @router.post("/", response_model=Category)
 async def create_category(
@@ -81,8 +73,8 @@ async def create_category(
     categories_collection = get_categories_collection()
     
     # Create slug
-    slug = create_slug(category_data.name)
-    slug = await ensure_unique_slug(categories_collection, slug)
+    slug = utils.create_slug(category_data.name)
+    slug = await utils.ensure_unique_slug(categories_collection, slug)
     
     # Create category
     category_dict = {
@@ -93,15 +85,10 @@ async def create_category(
     }
     
     result = await categories_collection.insert_one(category_dict)
-    category_dict["_id"] = result.inserted_id
+    category_dict["id"] = str(result.inserted_id)
+    del category_dict["_id"] if "_id" in category_dict else None
     
-    return Category(
-        id=str(category_dict["_id"]),
-        name=category_dict["name"],
-        slug=category_dict["slug"],
-        description=category_dict["description"],
-        created_at=category_dict["created_at"]
-    )
+    return category_dict
 
 @router.put("/{category_id}", response_model=Category)
 async def update_category(
@@ -113,7 +100,7 @@ async def update_category(
     categories_collection = get_categories_collection()
     
     # Get existing category
-    category = await categories_collection.find_one({"_id": validate_object_id(category_id)})
+    category = await categories_collection.find_one({"_id": utils.validate_object_id(category_id)})
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
@@ -123,28 +110,26 @@ async def update_category(
     if category_data.name is not None:
         update_data["name"] = category_data.name
         # Update slug if name changed
-        new_slug = create_slug(category_data.name)
-        update_data["slug"] = await ensure_unique_slug(categories_collection, new_slug, category_id)
+        new_slug = utils.create_slug(category_data.name)
+        update_data["slug"] = await utils.ensure_unique_slug(categories_collection, new_slug, category_id)
     
     if category_data.description is not None:
         update_data["description"] = category_data.description
     
     # Update category
     await categories_collection.update_one(
-        {"_id": validate_object_id(category_id)},
+        {"_id": utils.validate_object_id(category_id)},
         {"$set": update_data}
     )
     
     # Get updated category
-    updated_category = await categories_collection.find_one({"_id": validate_object_id(category_id)})
+    updated_category = await categories_collection.find_one({"_id": utils.validate_object_id(category_id)})
     
-    return Category(
-        id=str(updated_category["_id"]),
-        name=updated_category["name"],
-        slug=updated_category["slug"],
-        description=updated_category.get("description"),
-        created_at=updated_category["created_at"]
-    )
+    # Convert ObjectId to string for response
+    updated_category["id"] = str(updated_category["_id"])
+    del updated_category["_id"]
+    
+    return updated_category
 
 @router.delete("/{category_id}")
 async def delete_category(
@@ -155,14 +140,13 @@ async def delete_category(
     categories_collection = get_categories_collection()
     
     # Get category
-    category = await categories_collection.find_one({"_id": validate_object_id(category_id)})
+    category = await categories_collection.find_one({"_id": utils.validate_object_id(category_id)})
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
     # TODO: Check if category is used by any articles
-    # For now, we'll allow deletion
     
     # Delete category
-    await categories_collection.delete_one({"_id": validate_object_id(category_id)})
+    await categories_collection.delete_one({"_id": utils.validate_object_id(category_id)})
     
     return {"message": "Category deleted successfully"}
