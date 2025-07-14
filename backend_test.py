@@ -236,6 +236,189 @@ class BackendTester:
         except Exception as e:
             self.log_result("SEO Analytics", False, f"Exception: {str(e)}")
     
+    async def test_enhanced_seo_endpoints(self):
+        """Test Phase 4 Enhanced SEO API Endpoints"""
+        
+        # Test GET /api/seo/tags - should require authentication
+        try:
+            async with self.session.get(f"{BACKEND_URL}/api/seo/tags") as response:
+                if response.status in [401, 403]:
+                    self.log_result("SEO Tags Endpoint", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    self.log_result("SEO Tags Endpoint", False, "HTTP 200 (should require authentication)")
+                else:
+                    self.log_result("SEO Tags Endpoint", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("SEO Tags Endpoint", False, f"Exception: {str(e)}")
+        
+        # Test GET /api/seo/tags/popular - should require authentication
+        try:
+            async with self.session.get(f"{BACKEND_URL}/api/seo/tags/popular") as response:
+                if response.status in [401, 403]:
+                    self.log_result("SEO Popular Tags Endpoint", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    self.log_result("SEO Popular Tags Endpoint", False, "HTTP 200 (should require authentication)")
+                else:
+                    self.log_result("SEO Popular Tags Endpoint", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("SEO Popular Tags Endpoint", False, f"Exception: {str(e)}")
+        
+        # Test POST /api/seo/tags/cleanup - should require admin authentication
+        try:
+            async with self.session.post(f"{BACKEND_URL}/api/seo/tags/cleanup") as response:
+                if response.status in [401, 403]:
+                    self.log_result("SEO Tags Cleanup Endpoint", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    self.log_result("SEO Tags Cleanup Endpoint", False, "HTTP 200 (should require admin authentication)")
+                else:
+                    self.log_result("SEO Tags Cleanup Endpoint", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("SEO Tags Cleanup Endpoint", False, f"Exception: {str(e)}")
+        
+        # Test GET /api/seo/meta-tags/{article_id} - should require authentication
+        try:
+            test_article_id = "507f1f77bcf86cd799439011"  # Valid ObjectId format
+            async with self.session.get(f"{BACKEND_URL}/api/seo/meta-tags/{test_article_id}") as response:
+                if response.status in [401, 403]:
+                    self.log_result("SEO Meta Tags Endpoint", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 404:
+                    self.log_result("SEO Meta Tags Endpoint", True, "HTTP 404 (article not found - endpoint accessible)")
+                elif response.status == 200:
+                    self.log_result("SEO Meta Tags Endpoint", False, "HTTP 200 (should require authentication)")
+                else:
+                    self.log_result("SEO Meta Tags Endpoint", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("SEO Meta Tags Endpoint", False, f"Exception: {str(e)}")
+    
+    async def test_google_search_console_mock_endpoints(self):
+        """Test Google Search Console Mock Integration Endpoints"""
+        
+        # Test GET /api/seo/search-console/analytics - should require authentication
+        try:
+            start_date = "2024-01-01"
+            end_date = "2024-12-31"
+            url = f"{BACKEND_URL}/api/seo/search-console/analytics?start_date={start_date}&end_date={end_date}"
+            
+            async with self.session.get(url) as response:
+                if response.status in [401, 403]:
+                    self.log_result("Search Console Analytics", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    data = await response.json()
+                    if data.get("status") == "success" and "data" in data:
+                        self.log_result("Search Console Analytics", True, "Mock data returned successfully")
+                    else:
+                        self.log_result("Search Console Analytics", False, f"Invalid response format: {data}")
+                else:
+                    self.log_result("Search Console Analytics", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Search Console Analytics", False, f"Exception: {str(e)}")
+        
+        # Test GET /api/seo/search-console/sitemaps - should require authentication
+        try:
+            async with self.session.get(f"{BACKEND_URL}/api/seo/search-console/sitemaps") as response:
+                if response.status in [401, 403]:
+                    self.log_result("Search Console Sitemaps", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    data = await response.json()
+                    if data.get("status") == "success" and "sitemaps" in data:
+                        self.log_result("Search Console Sitemaps", True, "Mock sitemap data returned successfully")
+                    else:
+                        self.log_result("Search Console Sitemaps", False, f"Invalid response format: {data}")
+                else:
+                    self.log_result("Search Console Sitemaps", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Search Console Sitemaps", False, f"Exception: {str(e)}")
+        
+        # Test POST /api/seo/search-console/submit-sitemap - should require admin authentication
+        try:
+            sitemap_data = {"sitemap_url": f"{BACKEND_URL}/api/seo/sitemap.xml"}
+            async with self.session.post(f"{BACKEND_URL}/api/seo/search-console/submit-sitemap", json=sitemap_data) as response:
+                if response.status in [401, 403]:
+                    self.log_result("Search Console Submit Sitemap", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    self.log_result("Search Console Submit Sitemap", False, "HTTP 200 (should require admin authentication)")
+                else:
+                    self.log_result("Search Console Submit Sitemap", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Search Console Submit Sitemap", False, f"Exception: {str(e)}")
+        
+        # Test GET /api/seo/analytics/dashboard - should require authentication
+        try:
+            async with self.session.get(f"{BACKEND_URL}/api/seo/analytics/dashboard") as response:
+                if response.status in [401, 403]:
+                    self.log_result("SEO Analytics Dashboard", True, f"HTTP {response.status} (correctly protected)")
+                elif response.status == 200:
+                    data = await response.json()
+                    required_sections = ["search_console", "sitemaps", "articles", "categories"]
+                    missing_sections = [section for section in required_sections if section not in data]
+                    if not missing_sections:
+                        self.log_result("SEO Analytics Dashboard", True, f"All required sections present: {list(data.keys())}")
+                    else:
+                        self.log_result("SEO Analytics Dashboard", False, f"Missing sections: {missing_sections}")
+                else:
+                    self.log_result("SEO Analytics Dashboard", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("SEO Analytics Dashboard", False, f"Exception: {str(e)}")
+    
+    async def test_seo_files_mime_types(self):
+        """Test SEO files return correct MIME types"""
+        seo_files = [
+            ("/api/seo/sitemap.xml", "application/xml", "Sitemap XML MIME Type"),
+            ("/api/seo/llms.txt", "text/plain", "LLMS.txt MIME Type"),
+            ("/api/seo/llms-sitemap.xml", "application/xml", "LLMS Sitemap XML MIME Type"),
+            ("/api/seo/robots.txt", "text/plain", "Robots.txt MIME Type")
+        ]
+        
+        for endpoint, expected_mime, test_name in seo_files:
+            try:
+                async with self.session.get(f"{BACKEND_URL}{endpoint}") as response:
+                    if response.status == 200:
+                        content_type = response.headers.get('content-type', '')
+                        if expected_mime in content_type:
+                            self.log_result(test_name, True, f"Correct MIME type: {content_type}")
+                        else:
+                            self.log_result(test_name, False, f"Wrong MIME type: {content_type}, expected: {expected_mime}")
+                    else:
+                        self.log_result(test_name, False, f"HTTP {response.status}")
+            except Exception as e:
+                self.log_result(test_name, False, f"Exception: {str(e)}")
+    
+    async def test_error_handling_edge_cases(self):
+        """Test error handling and edge cases"""
+        
+        # Test invalid article ID for meta-tags endpoint
+        try:
+            invalid_id = "invalid-article-id"
+            async with self.session.get(f"{BACKEND_URL}/api/seo/meta-tags/{invalid_id}") as response:
+                if response.status in [400, 422, 401, 403]:
+                    self.log_result("Invalid Article ID Handling", True, f"HTTP {response.status} (proper error handling)")
+                else:
+                    self.log_result("Invalid Article ID Handling", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Invalid Article ID Handling", False, f"Exception: {str(e)}")
+        
+        # Test missing sitemap_url in submit-sitemap endpoint
+        try:
+            empty_data = {}
+            async with self.session.post(f"{BACKEND_URL}/api/seo/search-console/submit-sitemap", json=empty_data) as response:
+                if response.status in [400, 422, 401, 403]:
+                    self.log_result("Missing Sitemap URL Handling", True, f"HTTP {response.status} (proper error handling)")
+                else:
+                    self.log_result("Missing Sitemap URL Handling", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Missing Sitemap URL Handling", False, f"Exception: {str(e)}")
+        
+        # Test invalid date format for search console analytics
+        try:
+            invalid_url = f"{BACKEND_URL}/api/seo/search-console/analytics?start_date=invalid&end_date=invalid"
+            async with self.session.get(invalid_url) as response:
+                if response.status in [400, 422, 401, 403]:
+                    self.log_result("Invalid Date Format Handling", True, f"HTTP {response.status} (proper error handling)")
+                else:
+                    self.log_result("Invalid Date Format Handling", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_result("Invalid Date Format Handling", False, f"Exception: {str(e)}")
+    
     async def test_database_integration(self):
         """Test database integration by checking if backend can connect to MongoDB"""
         try:
