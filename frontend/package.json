@@ -1,0 +1,62 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
+    "@tanstack/react-query": "^5.83.0",
+    "@tanstack/react-table": "^8.21.3",
+    "@tinymce/tinymce-react": "^6.2.1",
+    "axios": "^1.10.0",
+    "cra-template": "1.2.0",
+    "date-fns": "^4.1.0",
+    "multer": "^2.0.1",
+    "quill": "^2.0.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-dropzone": "^14.3.8",
+    "react-ga4": "^2.1.0",
+    "react-gtag": "^0.0.0",
+    "react-helmet-async": "^2.0.5",
+    "react-hook-form": "^7.60.0",
+    "react-query": "^3.39.3",
+    "react-quill": "^2.0.0",
+    "react-router-dom": "^7.6.2",
+    "react-scripts": "5.0.1",
+    "react-table": "^7.8.0",
+    "recharts": "^3.1.0",
+    "sitemap": "^8.0.0",
+    "uuid": "^11.1.0",
+    "uuid-v4": "^0.1.0",
+    "yup": "^1.6.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "9.23.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "9.23.0",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.4",
+    "globals": "15.15.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}
