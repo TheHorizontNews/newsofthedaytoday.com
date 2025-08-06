@@ -25,8 +25,8 @@ const Dashboard = () => {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Dashboard</h1>
-        <p className="page-subtitle">Welcome to Edge Chronicle Admin Panel</p>
+        <h1 className="page-title">{t.dashboard}</h1>
+        <p className="page-subtitle">Ласкаво просимо в Science Digest News</p>
       </div>
 
       {/* Stats Cards */}
