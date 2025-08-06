@@ -347,7 +347,7 @@ export const TrendingSection = ({ trendingData }) => {
 export const PublicationsSection = ({ publicationsData }) => {
   return (
     <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">Публікації</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-900">Featured Articles</h2>
       
       <div className="space-y-6">
         {publicationsData.map((article) => (
