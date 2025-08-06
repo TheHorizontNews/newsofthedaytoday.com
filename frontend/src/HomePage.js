@@ -202,21 +202,55 @@ const mockNewsData = {
 };
 
 function HomePage() {
+  // Structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "Science Digest News",
+    "url": "https://sciencedigestnews.com",
+    "logo": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=200&h=200&fit=crop&crop=entropy&fm=webp&q=85",
+    "description": "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.",
+    "mainEntity": {
+      "@type": "NewsArticle",
+      "headline": mockNewsData.hero.title,
+      "image": mockNewsData.hero.image,
+      "author": {
+        "@type": "Person",
+        "name": mockNewsData.hero.author
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Science Digest News"
+      },
+      "datePublished": "2025-06-23T18:15:00Z",
+      "dateModified": "2025-06-23T18:15:00Z"
+    }
+  };
+
   return (
     <>
-      <HeroSection heroData={mockNewsData.hero} />
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <MainNews newsData={mockNewsData.mainNews} />
-            <TrendingSection trendingData={mockNewsData.trending} />
-            <PublicationsSection publicationsData={mockNewsData.publications} />
-          </div>
-          <div className="lg:col-span-1">
-            <SidebarNews sidebarData={mockNewsData.sidebarNews} />
+      {/* Structured Data */}
+      <script 
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      {/* Main Content */}
+      <main id="main-content" role="main">
+        <HeroSection heroData={mockNewsData.hero} />
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <MainNews newsData={mockNewsData.mainNews} />
+              <TrendingSection trendingData={mockNewsData.trending} />
+              <PublicationsSection publicationsData={mockNewsData.publications} />
+            </div>
+            <div className="lg:col-span-1">
+              <SidebarNews sidebarData={mockNewsData.sidebarNews} />
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
