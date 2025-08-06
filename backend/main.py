@@ -1,5 +1,5 @@
 """
-Main FastAPI application for Edge Chronicle
+Main FastAPI application for Science Digest News
 """
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,7 +18,7 @@ from routes.analytics import router as analytics_router
 from seo_routes import router as seo_router
 
 # Import database
-from database import Database, init_db
+from database import init_db
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
@@ -36,18 +36,17 @@ async def lifespan(app: FastAPI):
     """App lifespan handler"""
     # Startup
     await init_db()
-    logger.info("Database initialized")
+    logger.info("SQLite database initialized")
     
     yield
     
     # Shutdown
-    await Database.close_connection()
-    logger.info("Database connection closed")
+    logger.info("Shutting down application")
 
 # Create FastAPI app
 app = FastAPI(
-    title="Edge Chronicle API",
-    description="Backend API for Edge Chronicle news platform",
+    title="Science Digest News API",
+    description="Backend API for Science Digest News platform",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -73,13 +72,13 @@ app.include_router(seo_router)
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "Edge Chronicle API"}
+    return {"status": "healthy", "service": "Science Digest News API"}
 
 # Root endpoint
 @app.get("/")
 async def root():
     """Root endpoint"""
-    return {"message": "Edge Chronicle API", "version": "1.0.0"}
+    return {"message": "Science Digest News API", "version": "1.0.0"}
 
 if __name__ == "__main__":
     import uvicorn
