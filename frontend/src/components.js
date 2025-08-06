@@ -251,8 +251,8 @@ export const MainNews = ({ newsData }) => {
       </div>
       
       <div className="mt-8 text-center">
-        <button className="bg-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200">
-          ВСІ ГОЛОВНІ НОВИНИ
+        <button className="text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-colors duration-200" style={{backgroundColor: '#0c61cf'}}>
+          ALL SCIENTIFIC NEWS
         </button>
       </div>
     </section>
