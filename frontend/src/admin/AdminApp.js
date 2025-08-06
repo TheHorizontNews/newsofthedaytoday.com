@@ -6,7 +6,7 @@ import AdminLayout from './components/AdminLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Articles from './pages/Articles';
-import AdvancedArticleEditor from './components/AdvancedArticleEditor';
+import ArticleEditor from './pages/ArticleEditor';
 import Users from './pages/Users';
 import Categories from './pages/Categories';
 import Analytics from './pages/Analytics';
