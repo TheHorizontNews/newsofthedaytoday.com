@@ -46,7 +46,7 @@ export const Header = ({ currentTime }) => {
           <div className="hidden md:flex items-center space-x-4">
             <span>НАЖИВО</span>
             <span>ПОШУК</span>
-            <button className="bg-red-800 px-3 py-1 rounded">UA</button>
+            <button className="px-3 py-1 rounded" style={{backgroundColor: '#0a52b8'}}>UA</button>
           </div>
         </div>
       </div>
