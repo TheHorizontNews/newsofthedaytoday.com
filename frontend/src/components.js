@@ -62,10 +62,14 @@ export const Header = ({ currentTime }) => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex items-center bg-white px-3 py-2 rounded">
+            <Link 
+              to="/" 
+              className="flex items-center bg-white px-3 py-2 rounded"
+              aria-label="Science Digest News - головна сторінка"
+            >
               {/* Logo Icon */}
               <div className="flex items-center space-x-2">
-                <div className="relative">
+                <div className="relative" role="img" aria-label="Логотип Science Digest News">
                   <div className="w-8 h-8 rounded-full" style={{backgroundColor: '#0c61cf'}}>
                     <div className="absolute inset-1 bg-white rounded-full flex items-center justify-center">
                       <div className="w-4 h-4 rounded-full" style={{backgroundColor: '#0c61cf'}}>
@@ -84,7 +88,7 @@ export const Header = ({ currentTime }) => {
                   <span className="text-sm font-medium ml-1">Digest News</span>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Navigation - Desktop */}
