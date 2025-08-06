@@ -17,9 +17,8 @@ router = APIRouter(prefix="/api/categories", tags=["categories"])
 @router.get("/", response_model=List[Category])
 async def get_categories(
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100),
-    search: Optional[str] = None,
-    current_user: UserTable = Depends(get_current_active_user),
+    limit: int = Query(100, ge=1, le=500),
+    search: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
     """Get categories with pagination and filtering"""
