@@ -250,6 +250,18 @@ frontend:
         -agent: "testing"
         -comment: "Google Analytics integration fully functional. Analytics utility properly initialized with GA4 tracking ID (G-PLACEHOLDER123). Page view tracking working on navigation. Event tracking capabilities implemented including article views, search tracking, admin actions, and user engagement. Integration with React Router for automatic page view tracking. Analytics wrapper component properly integrated in main App.js."
 
+  - task: "Article Management (Create/Edit)"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/admin/pages/WorkingArticleEditor.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "Integrated WorkingArticleEditor component into AdminApp.js routing. Replaced static placeholder routes that were blocking article creation/editing. Component needs to be tested for full functionality including backend API integration, article creation, editing, and saving."
+
   - task: "Public SEO Endpoints"
     implemented: true
     working: true
