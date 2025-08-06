@@ -57,7 +57,15 @@ async def get_categories_admin(
     result = await db.execute(query)
     categories = result.scalars().all()
     
-    return [Category.from_orm(cat) for cat in categories]
+    return [
+        Category(
+            id=cat.id,
+            name=cat.name,
+            slug=cat.slug,
+            description=cat.description,
+            created_at=cat.created_at
+        ) for cat in categories
+    ]
 async def get_category(
     category_id: str,
     current_user: UserTable = Depends(get_current_active_user),
