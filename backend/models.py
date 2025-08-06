@@ -1,26 +1,16 @@
 """
-Database models for Edge Chronicle News Site
+Database models for Science Digest News
 """
 from datetime import datetime
 from typing import Optional, List
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Enum as SQLEnum
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field, EmailStr
-from bson import ObjectId
 from enum import Enum
+import uuid
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v, validation_info=None):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
-        return ObjectId(v)
-
-    @classmethod
-    def __get_pydantic_json_schema__(cls, schema_core, handler):
-        return {"type": "string"}
+Base = declarative_base()
 
 class UserRole(str, Enum):
     ADMIN = "admin"
@@ -32,79 +22,92 @@ class ArticleStatus(str, Enum):
     PUBLISHED = "published"
     ARCHIVED = "archived"
 
-# Database Models
+# SQLAlchemy Models (Database Tables)
+class UserTable(Base):
+    __tablename__ = "users"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    username = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    role = Column(SQLEnum(UserRole), nullable=False)
+    name = Column(String, nullable=True)
+    bio = Column(Text, nullable=True)
+    avatar = Column(Text, nullable=True)  # base64 encoded
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_login = Column(DateTime, nullable=True)
+    is_active = Column(Boolean, default=True)
+
+    # Relationship
+    articles = relationship("ArticleTable", back_populates="author")
+
+class CategoryTable(Base):
+    __tablename__ = "categories"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False)
+    slug = Column(String, unique=True, index=True, nullable=False)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationship
+    articles = relationship("ArticleTable", back_populates="category")
+
+class ArticleTable(Base):
+    __tablename__ = "articles"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    title = Column(String, nullable=False)
+    subtitle = Column(String, nullable=True)
+    content = Column(Text, nullable=False)
+    author_id = Column(String, ForeignKey("users.id"), nullable=False)
+    category_id = Column(String, ForeignKey("categories.id"), nullable=False)
+    tags = Column(Text, nullable=True)  # JSON string
+    featured_image = Column(Text, nullable=True)  # base64 encoded
+    status = Column(SQLEnum(ArticleStatus), default=ArticleStatus.DRAFT)
+    published_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    views = Column(Integer, default=0)
+    slug = Column(String, unique=True, index=True, nullable=False)
+    seo_title = Column(String, nullable=True)
+    seo_description = Column(Text, nullable=True)
+    
+    # Relationships
+    author = relationship("UserTable", back_populates="articles")
+    category = relationship("CategoryTable", back_populates="articles")
+
+class AnalyticsTable(Base):
+    __tablename__ = "analytics"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    article_id = Column(String, ForeignKey("articles.id"), nullable=False)
+    date = Column(DateTime, default=datetime.utcnow)
+    views = Column(Integer, default=0)
+    unique_views = Column(Integer, default=0)
+    session_duration = Column(Integer, nullable=True)
+    referrer = Column(String, nullable=True)
+    user_agent = Column(String, nullable=True)
+
+# Pydantic Models (API Request/Response)
 class UserProfile(BaseModel):
     name: str
     bio: Optional[str] = None
     avatar: Optional[str] = None
     
 class User(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
+    id: str
     username: str
     email: EmailStr
-    password_hash: str
     role: UserRole
     profile: UserProfile
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime
     last_login: Optional[datetime] = None
     is_active: bool = True
     
     class Config:
-        populate_by_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
+        from_attributes = True
 
-class Category(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
-    name: str
-    slug: str
-    description: Optional[str] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    
-    class Config:
-        populate_by_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
-class Article(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
-    title: str
-    subtitle: Optional[str] = None
-    content: str
-    author_id: PyObjectId
-    category_id: PyObjectId
-    tags: List[str] = []
-    featured_image: Optional[str] = None
-    status: ArticleStatus = ArticleStatus.DRAFT
-    published_at: Optional[datetime] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-    views: int = 0
-    slug: str
-    seo_title: Optional[str] = None
-    seo_description: Optional[str] = None
-    
-    class Config:
-        populate_by_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
-class Analytics(BaseModel):
-    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
-    article_id: PyObjectId
-    date: datetime = Field(default_factory=datetime.utcnow)
-    views: int = 0
-    unique_views: int = 0
-    session_duration: Optional[int] = None
-    referrer: Optional[str] = None
-    user_agent: Optional[str] = None
-    
-    class Config:
-        populate_by_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
-# API Request/Response Models
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
@@ -128,6 +131,27 @@ class UserResponse(BaseModel):
     created_at: datetime
     last_login: Optional[datetime]
     is_active: bool
+    
+    class Config:
+        from_attributes = True
+
+class Category(BaseModel):
+    id: str
+    name: str
+    slug: str
+    description: Optional[str] = None
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class CategoryCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+class CategoryUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 class ArticleCreate(BaseModel):
     title: str
@@ -168,14 +192,9 @@ class ArticleResponse(BaseModel):
     slug: str
     seo_title: Optional[str]
     seo_description: Optional[str]
-
-class CategoryCreate(BaseModel):
-    name: str
-    description: Optional[str] = None
-
-class CategoryUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
