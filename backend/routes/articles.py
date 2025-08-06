@@ -116,9 +116,110 @@ async def get_articles(
             seo_description=article.seo_description
         ))
     
+@router.get("/admin", response_model=List[ArticleResponse])
+async def get_articles_admin(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    status: Optional[str] = Query(None),
+    category_id: Optional[str] = Query(None),
+    author_id: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
+    current_user: UserTable = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get articles with pagination and filtering (admin endpoint with auth)"""
+    query = select(ArticleTable, UserTable, CategoryTable).join(
+        UserTable, ArticleTable.author_id == UserTable.id
+    ).join(
+        CategoryTable, ArticleTable.category_id == CategoryTable.id
+    )
+    
+    # Build where conditions
+    conditions = []
+    
+    if status and status.strip():
+        try:
+            status_enum = ArticleStatus(status)
+            conditions.append(ArticleTable.status == status_enum)
+        except ValueError:
+            # Invalid status, ignore
+            pass
+    
+    if category_id and category_id.strip():
+        conditions.append(ArticleTable.category_id == category_id)
+    
+    if author_id and author_id.strip():
+        conditions.append(ArticleTable.author_id == author_id)
+    
+    if search and search.strip():
+        conditions.append(
+            or_(
+                ArticleTable.title.contains(search),
+                ArticleTable.content.contains(search),
+                ArticleTable.tags.contains(search)
+            )
+        )
+    
+    # Non-admin users can only see their own articles
+    if current_user.role != "admin":
+        conditions.append(ArticleTable.author_id == current_user.id)
+    
+    if conditions:
+        query = query.where(and_(*conditions))
+    
+    query = query.order_by(ArticleTable.created_at.desc()).offset(skip).limit(limit)
+    
+    result = await db.execute(query)
+    rows = result.fetchall()
+    
+    # Format responses
+    response_articles = []
+    for article, author, category in rows:
+        author_profile = UserProfile(
+            name=author.name or "",
+            bio=author.bio,
+            avatar=author.avatar
+        )
+        
+        author_response = UserResponse(
+            id=author.id,
+            username=author.username,
+            email=author.email,
+            role=author.role,
+            profile=author_profile,
+            created_at=author.created_at,
+            last_login=author.last_login,
+            is_active=author.is_active
+        )
+        
+        category_response = Category(
+            id=category.id,
+            name=category.name,
+            slug=category.slug,
+            description=category.description,
+            created_at=category.created_at
+        )
+        
+        response_articles.append(ArticleResponse(
+            id=article.id,
+            title=article.title,
+            subtitle=article.subtitle,
+            content=article.content,
+            author=author_response,
+            category=category_response,
+            tags=json_to_tags(article.tags),
+            featured_image=article.featured_image,
+            status=article.status,
+            published_at=article.published_at,
+            created_at=article.created_at,
+            updated_at=article.updated_at,
+            views=article.views,
+            slug=article.slug,
+            seo_title=article.seo_title,
+            seo_description=article.seo_description
+        ))
+    
     return response_articles
-
-@router.get("/{article_id}", response_model=ArticleResponse)
 async def get_article(
     article_id: str,
     current_user: UserTable = Depends(get_current_active_user),
