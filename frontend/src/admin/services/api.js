@@ -61,7 +61,7 @@ export const usersAPI = {
 
 // Categories API
 export const categoriesAPI = {
-  getCategories: (params = {}) => api.get('/categories/', { params }),
+  getCategories: (params = {}) => api.get('/categories/admin', { params }),
   getCategory: (id) => api.get(`/categories/${id}`),
   createCategory: (data) => api.post('/categories/', data),
   updateCategory: (id, data) => api.put(`/categories/${id}`, data),
