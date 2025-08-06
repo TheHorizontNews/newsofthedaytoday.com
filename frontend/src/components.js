@@ -121,15 +121,22 @@ export const Header = ({ currentTime }) => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="lg:hidden mt-4 pb-4">
+          <nav 
+            id="mobile-menu"
+            className="lg:hidden mt-4 pb-4" 
+            role="navigation" 
+            aria-label="Мобільна навігація"
+          >
             {navigationItems.map((item, index) => (
-              <a 
+              <Link 
                 key={index} 
-                href={item.href} 
-                className="block py-2 hover:opacity-80 transition-colors duration-200"
+                to={item.href} 
+                className="block py-2 px-4 hover:opacity-80 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 rounded"
+                onClick={() => setIsMenuOpen(false)}
+                aria-label={`Перейти до ${item.name}`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </nav>
         )}
