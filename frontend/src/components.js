@@ -112,7 +112,7 @@ export const Header = ({ currentTime }) => {
               <a 
                 key={index} 
                 href="#" 
-                className="block py-2 hover:text-red-200 transition-colors duration-200"
+                className="block py-2 hover:opacity-80 transition-colors duration-200"
               >
                 {item}
               </a>
