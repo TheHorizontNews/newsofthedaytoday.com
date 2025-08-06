@@ -87,7 +87,7 @@ export const Header = ({ currentTime }) => {
               <a 
                 key={index} 
                 href="#" 
-                className="hover:text-red-200 transition-colors duration-200 font-medium"
+                className="hover:opacity-80 transition-colors duration-200 font-medium"
               >
                 {item}
               </a>
