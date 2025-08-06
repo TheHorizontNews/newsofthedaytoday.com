@@ -92,15 +92,16 @@ export const Header = ({ currentTime }) => {
           </div>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden lg:flex items-center space-x-6">
+          <nav className="hidden lg:flex items-center space-x-6" role="navigation" aria-label="Основна навігація">
             {navigationItems.map((item, index) => (
-              <a 
+              <Link 
                 key={index} 
-                href={item.href} 
-                className="hover:opacity-80 transition-colors duration-200 font-medium"
+                to={item.href} 
+                className="hover:opacity-80 transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 px-2 py-1 rounded"
+                aria-label={`Перейти до ${item.name}`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </nav>
 
