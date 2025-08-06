@@ -196,7 +196,7 @@ export const HeroSection = ({ heroData }) => {
 export const MainNews = ({ newsData }) => {
   return (
     <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">Головні новини</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-900">Latest Scientific Discoveries</h2>
       
       <div className="space-y-8">
         {newsData.map((article, index) => (
