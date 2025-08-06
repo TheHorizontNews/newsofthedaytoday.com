@@ -6,15 +6,15 @@ export const Header = ({ currentTime }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const navigationItems = [
-    'Останні новини',
-    'Технології', 
-    'Медицина',
-    'Космос і Фізика',
-    'Довкілля',
-    'Дослідження',
-    'ШІ та Обчислення',
-    'Біологія',
-    'Інновації'
+    { name: 'Останні новини', href: '/' },
+    { name: 'Технології', href: '/category/technology' },
+    { name: 'Медицина', href: '/category/medicine' },
+    { name: 'Космос і Фізика', href: '/category/space-physics' },
+    { name: 'Довкілля', href: '/category/environment' },
+    { name: 'Дослідження', href: '/category/research' },
+    { name: 'ШІ та Обчислення', href: '/category/ai-computing' },
+    { name: 'Біологія', href: '/category/biology' },
+    { name: 'Інновації', href: '/category/innovation' }
   ];
 
   const formatTime = (date) => {
