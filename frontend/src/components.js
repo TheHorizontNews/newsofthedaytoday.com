@@ -301,7 +301,7 @@ export const TrendingSection = ({ trendingData }) => {
   return (
     <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
       <div className="flex items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">В тренді</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Trending Research</h2>
         <span className="ml-2 text-2xl">🔥</span>
       </div>
       
