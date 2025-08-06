@@ -273,6 +273,8 @@ async def get_tags(
             "total_unique_tags": 5,
             "total_tags": 51
         }
+
+@router.get("/{article_id}", response_model=ArticleResponse)
 async def get_article(
     article_id: str,
     current_user: UserTable = Depends(get_current_active_user),
