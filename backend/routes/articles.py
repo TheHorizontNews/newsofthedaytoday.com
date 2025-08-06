@@ -176,6 +176,10 @@ async def get_articles_admin(
     result = await db.execute(query)
     rows = result.fetchall()
     
+    # Return empty list if no articles
+    if not rows:
+        return []
+    
     # Format responses
     response_articles = []
     for article, author, category in rows:
