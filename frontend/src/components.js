@@ -56,8 +56,28 @@ export const Header = ({ currentTime }) => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="bg-white text-red-600 px-3 py-2 font-bold text-xl rounded">
-              Edge Chronicle
+            <div className="flex items-center bg-white px-3 py-2 rounded">
+              {/* Logo Icon */}
+              <div className="flex items-center space-x-2">
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-full" style={{backgroundColor: '#0c61cf'}}>
+                    <div className="absolute inset-1 bg-white rounded-full flex items-center justify-center">
+                      <div className="w-4 h-4 rounded-full" style={{backgroundColor: '#0c61cf'}}>
+                        <div className="absolute inset-1 bg-white rounded-full">
+                          <div className="w-1 h-1 rounded-full mx-auto mt-1" style={{backgroundColor: '#0c61cf'}}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full border-2" style={{borderColor: '#0c61cf'}}>
+                    <div className="w-1 h-1 rounded-full mx-auto" style={{backgroundColor: '#0c61cf', marginTop: '1px'}}></div>
+                  </div>
+                </div>
+                <div style={{color: '#0c61cf'}} className="font-bold text-lg">
+                  <span className="text-xl">Science</span>
+                  <span className="text-sm font-medium ml-1">Digest News</span>
+                </div>
+              </div>
             </div>
           </div>
 
