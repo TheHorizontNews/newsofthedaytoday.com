@@ -43,7 +43,7 @@ const AdminLayout = ({ children }) => {
       {/* Sidebar */}
       <div className="admin-sidebar w-64 flex-shrink-0">
         <div className="sidebar-logo">
-          <h1 className="text-xl font-bold text-white">Edge Chronicle</h1>
+          <h1 className="text-xl font-bold text-white">Science Digest News</h1>
           <p className="text-sm text-gray-300">Admin Panel</p>
         </div>
         
