@@ -42,7 +42,7 @@ const mockNewsData = {
       time: "14:32, 23.06.25",
       views: 3521,
       author: "Maxim Borisenko",
-      image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
+      image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
       url: "/article/3"
     },
     {
