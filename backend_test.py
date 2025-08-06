@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Edge Chronicle Phase 4 SEO Implementation
-Tests all SEO endpoints and backend functionality
+Backend API Testing for Article Management Functionality
+Tests all article CRUD operations and related endpoints
 """
 
 import asyncio
