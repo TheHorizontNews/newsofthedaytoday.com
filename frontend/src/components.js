@@ -324,7 +324,7 @@ export const TrendingSection = ({ trendingData }) => {
               </div>
             </div>
             
-            <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors duration-200 text-sm leading-snug">
+            <h3 className="font-semibold text-gray-900 mb-2 group-hover:opacity-80 transition-colors duration-200 text-sm leading-snug" style={{'&:hover': {color: '#0c61cf'}}}>
               {item.title}
             </h3>
             
