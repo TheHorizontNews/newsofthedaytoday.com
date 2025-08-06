@@ -19,8 +19,28 @@ const SEOAnalytics = () => {
       setLoading(true);
       setError(null);
       
-      const response = await api.get('/seo/analytics/dashboard');
-      setAnalyticsData(response.data);
+      // Mock данные для SEO аналитики
+      const mockData = {
+        impressions: 15420,
+        clicks: 3890,
+        avgPosition: 12.5,
+        ctr: 25.2,
+        topQueries: [
+          { query: 'наукові відкриття', impressions: 2340, clicks: 180, position: 8.2 },
+          { query: 'технології 2025', impressions: 1890, clicks: 145, position: 11.5 },
+          { query: 'медичні дослідження', impressions: 1650, clicks: 122, position: 9.8 },
+          { query: 'космічні новини', impressions: 1420, clicks: 98, position: 15.2 },
+          { query: 'штучний інтелект', impressions: 1280, clicks: 87, position: 13.6 }
+        ],
+        topPages: [
+          { url: '/revolutionary-ai-breakthrough', impressions: 890, clicks: 67 },
+          { url: '/quantum-computing-advance', impressions: 760, clicks: 54 },
+          { url: '/medical-research-update', impressions: 650, clicks: 43 },
+          { url: '/space-exploration-news', impressions: 580, clicks: 38 }
+        ]
+      };
+      
+      setAnalyticsData(mockData);
     } catch (err) {
       setError('Failed to fetch analytics data');
       console.error('Analytics fetch error:', err);
