@@ -1,4 +1,5 @@
-import React from 'react';
+import { ukTranslations } from '../i18n/uk';
+const t = ukTranslations;
 import { useQuery } from '@tanstack/react-query';
 import { analyticsAPI } from '../services/api';
 import StatsCards from '../components/StatsCards';
