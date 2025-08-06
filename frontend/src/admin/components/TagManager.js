@@ -18,8 +18,8 @@ const TagManager = () => {
   const fetchTags = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/seo/tags');
-      setTags(response.data.tags || []);
+      const response = await api.get('/articles/tags');
+      setTags(response.popular_tags || []);
     } catch (err) {
       setError('Failed to fetch tags');
       console.error('Tags fetch error:', err);
