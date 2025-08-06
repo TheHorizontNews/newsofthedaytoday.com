@@ -53,6 +53,8 @@ const SimpleArticleEditor = () => {
   };
 
   const loadArticle = async () => {
+    if (!isEditing) return;
+    
     try {
       setLoading(true);
       const response = await api.get(`/articles/${id}`);
@@ -62,7 +64,7 @@ const SimpleArticleEditor = () => {
         title: article.title || '',
         subtitle: article.subtitle || '',
         content: article.content || '',
-        category_id: article.category?.id || '',
+        category_id: article.category?.id || article.category_id || '',
         tags: article.tags || [],
         featured_image: article.featured_image || '',
         status: article.status || 'draft',
@@ -71,7 +73,8 @@ const SimpleArticleEditor = () => {
       });
     } catch (error) {
       console.error('Error loading article:', error);
-      setMessage('Помилка завантаження статті');
+      setMessage('Помилка завантаження статті, але ви можете створити нову');
+      // Не блокируем рендеринг при ошибке
     } finally {
       setLoading(false);
     }
