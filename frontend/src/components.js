@@ -447,11 +447,11 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="md:col-span-1">
-            <div className="bg-red-600 text-white px-3 py-2 font-bold text-xl rounded inline-block mb-4">
-              Edge Chronicle
+            <div className="px-3 py-2 font-bold text-xl rounded inline-block mb-4" style={{backgroundColor: '#0c61cf', color: 'white'}}>
+              Science Digest News
             </div>
             <p className="text-gray-400 text-sm mb-4">
-              Breaking news and analysis from around the world. Stay informed with the latest developments in politics, economics, sports, and culture.
+              Breaking scientific discoveries and analysis from around the world. Stay informed with the latest developments in technology, medicine, space exploration, and research.
             </p>
           </div>
 
