@@ -737,37 +737,33 @@ class BackendTester:
     
     async def run_all_tests(self):
         """Run all backend tests"""
-        print(f"🚀 Starting Backend API Tests for Edge Chronicle Phase 4 SEO")
+        print(f"🚀 Starting Backend API Tests for Article Management")
         print(f"Backend URL: {BACKEND_URL}")
         print("=" * 60)
         
-        # Core endpoints
-        await self.test_health_and_root_endpoints()
+        # Step 1: Authenticate as admin
+        if not await self.authenticate_admin():
+            print("❌ Cannot proceed without authentication")
+            return False
         
-        # Basic SEO endpoints
-        await self.test_sitemap_xml()
-        await self.test_llms_txt()
-        await self.test_llms_sitemap_xml()
-        await self.test_robots_txt()
+        # Step 2: Get categories for testing
+        if not await self.test_categories_admin_endpoint():
+            print("❌ Cannot proceed without valid category")
+            return False
         
-        # Enhanced Phase 4 SEO endpoints
-        await self.test_enhanced_seo_endpoints()
-        await self.test_google_search_console_mock_endpoints()
+        # Step 3: Test article list endpoint (public)
+        await self.test_articles_list_endpoint()
         
-        # SEO file MIME types
-        await self.test_seo_files_mime_types()
+        # Step 4: Test article CRUD operations
+        await self.test_create_article()
+        await self.test_get_specific_article()
+        await self.test_update_article()
+        await self.test_delete_article()
         
-        # Legacy analytics endpoint
-        await self.test_seo_analytics_endpoint()
-        
-        # API routes authentication
-        await self.test_api_routes()
-        
-        # Error handling and edge cases
-        await self.test_error_handling_edge_cases()
-        
-        # Database integration
-        await self.test_database_integration()
+        # Step 5: Test error handling
+        await self.test_error_handling()
+        await self.test_invalid_category_id()
+        await self.test_authentication_requirements()
         
         # Summary
         print("=" * 60)
