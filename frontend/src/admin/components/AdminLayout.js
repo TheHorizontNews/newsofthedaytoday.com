@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { ukTranslations } from '../i18n/uk';
+const t = ukTranslations;
 
 const AdminLayout = ({ children }) => {
   const { user, logout } = useAuth();
