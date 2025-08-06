@@ -120,6 +120,9 @@ async def get_articles(
             seo_description=article.seo_description
         ))
     
+    return response_articles
+
+
 @router.get("/admin", response_model=List[ArticleResponse])
 async def get_articles_admin(
     skip: int = Query(0, ge=0),
