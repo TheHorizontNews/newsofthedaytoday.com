@@ -1,10 +1,53 @@
 <!doctype html>
-<html lang="en">
+<html lang="uk">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="description" content="A product of emergent.sh" />
+        <meta name="theme-color" content="#0c61cf" />
+        <meta name="description" content="Science Digest News - Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації." />
+        
+        <!-- Preconnect to external domains -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        
+        <!-- DNS Prefetch -->
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
+        <!-- Critical CSS will be inlined here by build process -->
+        <style>
+          /* Critical CSS for first paint */
+          body { 
+            margin: 0; 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background-color: #f3f4f6;
+          }
+          .header { 
+            background-color: #0c61cf; 
+            color: white; 
+            min-height: 80px;
+          }
+          .loading-spinner { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 200px; 
+          }
+        </style>
+        
+        <!-- Preload hero image -->
+        <link rel="preload" as="image" href="https://images.unsplash.com/photo-1677442136019-21780ecad995" />
+        
+        <!-- Open Graph -->
+        <meta property="og:title" content="Science Digest News" />
+        <meta property="og:description" content="Останні наукові відкриття та дослідження з усього світу" />
+        <meta property="og:image" content="https://sciencedigestnews.com/og-image.jpg" />
+        <meta property="og:url" content="https://sciencedigestnews.com" />
+        <meta property="og:type" content="website" />
+        
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Science Digest News" />
+        <meta name="twitter:description" content="Останні наукові відкриття та дослідження" />
         <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
