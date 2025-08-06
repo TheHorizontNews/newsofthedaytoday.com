@@ -149,7 +149,7 @@ export const HeroSection = ({ heroData }) => {
           </div>
           
           <Link to={heroData.url}>
-            <h1 className="text-3xl lg:text-5xl font-bold mb-6 leading-tight hover:text-red-200 transition-colors cursor-pointer">
+            <h1 className="text-3xl lg:text-5xl font-bold mb-6 leading-tight hover:opacity-90 transition-colors cursor-pointer">
               {heroData.title}
             </h1>
           </Link>
