@@ -35,6 +35,16 @@ async def get_categories(
     result = await db.execute(query)
     categories = result.scalars().all()
     
+    return [
+        Category(
+            id=cat.id,
+            name=cat.name,
+            slug=cat.slug,
+            description=cat.description,
+            created_at=cat.created_at
+        ) for cat in categories
+    ]
+
 @router.get("/admin", response_model=List[Category])
 async def get_categories_admin(
     skip: int = Query(0, ge=0),
