@@ -1,98 +1,78 @@
+#!/usr/bin/env python3
 """
-Initialize admin user for Edge Chronicle
+Initialize Science Digest News admin account for SQLite
 """
 import asyncio
-import os
-from datetime import datetime
-from motor.motor_asyncio import AsyncIOMotorClient
-from passlib.context import CryptContext
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def get_password_hash(password: str) -> str:
-    """Hash a password"""
-    return pwd_context.hash(password)
+import getpass
+from sqlalchemy import select
+from database import AsyncSessionLocal, init_db
+from models import UserTable, UserRole
+from auth import get_password_hash
 
 async def create_admin_user():
-    """Create default admin user"""
-    print("Initializing Edge Chronicle Admin...")
+    """Create admin user"""
+    print("🔬 Science Digest News - Admin Setup")
+    print("=" * 40)
     
-    # Connect to MongoDB
-    mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-    client = AsyncIOMotorClient(mongo_url)
-    db = client.edge_chronicle
+    # Initialize database first
+    await init_db()
     
-    users_collection = db.users
-    
-    # Check if admin user already exists
-    admin_user = await users_collection.find_one({"role": "admin"})
-    if admin_user:
-        print("Admin user already exists!")
-        return
-    
-    # Create admin user
-    admin_data = {
-        "username": "admin",
-        "email": "admin@edgechronicle.com",
-        "password_hash": get_password_hash("admin123"),
-        "role": "admin",
-        "profile": {
-            "name": "Administrator",
-            "bio": "System Administrator",
-            "avatar": None
-        },
-        "created_at": datetime.utcnow(),
-        "is_active": True
-    }
-    
-    result = await users_collection.insert_one(admin_data)
-    print(f"Admin user created with ID: {result.inserted_id}")
-    
-    # Create sample editor user
-    editor_data = {
-        "username": "editor",
-        "email": "editor@edgechronicle.com", 
-        "password_hash": get_password_hash("editor123"),
-        "role": "editor",
-        "profile": {
-            "name": "John Editor",
-            "bio": "Chief Editor",
-            "avatar": None
-        },
-        "created_at": datetime.utcnow(),
-        "is_active": True
-    }
-    
-    result = await users_collection.insert_one(editor_data)
-    print(f"Editor user created with ID: {result.inserted_id}")
-    
-    # Create sample reporter user
-    reporter_data = {
-        "username": "reporter",
-        "email": "reporter@edgechronicle.com",
-        "password_hash": get_password_hash("reporter123"),
-        "role": "reporter",
-        "profile": {
-            "name": "Jane Reporter",
-            "bio": "News Reporter",
-            "avatar": None
-        },
-        "created_at": datetime.utcnow(),
-        "is_active": True
-    }
-    
-    result = await users_collection.insert_one(reporter_data)
-    print(f"Reporter user created with ID: {result.inserted_id}")
-    
-    print("\nDefault users created:")
-    print("Admin: admin / admin123")
-    print("Editor: editor / editor123")
-    print("Reporter: reporter / reporter123")
-    print("\nAdmin panel is ready!")
-    
-    # Close connection
-    client.close()
+    async with AsyncSessionLocal() as session:
+        try:
+            # Check if admin user already exists
+            result = await session.execute(
+                select(UserTable).where(UserTable.role == UserRole.ADMIN)
+            )
+            existing_admin = result.scalar_one_or_none()
+            
+            if existing_admin:
+                print("✅ Admin user already exists!")
+                print(f"Username: {existing_admin.username}")
+                print(f"Email: {existing_admin.email}")
+                return
+            
+            # Get admin credentials
+            print("\n📝 Creating admin account...")
+            username = input("Enter admin username (default: admin): ").strip()
+            if not username:
+                username = "admin"
+            
+            email = input("Enter admin email (default: admin@sciencedigestnews.com): ").strip()
+            if not email:
+                email = "admin@sciencedigestnews.com"
+            
+            password = getpass.getpass("Enter admin password (default: admin123): ").strip()
+            if not password:
+                password = "admin123"
+            
+            name = input("Enter admin name (default: Science Admin): ").strip()
+            if not name:
+                name = "Science Admin"
+            
+            # Create admin user
+            admin_user = UserTable(
+                username=username,
+                email=email,
+                password_hash=get_password_hash(password),
+                role=UserRole.ADMIN,
+                name=name,
+                bio="Administrator of Science Digest News",
+                is_active=True
+            )
+            
+            session.add(admin_user)
+            await session.commit()
+            
+            print("\n🎉 Admin user created successfully!")
+            print(f"Username: {username}")
+            print(f"Email: {email}")
+            print(f"Password: {'*' * len(password)}")
+            print("\n🚀 You can now login to the admin panel at /admin")
+            
+        except Exception as e:
+            print(f"❌ Error creating admin user: {e}")
+            await session.rollback()
+            raise
 
 if __name__ == "__main__":
     asyncio.run(create_admin_user())
