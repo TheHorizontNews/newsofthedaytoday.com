@@ -41,8 +41,19 @@ function App() {
     <Router>
       <AnalyticsWrapper>
         <Routes>
-          {/* Admin routes */}
-          <Route path="/admin/*" element={<AdminApp />} />
+          {/* Admin routes with lazy loading */}
+          <Route path="/admin/*" element={
+            <Suspense fallback={
+              <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Завантаження адмін панелі...</p>
+                </div>
+              </div>
+            }>
+              <AdminApp />
+            </Suspense>
+          } />
           
           {/* Public routes */}
           <Route path="/" element={
