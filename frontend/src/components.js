@@ -140,11 +140,11 @@ export const HeroSection = ({ heroData }) => {
       <div className="relative container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl">
           <div className="flex items-center space-x-2 mb-4">
-            <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
-              Edge Chronicle
+            <span className="text-white text-xs px-2 py-1 rounded" style={{backgroundColor: '#0c61cf'}}>
+              Science Digest News
             </span>
-            <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
-              BREAKING NEWS
+            <span className="text-white text-xs px-2 py-1 rounded" style={{backgroundColor: '#0c61cf'}}>
+              BREAKING DISCOVERY
             </span>
           </div>
           
