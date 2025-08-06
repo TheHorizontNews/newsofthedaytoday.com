@@ -68,6 +68,7 @@ app.include_router(categories_router)
 app.include_router(auth_router)
 app.include_router(analytics_router)
 app.include_router(seo_router)
+app.include_router(seo_router_new)
 
 # Health check endpoint
 @app.get("/health")
