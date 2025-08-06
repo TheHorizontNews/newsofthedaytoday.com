@@ -123,7 +123,7 @@ const SEOManager = ({
         },
         "author": {
           "@type": "Person",
-          "name": author || "Edge Chronicle Team",
+          "name": author || "Science Digest News Team",
           "url": `${siteUrl}/author/${author?.toLowerCase().replace(/\s+/g, '-') || 'team'}`
         },
         "publisher": {
