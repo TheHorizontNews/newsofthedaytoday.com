@@ -111,10 +111,10 @@ export const Header = ({ currentTime }) => {
             {navigationItems.map((item, index) => (
               <a 
                 key={index} 
-                href="#" 
+                href={item.href} 
                 className="block py-2 hover:opacity-80 transition-colors duration-200"
               >
-                {item}
+                {item.name}
               </a>
             ))}
           </nav>
