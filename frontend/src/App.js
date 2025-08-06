@@ -5,6 +5,7 @@ import { Header, Footer } from './components';
 import HomePage from './HomePage';
 import ArticlePage from './ArticlePage';
 import analytics from './utils/analytics';
+import { setupContentVisibility, addResourceHints, measurePerformance } from './utils/performanceOptimizer';
 
 // Lazy load admin panel
 const AdminApp = lazy(() => import('./admin/AdminApp'));
