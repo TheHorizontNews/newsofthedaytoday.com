@@ -22,7 +22,7 @@ const mockNewsData = {
       time: "16:25, 23.06.25",
       views: 1456,
       author: "Alexander Kvasha",
-      image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679",
+      image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
       url: "/article/1"
     },
     {
