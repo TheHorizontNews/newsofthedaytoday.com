@@ -220,7 +220,7 @@ export const MainNews = ({ newsData }) => {
                 
                 <div className="md:w-2/3 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-red-600 transition-colors duration-200">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:opacity-80 transition-colors duration-200" style={{'&:hover': {color: '#0c61cf'}}}>
                       {article.title}
                     </h3>
                   </div>
