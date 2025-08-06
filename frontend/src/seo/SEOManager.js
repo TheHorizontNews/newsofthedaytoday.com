@@ -137,7 +137,7 @@ const SEOManager = ({
         },
         "articleSection": category,
         "keywords": tags.join(', '),
-        "inLanguage": "en-US"
+        "inLanguage": "uk-UA"
       });
 
       // Add breadcrumb schema for articles
