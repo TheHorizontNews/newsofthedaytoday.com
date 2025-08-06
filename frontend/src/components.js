@@ -86,10 +86,10 @@ export const Header = ({ currentTime }) => {
             {navigationItems.map((item, index) => (
               <a 
                 key={index} 
-                href="#" 
+                href={item.href} 
                 className="hover:opacity-80 transition-colors duration-200 font-medium"
               >
-                {item}
+                {item.name}
               </a>
             ))}
           </nav>
