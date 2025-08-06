@@ -230,6 +230,9 @@ async def get_articles_admin(
             seo_description=article.seo_description
         ))
     
+    return response_articles
+
+
 @router.get("/tags", response_model=dict)
 async def get_tags(
     db: AsyncSession = Depends(get_db)
