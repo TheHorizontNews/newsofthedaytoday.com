@@ -1,6 +1,4 @@
-<file>
-      <absolute_file_name>/app/backend/fix_remaining_issues.py</absolute_file_name>
-      <content>#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Fix remaining admin panel issues
 """
