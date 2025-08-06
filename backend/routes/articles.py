@@ -22,14 +22,13 @@ router = APIRouter(prefix="/api/articles", tags=["articles"])
 async def get_articles(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
-    status: Optional[ArticleStatus] = None,
-    category_id: Optional[str] = None,
-    author_id: Optional[str] = None,
-    search: Optional[str] = None,
-    current_user: UserTable = Depends(get_current_active_user),
+    status: Optional[str] = Query(None),
+    category_id: Optional[str] = Query(None),
+    author_id: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get articles with pagination and filtering"""
+    """Get articles with pagination and filtering (public endpoint)"""
     query = select(ArticleTable, UserTable, CategoryTable).join(
         UserTable, ArticleTable.author_id == UserTable.id
     ).join(
@@ -40,15 +39,20 @@ async def get_articles(
     conditions = []
     
     if status:
-        conditions.append(ArticleTable.status == status)
+        try:
+            status_enum = ArticleStatus(status)
+            conditions.append(ArticleTable.status == status_enum)
+        except ValueError:
+            # Invalid status, ignore
+            pass
     
-    if category_id:
+    if category_id and category_id.strip():
         conditions.append(ArticleTable.category_id == category_id)
     
-    if author_id:
+    if author_id and author_id.strip():
         conditions.append(ArticleTable.author_id == author_id)
     
-    if search:
+    if search and search.strip():
         conditions.append(
             or_(
                 ArticleTable.title.contains(search),
@@ -56,10 +60,6 @@ async def get_articles(
                 ArticleTable.tags.contains(search)
             )
         )
-    
-    # Non-admin users can only see their own articles
-    if current_user.role != "admin":
-        conditions.append(ArticleTable.author_id == current_user.id)
     
     if conditions:
         query = query.where(and_(*conditions))
