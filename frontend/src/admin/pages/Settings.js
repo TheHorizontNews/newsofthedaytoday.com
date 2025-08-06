@@ -196,38 +196,7 @@ const Settings = () => {
                 )}
 
                 {activeTab === 'seo' && (
-                  <div className="space-y-6">
-                    <div className="form-group">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox mr-2"
-                          {...register('seo_enabled')}
-                        />
-                        <span className="text-sm">Enable SEO Features</span>
-                      </label>
-                    </div>
-
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">SEO Features</h4>
-                      <ul className="text-sm text-blue-800 space-y-1">
-                        <li>✓ Automatic sitemap generation</li>
-                        <li>✓ Meta tags optimization</li>
-                        <li>✓ Open Graph tags</li>
-                        <li>✓ Twitter Card support</li>
-                        <li>✓ Schema.org markup</li>
-                      </ul>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="form-label">Default Meta Description</label>
-                      <textarea
-                        className="form-input"
-                        rows="3"
-                        placeholder="Default description for pages without custom meta description"
-                      />
-                    </div>
-                  </div>
+                  <SEOSettings />
                 )}
 
                 {activeTab === 'security' && (
