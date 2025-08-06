@@ -198,7 +198,7 @@ const SEOManager = ({
       <title>{fullTitle}</title>
       <meta name="description" content={description || siteDescription} />
       {metaKeywords && <meta name="keywords" content={metaKeywords} />}
-      <meta name="author" content={author || "Edge Chronicle"} />
+      <meta name="author" content={author || "Science Digest News"} />
       <link rel="canonical" href={canonical} />
       
       {/* Robots */}
