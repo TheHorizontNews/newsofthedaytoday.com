@@ -264,6 +264,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Backend article management API endpoints fully functional with 100% test success rate (10/10 tests passed). All required endpoints working perfectly: 1) GET /api/articles/ - Lists all articles (retrieved 1 existing article). 2) POST /api/articles/ - Creates new articles with proper validation (test article created successfully with ID: 808e6d0a-aae1-478d-9479-f82d7cabf05b). 3) GET /api/articles/{id} - Retrieves specific articles by ID (successfully retrieved test article). 4) PUT /api/articles/{id} - Updates existing articles (successfully updated title from 'Test Article' to 'Updated Test Article' and status from 'draft' to 'published'). 5) DELETE /api/articles/{id} - Deletes articles (successfully deleted test article). 6) GET /api/categories/admin - Provides categories for dropdown (found 6 categories available). 7) POST /api/auth/login - Admin authentication working with admin/admin123 credentials. All endpoints properly handle authentication requirements (403 errors for unauthenticated requests), validate required fields (422 errors for missing data), and validate category IDs (400 errors for invalid categories). The backend implementation supports all features needed by WorkingArticleEditor including realistic article data with title, subtitle, content, category_id, tags, status, seo_title, and seo_description fields."
+        -working: true
+        -agent: "main"
+        -comment: "Updated routing in AdminApp.js to use WorkingArticleEditor for /admin/articles/new and /admin/articles/edit/:id routes. Fixed admin login branding from 'Edge Chronicle' to 'Science Digest News'. Backend API fully tested and working. Ready for frontend functionality testing."
 
   - task: "Public SEO Endpoints"
     implemented: true
