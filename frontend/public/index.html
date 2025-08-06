@@ -24,30 +24,62 @@
         
         <!-- Critical CSS will be inlined here by build process -->
         <style>
-          /* Critical CSS for first paint */
+          /* Critical CSS for first paint - optimized */
+          * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+          }
+          
           body { 
             margin: 0; 
             font-family: system-ui, -apple-system, sans-serif; 
             background-color: #f3f4f6;
+            line-height: 1.6;
           }
+          
           .header { 
             background-color: #0c61cf; 
             color: white; 
             min-height: 80px;
+            contain: layout style paint;
           }
+          
           .loading-spinner { 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 200px; 
           }
+          
           /* Prevent layout shift */
           img { 
             max-width: 100%; 
             height: auto; 
+            display: block;
           }
+          
           .hero-section {
             min-height: 400px;
+            contain: layout style paint;
+          }
+          
+          /* Above the fold optimization */
+          .App {
+            min-height: 100vh;
+          }
+          
+          /* Critical layout containers */
+          .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+          }
+          
+          /* Hide non-critical content initially */
+          .below-fold {
+            content-visibility: auto;
+            contain-intrinsic-size: 500px;
           }
         </style>
         
