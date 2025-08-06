@@ -1,16 +1,18 @@
 """
-Article management routes
+Article management routes for SQLite
 """
 from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from bson import ObjectId
+from sqlalchemy import select, and_, or_
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth import get_current_active_user, require_editor_or_admin
-from database import get_articles_collection, get_users_collection, get_categories_collection
+from database import get_db, tags_to_json, json_to_tags
 from models import (
-    Article, ArticleCreate, ArticleUpdate, ArticleResponse, 
-    User, ArticleStatus, UserResponse, Category
+    ArticleTable, UserTable, CategoryTable,
+    ArticleCreate, ArticleUpdate, ArticleResponse, 
+    ArticleStatus, UserResponse, Category, UserProfile
 )
 import utils
 
@@ -24,275 +26,456 @@ async def get_articles(
     category_id: Optional[str] = None,
     author_id: Optional[str] = None,
     search: Optional[str] = None,
-    current_user: User = Depends(get_current_active_user)
+    current_user: UserTable = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """Get articles with pagination and filtering"""
-    articles_collection = get_articles_collection()
-    users_collection = get_users_collection()
-    categories_collection = get_categories_collection()
+    query = select(ArticleTable, UserTable, CategoryTable).join(
+        UserTable, ArticleTable.author_id == UserTable.id
+    ).join(
+        CategoryTable, ArticleTable.category_id == CategoryTable.id
+    )
     
-    # Build query
-    query = {}
+    # Build where conditions
+    conditions = []
     
     if status:
-        query["status"] = status
+        conditions.append(ArticleTable.status == status)
     
     if category_id:
-        query["category_id"] = utils.validate_object_id(category_id)
+        conditions.append(ArticleTable.category_id == category_id)
     
     if author_id:
-        query["author_id"] = utils.validate_object_id(author_id)
+        conditions.append(ArticleTable.author_id == author_id)
     
     if search:
-        query["$or"] = [
-            {"title": {"$regex": search, "$options": "i"}},
-            {"content": {"$regex": search, "$options": "i"}},
-            {"tags": {"$regex": search, "$options": "i"}}
-        ]
+        conditions.append(
+            or_(
+                ArticleTable.title.contains(search),
+                ArticleTable.content.contains(search),
+                ArticleTable.tags.contains(search)
+            )
+        )
     
     # Non-admin users can only see their own articles
     if current_user.role != "admin":
-        query["author_id"] = current_user.id
+        conditions.append(ArticleTable.author_id == current_user.id)
     
-    skip, limit = utils.paginate_results(skip, limit)
+    if conditions:
+        query = query.where(and_(*conditions))
     
-    # Get articles
-    articles_cursor = articles_collection.find(query).sort("created_at", -1).skip(skip).limit(limit)
-    articles = await articles_cursor.to_list(length=limit)
+    query = query.order_by(ArticleTable.created_at.desc()).offset(skip).limit(limit)
+    
+    result = await db.execute(query)
+    rows = result.fetchall()
     
     # Format responses
-    result = []
-    for article in articles:
-        # Get author info
-        author = await users_collection.find_one({"_id": article["author_id"]})
-        # Get category info
-        category = await categories_collection.find_one({"_id": article["category_id"]})
+    response_articles = []
+    for article, author, category in rows:
+        author_profile = UserProfile(
+            name=author.name or "",
+            bio=author.bio,
+            avatar=author.avatar
+        )
         
-        if author and category:
-            result.append(utils.format_article_response(article, author, category))
+        author_response = UserResponse(
+            id=author.id,
+            username=author.username,
+            email=author.email,
+            role=author.role,
+            profile=author_profile,
+            created_at=author.created_at,
+            last_login=author.last_login,
+            is_active=author.is_active
+        )
+        
+        category_response = Category(
+            id=category.id,
+            name=category.name,
+            slug=category.slug,
+            description=category.description,
+            created_at=category.created_at
+        )
+        
+        response_articles.append(ArticleResponse(
+            id=article.id,
+            title=article.title,
+            subtitle=article.subtitle,
+            content=article.content,
+            author=author_response,
+            category=category_response,
+            tags=json_to_tags(article.tags),
+            featured_image=article.featured_image,
+            status=article.status,
+            published_at=article.published_at,
+            created_at=article.created_at,
+            updated_at=article.updated_at,
+            views=article.views,
+            slug=article.slug,
+            seo_title=article.seo_title,
+            seo_description=article.seo_description
+        ))
     
-    return result
+    return response_articles
 
 @router.get("/{article_id}", response_model=ArticleResponse)
 async def get_article(
     article_id: str,
-    current_user: User = Depends(get_current_active_user)
+    current_user: UserTable = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """Get single article by ID"""
-    articles_collection = get_articles_collection()
-    users_collection = get_users_collection()
-    categories_collection = get_categories_collection()
+    result = await db.execute(
+        select(ArticleTable, UserTable, CategoryTable).join(
+            UserTable, ArticleTable.author_id == UserTable.id
+        ).join(
+            CategoryTable, ArticleTable.category_id == CategoryTable.id
+        ).where(ArticleTable.id == article_id)
+    )
     
-    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
-    
-    if not article:
+    row = result.first()
+    if not row:
         raise HTTPException(status_code=404, detail="Article not found")
     
+    article, author, category = row
+    
     # Check permissions
-    if current_user.role != "admin" and article["author_id"] != current_user.id:
+    if current_user.role != "admin" and article.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
     
-    # Get author and category info
-    author = await users_collection.find_one({"_id": article["author_id"]})
-    category = await categories_collection.find_one({"_id": article["category_id"]})
+    # Format response
+    author_profile = UserProfile(
+        name=author.name or "",
+        bio=author.bio,
+        avatar=author.avatar
+    )
     
-    if not author or not category:
-        raise HTTPException(status_code=500, detail="Article data incomplete")
+    author_response = UserResponse(
+        id=author.id,
+        username=author.username,
+        email=author.email,
+        role=author.role,
+        profile=author_profile,
+        created_at=author.created_at,
+        last_login=author.last_login,
+        is_active=author.is_active
+    )
     
-    return utils.format_article_response(article, author, category)
+    category_response = Category(
+        id=category.id,
+        name=category.name,
+        slug=category.slug,
+        description=category.description,
+        created_at=category.created_at
+    )
+    
+    return ArticleResponse(
+        id=article.id,
+        title=article.title,
+        subtitle=article.subtitle,
+        content=article.content,
+        author=author_response,
+        category=category_response,
+        tags=json_to_tags(article.tags),
+        featured_image=article.featured_image,
+        status=article.status,
+        published_at=article.published_at,
+        created_at=article.created_at,
+        updated_at=article.updated_at,
+        views=article.views,
+        slug=article.slug,
+        seo_title=article.seo_title,
+        seo_description=article.seo_description
+    )
 
 @router.post("/", response_model=ArticleResponse)
 async def create_article(
     article_data: ArticleCreate,
-    current_user: User = Depends(get_current_active_user)
+    current_user: UserTable = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """Create new article"""
-    articles_collection = get_articles_collection()
-    users_collection = get_users_collection()
-    categories_collection = get_categories_collection()
-    
     # Validate category exists
-    category = await categories_collection.find_one({"_id": utils.validate_object_id(article_data.category_id)})
+    result = await db.execute(select(CategoryTable).where(CategoryTable.id == article_data.category_id))
+    category = result.scalar_one_or_none()
     if not category:
         raise HTTPException(status_code=400, detail="Category not found")
     
     # Create slug
     slug = utils.create_slug(article_data.title)
-    slug = await utils.ensure_unique_slug(articles_collection, slug)
+    
+    # Ensure unique slug
+    counter = 1
+    original_slug = slug
+    while True:
+        result = await db.execute(select(ArticleTable).where(ArticleTable.slug == slug))
+        if not result.scalar_one_or_none():
+            break
+        slug = f"{original_slug}-{counter}"
+        counter += 1
     
     # Create article
-    article_dict = {
-        "title": article_data.title,
-        "subtitle": article_data.subtitle,
-        "content": article_data.content,
-        "author_id": current_user.id,
-        "category_id": utils.validate_object_id(article_data.category_id),
-        "tags": article_data.tags,
-        "featured_image": article_data.featured_image,
-        "status": article_data.status,
-        "slug": slug,
-        "seo_title": article_data.seo_title,
-        "seo_description": article_data.seo_description,
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow(),
-        "views": 0
-    }
+    article = ArticleTable(
+        title=article_data.title,
+        subtitle=article_data.subtitle,
+        content=article_data.content,
+        author_id=current_user.id,
+        category_id=article_data.category_id,
+        tags=tags_to_json(article_data.tags),
+        featured_image=article_data.featured_image,
+        status=article_data.status,
+        slug=slug,
+        seo_title=article_data.seo_title,
+        seo_description=article_data.seo_description,
+        views=0
+    )
     
     # Set published_at if status is published
     if article_data.status == ArticleStatus.PUBLISHED:
-        article_dict["published_at"] = datetime.utcnow()
+        article.published_at = datetime.utcnow()
     
-    result = await articles_collection.insert_one(article_dict)
-    article_dict["_id"] = result.inserted_id
+    db.add(article)
+    await db.commit()
+    await db.refresh(article)
     
-    # Get author info
-    author = await users_collection.find_one({"_id": current_user.id})
+    # Get author for response
+    author_profile = UserProfile(
+        name=current_user.name or "",
+        bio=current_user.bio,
+        avatar=current_user.avatar
+    )
     
-    return utils.format_article_response(article_dict, author, category)
+    author_response = UserResponse(
+        id=current_user.id,
+        username=current_user.username,
+        email=current_user.email,
+        role=current_user.role,
+        profile=author_profile,
+        created_at=current_user.created_at,
+        last_login=current_user.last_login,
+        is_active=current_user.is_active
+    )
+    
+    category_response = Category(
+        id=category.id,
+        name=category.name,
+        slug=category.slug,
+        description=category.description,
+        created_at=category.created_at
+    )
+    
+    return ArticleResponse(
+        id=article.id,
+        title=article.title,
+        subtitle=article.subtitle,
+        content=article.content,
+        author=author_response,
+        category=category_response,
+        tags=json_to_tags(article.tags),
+        featured_image=article.featured_image,
+        status=article.status,
+        published_at=article.published_at,
+        created_at=article.created_at,
+        updated_at=article.updated_at,
+        views=article.views,
+        slug=article.slug,
+        seo_title=article.seo_title,
+        seo_description=article.seo_description
+    )
 
 @router.put("/{article_id}", response_model=ArticleResponse)
 async def update_article(
     article_id: str,
     article_data: ArticleUpdate,
-    current_user: User = Depends(get_current_active_user)
+    current_user: UserTable = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """Update article"""
-    articles_collection = get_articles_collection()
-    users_collection = get_users_collection()
-    categories_collection = get_categories_collection()
-    
     # Get existing article
-    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
+    result = await db.execute(select(ArticleTable).where(ArticleTable.id == article_id))
+    article = result.scalar_one_or_none()
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
     # Check permissions
-    if current_user.role != "admin" and article["author_id"] != current_user.id:
+    if current_user.role != "admin" and article.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
     
-    # Prepare update data
-    update_data = {"updated_at": datetime.utcnow()}
-    
-    # Update fields if provided
+    # Update fields
     if article_data.title is not None:
-        update_data["title"] = article_data.title
+        article.title = article_data.title
         # Update slug if title changed
         new_slug = utils.create_slug(article_data.title)
-        update_data["slug"] = await utils.ensure_unique_slug(articles_collection, new_slug, article_id)
+        
+        # Ensure unique slug
+        counter = 1
+        original_slug = new_slug
+        while True:
+            result = await db.execute(
+                select(ArticleTable).where(
+                    ArticleTable.slug == new_slug,
+                    ArticleTable.id != article_id
+                )
+            )
+            if not result.scalar_one_or_none():
+                break
+            new_slug = f"{original_slug}-{counter}"
+            counter += 1
+        
+        article.slug = new_slug
     
     if article_data.subtitle is not None:
-        update_data["subtitle"] = article_data.subtitle
+        article.subtitle = article_data.subtitle
     
     if article_data.content is not None:
-        update_data["content"] = article_data.content
+        article.content = article_data.content
     
     if article_data.category_id is not None:
         # Validate category exists
-        category = await categories_collection.find_one({"_id": utils.validate_object_id(article_data.category_id)})
-        if not category:
+        result = await db.execute(select(CategoryTable).where(CategoryTable.id == article_data.category_id))
+        if not result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Category not found")
-        update_data["category_id"] = utils.validate_object_id(article_data.category_id)
+        article.category_id = article_data.category_id
     
     if article_data.tags is not None:
-        update_data["tags"] = article_data.tags
+        article.tags = tags_to_json(article_data.tags)
     
     if article_data.featured_image is not None:
-        update_data["featured_image"] = article_data.featured_image
+        article.featured_image = article_data.featured_image
     
     if article_data.status is not None:
-        update_data["status"] = article_data.status
+        article.status = article_data.status
         # Set published_at if status changed to published
-        if article_data.status == ArticleStatus.PUBLISHED and article["status"] != ArticleStatus.PUBLISHED:
-            update_data["published_at"] = datetime.utcnow()
+        if article_data.status == ArticleStatus.PUBLISHED and article.status != ArticleStatus.PUBLISHED:
+            article.published_at = datetime.utcnow()
     
     if article_data.seo_title is not None:
-        update_data["seo_title"] = article_data.seo_title
+        article.seo_title = article_data.seo_title
     
     if article_data.seo_description is not None:
-        update_data["seo_description"] = article_data.seo_description
+        article.seo_description = article_data.seo_description
     
-    # Update article
-    await articles_collection.update_one(
-        {"_id": utils.validate_object_id(article_id)},
-        {"$set": update_data}
+    article.updated_at = datetime.utcnow()
+    
+    await db.commit()
+    await db.refresh(article)
+    
+    # Get author and category for response
+    result = await db.execute(
+        select(UserTable, CategoryTable).where(
+            UserTable.id == article.author_id,
+            CategoryTable.id == article.category_id
+        )
+    )
+    row = result.first()
+    if not row:
+        raise HTTPException(status_code=500, detail="Article data incomplete")
+    
+    author, category = row
+    
+    author_profile = UserProfile(
+        name=author.name or "",
+        bio=author.bio,
+        avatar=author.avatar
     )
     
-    # Get updated article
-    updated_article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
+    author_response = UserResponse(
+        id=author.id,
+        username=author.username,
+        email=author.email,
+        role=author.role,
+        profile=author_profile,
+        created_at=author.created_at,
+        last_login=author.last_login,
+        is_active=author.is_active
+    )
     
-    # Get author and category info
-    author = await users_collection.find_one({"_id": updated_article["author_id"]})
-    category = await categories_collection.find_one({"_id": updated_article["category_id"]})
+    category_response = Category(
+        id=category.id,
+        name=category.name,
+        slug=category.slug,
+        description=category.description,
+        created_at=category.created_at
+    )
     
-    return utils.format_article_response(updated_article, author, category)
+    return ArticleResponse(
+        id=article.id,
+        title=article.title,
+        subtitle=article.subtitle,
+        content=article.content,
+        author=author_response,
+        category=category_response,
+        tags=json_to_tags(article.tags),
+        featured_image=article.featured_image,
+        status=article.status,
+        published_at=article.published_at,
+        created_at=article.created_at,
+        updated_at=article.updated_at,
+        views=article.views,
+        slug=article.slug,
+        seo_title=article.seo_title,
+        seo_description=article.seo_description
+    )
 
 @router.delete("/{article_id}")
 async def delete_article(
     article_id: str,
-    current_user: User = Depends(require_editor_or_admin())
+    current_user: UserTable = Depends(require_editor_or_admin()),
+    db: AsyncSession = Depends(get_db)
 ):
     """Delete article"""
-    articles_collection = get_articles_collection()
+    result = await db.execute(select(ArticleTable).where(ArticleTable.id == article_id))
+    article = result.scalar_one_or_none()
     
-    # Get article
-    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
     # Check permissions (only admin or author can delete)
-    if current_user.role != "admin" and article["author_id"] != current_user.id:
+    if current_user.role != "admin" and article.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not enough permissions")
     
-    # Delete article
-    await articles_collection.delete_one({"_id": utils.validate_object_id(article_id)})
+    await db.delete(article)
+    await db.commit()
     
     return {"message": "Article deleted successfully"}
 
 @router.post("/{article_id}/publish")
 async def publish_article(
     article_id: str,
-    current_user: User = Depends(require_editor_or_admin())
+    current_user: UserTable = Depends(require_editor_or_admin()),
+    db: AsyncSession = Depends(get_db)
 ):
     """Publish article"""
-    articles_collection = get_articles_collection()
+    result = await db.execute(select(ArticleTable).where(ArticleTable.id == article_id))
+    article = result.scalar_one_or_none()
     
-    # Get article
-    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
-    # Update status to published
-    await articles_collection.update_one(
-        {"_id": utils.validate_object_id(article_id)},
-        {"$set": {
-            "status": ArticleStatus.PUBLISHED,
-            "published_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow()
-        }}
-    )
+    article.status = ArticleStatus.PUBLISHED
+    article.published_at = datetime.utcnow()
+    article.updated_at = datetime.utcnow()
+    
+    await db.commit()
     
     return {"message": "Article published successfully"}
 
 @router.post("/{article_id}/unpublish")
 async def unpublish_article(
     article_id: str,
-    current_user: User = Depends(require_editor_or_admin())
+    current_user: UserTable = Depends(require_editor_or_admin()),
+    db: AsyncSession = Depends(get_db)
 ):
     """Unpublish article"""
-    articles_collection = get_articles_collection()
+    result = await db.execute(select(ArticleTable).where(ArticleTable.id == article_id))
+    article = result.scalar_one_or_none()
     
-    # Get article
-    article = await articles_collection.find_one({"_id": utils.validate_object_id(article_id)})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     
-    # Update status to draft
-    await articles_collection.update_one(
-        {"_id": utils.validate_object_id(article_id)},
-        {"$set": {
-            "status": ArticleStatus.DRAFT,
-            "updated_at": datetime.utcnow()
-        }}
-    )
+    article.status = ArticleStatus.DRAFT
+    article.updated_at = datetime.utcnow()
+    
+    await db.commit()
     
     return {"message": "Article unpublished successfully"}
