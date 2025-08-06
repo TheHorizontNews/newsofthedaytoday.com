@@ -282,15 +282,17 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Article Management (Create/Edit)"
     - "SEO Analytics Dashboard"
     - "Tag Manager"
     - "Enhanced Tag Input Component"
     - "SEO Metadata Injection"
     - "Google Analytics Integration"
     - "Public SEO Endpoints"
-  stuck_tasks: []
+  stuck_tasks: 
+    - "Article Management (Create/Edit)"
   test_all: false
-  test_priority: "high_first"
+  test_priority: "stuck_first"
 
 agent_communication:
     -agent: "testing"
