@@ -32,7 +32,7 @@ const mockNewsData = {
       time: "15:18, 23.06.25",
       views: 2187,
       author: "Vera Khmelnitsky",
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
       url: "/article/2"
     },
     {
