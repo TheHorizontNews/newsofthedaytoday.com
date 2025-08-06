@@ -33,9 +33,9 @@ export const Header = ({ currentTime }) => {
   };
 
   return (
-    <header className="bg-red-600 text-white">
+    <header className="text-white" style={{backgroundColor: '#0c61cf'}}>
       {/* Top Bar */}
-      <div className="bg-red-700 py-2">
+      <div className="py-2" style={{backgroundColor: '#0a52b8'}}>
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center space-x-4">
             <span>{formatTime(currentTime)}</span>
