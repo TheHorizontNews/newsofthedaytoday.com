@@ -68,26 +68,14 @@ function AdminApp() {
               </ProtectedRoute>
             } />
             <Route path="articles/new" element={
-              <div className="space-y-6">
-                <h1 className="page-title">Створити нову статтю</h1>
-                <div className="bg-white p-6 rounded-lg">
-                  <p>Редактор статей тимчасово недоступний. Спробуйте пізніше.</p>
-                  <a href="/admin/articles" className="btn-primary mt-4 inline-block">
-                    Повернутися до списку статей
-                  </a>
-                </div>
-              </div>
+              <ProtectedRoute>
+                <WorkingArticleEditor />
+              </ProtectedRoute>
             } />
             <Route path="articles/edit/:id" element={
-              <div className="space-y-6">
-                <h1 className="page-title">Редагувати статтю</h1>
-                <div className="bg-white p-6 rounded-lg">
-                  <p>Редактор статей тимчасово недоступний. Спробуйте пізніше.</p>
-                  <a href="/admin/articles" className="btn-primary mt-4 inline-block">
-                    Повернутися до списку статей
-                  </a>
-                </div>
-              </div>
+              <ProtectedRoute>
+                <WorkingArticleEditor />
+              </ProtectedRoute>
             } />
             <Route path="users" element={
               <ProtectedRoute>
