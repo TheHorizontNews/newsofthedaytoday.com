@@ -180,7 +180,7 @@ const SEOManager = ({
         "about": {
           "@id": `${siteUrl}/#organization`
         },
-        "inLanguage": "en-US"
+        "inLanguage": "uk-UA"
       });
     }
 
