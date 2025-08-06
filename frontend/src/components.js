@@ -361,7 +361,7 @@ export const PublicationsSection = ({ publicationsData }) => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-2 left-2">
-                    <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                    <span className="text-white text-xs px-2 py-1 rounded" style={{backgroundColor: '#0c61cf'}}>
                       {article.category}
                     </span>
                   </div>
