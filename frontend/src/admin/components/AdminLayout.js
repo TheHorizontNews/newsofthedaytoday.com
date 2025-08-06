@@ -17,7 +17,7 @@ const AdminLayout = ({ children }) => {
     { name: t.media, href: '/admin/media', icon: '🖼️' },
     { name: t.users, href: '/admin/users', icon: '👥' },
     { name: t.categories, href: '/admin/categories', icon: '📁' },
-    { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
+    { name: t.analytics, href: '/admin/analytics', icon: '📈' },
     { 
       name: 'SEO', 
       icon: '🔍',
