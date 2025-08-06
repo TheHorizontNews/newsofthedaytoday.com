@@ -427,12 +427,12 @@ export const PublicationsSection = ({ publicationsData }) => {
 // Footer Component
 export const Footer = () => {
   const footerLinks = [
-    { title: 'Про нас', url: '#' },
-    { title: 'Контакти', url: '#' },
-    { title: 'Реклама', url: '#' },
-    { title: 'Політика конфіденційності', url: '#' },
-    { title: 'Умови використання', url: '#' },
-    { title: 'Редакційна етика', url: '#' }
+    { title: 'About Us', url: '#' },
+    { title: 'Contact', url: '#' },
+    { title: 'Research Guidelines', url: '#' },
+    { title: 'Privacy Policy', url: '#' },
+    { title: 'Terms of Use', url: '#' },
+    { title: 'Editorial Standards', url: '#' }
   ];
 
   const socialLinks = [
