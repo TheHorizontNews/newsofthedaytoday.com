@@ -69,12 +69,12 @@ function AdminApp() {
             } />
             <Route path="articles/new" element={
               <ProtectedRoute>
-                <ArticleEditor />
+                <SimpleArticleEditor />
               </ProtectedRoute>
             } />
             <Route path="articles/edit/:id" element={
               <ProtectedRoute>
-                <ArticleEditor />
+                <SimpleArticleEditor />
               </ProtectedRoute>
             } />
             <Route path="users" element={
