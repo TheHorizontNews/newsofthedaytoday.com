@@ -38,9 +38,12 @@ const SEOManager = ({
   const metaKeywords = [
     ...(keywords ? keywords.split(',').map(k => k.trim()) : []),
     ...tags,
-    'Edge Chronicle',
-    'news',
-    'breaking news'
+    'Science Digest News',
+    'наука',
+    'дослідження',
+    'технології',
+    'ШІ',
+    'медицина'
   ].filter(Boolean).slice(0, 10).join(', ');
 
   // Track article view when component mounts
