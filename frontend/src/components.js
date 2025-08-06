@@ -494,9 +494,9 @@ export const Footer = () => {
         <hr className="border-gray-800 my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-          <p>&copy; 2025 Edge Chronicle. All rights reserved.</p>
+          <p>&copy; 2025 Science Digest News. All rights reserved.</p>
           <p className="mt-2 md:mt-0">
-            Built with ❤️ for global news
+            Built with ❤️ for scientific discovery
           </p>
         </div>
       </div>
