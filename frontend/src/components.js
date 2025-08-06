@@ -457,7 +457,7 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div className="md:col-span-2">
-            <h4 className="font-semibold mb-4">Швидкі посилання</h4>
+            <h4 className="font-semibold mb-4">Quick Links</h4>
             <div className="grid grid-cols-2 gap-2">
               {footerLinks.map((link, index) => (
                 <a 
