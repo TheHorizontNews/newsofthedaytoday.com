@@ -35,9 +35,29 @@ async def get_categories(
     result = await db.execute(query)
     categories = result.scalars().all()
     
+@router.get("/admin", response_model=List[Category])
+async def get_categories_admin(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=500),
+    search: Optional[str] = Query(None),
+    current_user: UserTable = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get categories with pagination and filtering (admin with auth)"""
+    query = select(CategoryTable)
+    
+    if search:
+        query = query.where(
+            CategoryTable.name.contains(search) |
+            CategoryTable.description.contains(search)
+        )
+    
+    query = query.order_by(CategoryTable.created_at.desc()).offset(skip).limit(limit)
+    
+    result = await db.execute(query)
+    categories = result.scalars().all()
+    
     return [Category.from_orm(cat) for cat in categories]
-
-@router.get("/{category_id}", response_model=Category)
 async def get_category(
     category_id: str,
     current_user: UserTable = Depends(get_current_active_user),
