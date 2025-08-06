@@ -6,9 +6,11 @@
         <meta name="theme-color" content="#0c61cf" />
         <meta name="description" content="Science Digest News - Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації." />
         
-        <!-- Caching headers via meta tags -->
-        <meta http-equiv="Cache-Control" content="public, max-age=31536000, immutable" />
-        <meta http-equiv="Expires" content="31536000" />
+        <!-- Caching and performance headers -->
+        <meta http-equiv="Cache-Control" content="public, max-age=31536000, stale-while-revalidate=86400" />
+        <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+        <meta http-equiv="X-Frame-Options" content="DENY" />
+        <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
         
         <!-- Preconnect to external domains -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
