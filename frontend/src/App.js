@@ -17,6 +17,11 @@ function AnalyticsWrapper({ children }) {
   useEffect(() => {
     // Initialize analytics
     analytics.initialize();
+    
+    // Performance optimizations
+    setupContentVisibility();
+    addResourceHints();
+    measurePerformance();
   }, []);
 
   useEffect(() => {
