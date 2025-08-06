@@ -61,6 +61,15 @@ function App() {
               <Footer />
             </div>
           } />
+          <Route path="/category/:categorySlug" element={
+            <div className="App min-h-screen bg-gray-100">
+              <Header currentTime={currentTime} />
+              <main>
+                <HomePage />
+              </main>
+              <Footer />
+            </div>
+          } />
         </Routes>
       </AnalyticsWrapper>
     </Router>
