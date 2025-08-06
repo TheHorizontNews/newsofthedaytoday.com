@@ -45,6 +45,7 @@ function App() {
 
   return (
     <Router>
+      <SkipToContent />
       <AnalyticsWrapper>
         <Routes>
           {/* Admin routes with lazy loading */}
