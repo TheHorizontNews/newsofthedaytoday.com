@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
-import { Header, Footer } from './components';
+import { Header, Footer, SkipToContent } from './components';
 import HomePage from './HomePage';
 import ArticlePage from './ArticlePage';
 import analytics from './utils/analytics';
