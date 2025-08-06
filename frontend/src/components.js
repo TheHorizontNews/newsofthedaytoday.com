@@ -124,16 +124,36 @@ export const Header = ({ currentTime }) => {
   );
 };
 
-// Hero Section Component
+// Hero Section Component - Optimized for LCP
 export const HeroSection = ({ heroData }) => {
   return (
-    <section className="relative bg-black text-white overflow-hidden">
+    <section className="hero-section relative bg-black text-white overflow-hidden">
       <div className="absolute inset-0">
-        <img 
-          src={heroData.image} 
-          alt="Hero background" 
-          className="w-full h-full object-cover opacity-70"
-        />
+        <picture>
+          {/* WebP with responsive sizes */}
+          <source 
+            media="(min-width: 1024px)"
+            srcSet="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=600&fit=crop&crop=entropy&fm=webp&q=75 1200w,
+                    https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&h=800&fit=crop&crop=entropy&fm=webp&q=75 1600w"
+            sizes="100vw"
+            type="image/webp"
+          />
+          <source 
+            media="(min-width: 768px)"
+            srcSet="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop&crop=entropy&fm=webp&q=75"
+            type="image/webp"
+          />
+          <img 
+            src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75" 
+            alt="Revolutionary AI Discovery" 
+            className="w-full h-full object-cover opacity-70"
+            width="1200"
+            height="600"
+            loading="eager"
+            decoding="sync"
+            fetchPriority="high"
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
       </div>
       
