@@ -26,7 +26,7 @@ const AdminLayout = ({ children }) => {
         { name: 'Tag Manager', href: '/admin/seo/tags', icon: '🏷️' },
       ]
     },
-    { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
+    { name: t.settings, href: '/admin/settings', icon: '⚙️' },
   ];
 
   const handleLogout = () => {
