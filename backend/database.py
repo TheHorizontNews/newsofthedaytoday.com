@@ -11,7 +11,14 @@ class Database:
     @classmethod
     def get_client(cls) -> AsyncIOMotorClient:
         if cls.client is None:
-            mongo_url = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+            # Try multiple environment variable names for Emergent compatibility
+            mongo_url = (
+                os.getenv("MONGO_URL") or 
+                os.getenv("MongoURLEnv") or 
+                os.getenv("MONGODB_URL") or
+                "mongodb://localhost:27017"
+            )
+            print(f"🔗 Connecting to MongoDB: {mongo_url}")
             cls.client = AsyncIOMotorClient(mongo_url)
         return cls.client
     
