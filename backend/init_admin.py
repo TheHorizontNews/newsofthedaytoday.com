@@ -31,23 +31,12 @@ async def create_admin_user():
                 print(f"Email: {existing_admin.email}")
                 return
             
-            # Get admin credentials
-            print("\n📝 Creating admin account...")
-            username = input("Enter admin username (default: admin): ").strip()
-            if not username:
-                username = "admin"
-            
-            email = input("Enter admin email (default: admin@sciencedigestnews.com): ").strip()
-            if not email:
-                email = "admin@sciencedigestnews.com"
-            
-            password = getpass.getpass("Enter admin password (default: admin123): ").strip()
-            if not password:
-                password = "admin123"
-            
-            name = input("Enter admin name (default: Science Admin): ").strip()
-            if not name:
-                name = "Science Admin"
+            # Create default admin user for deployment
+            print("\n📝 Creating default admin account...")
+            username = "admin"
+            email = "admin@sciencedigestnews.com"
+            password = "admin123"
+            name = "Science Admin"
             
             # Create admin user
             admin_user = UserTable(
@@ -66,7 +55,7 @@ async def create_admin_user():
             print("\n🎉 Admin user created successfully!")
             print(f"Username: {username}")
             print(f"Email: {email}")
-            print(f"Password: {'*' * len(password)}")
+            print(f"Password: admin123")
             print("\n🚀 You can now login to the admin panel at /admin")
             
         except Exception as e:
