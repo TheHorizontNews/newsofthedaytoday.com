@@ -42,7 +42,7 @@ const Login = () => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-logo">
-          <h1 className="login-title">Edge Chronicle</h1>
+          <h1 className="login-title">Science Digest News</h1>
           <p className="login-subtitle">Admin Panel Login</p>
         </div>
 
