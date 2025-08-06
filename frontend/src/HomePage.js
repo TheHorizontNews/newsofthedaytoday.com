@@ -11,7 +11,7 @@ const mockNewsData = {
     time: "18:15, 23.06.25",
     views: 2690,
     author: "Dr. Christina Zelenya",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=480&fit=crop&crop=entropy&fm=webp&q=75",
     url: "/article/hero-1"
   },
   mainNews: [
