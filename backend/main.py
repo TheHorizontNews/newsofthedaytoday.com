@@ -15,6 +15,7 @@ from routes.users import router as users_router
 from routes.categories import router as categories_router
 from routes.auth import router as auth_router
 from routes.analytics import router as analytics_router
+from routes.seo import router as seo_router_new
 from seo_routes import router as seo_router
 
 # Import database
