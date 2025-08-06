@@ -68,49 +68,49 @@ const mockNewsData = {
   sidebarNews: [
     {
       id: 1,
-      title: "Щоб в оселі не було спекотно: ці бабусині методи чудово працюють",
+      title: "New Study Reveals How Sleep Patterns Affect Cognitive Performance in Scientists",
       time: "02:23, 24.06.25",
       views: 98000,
       url: "/article/sidebar-1"
     },
     {
       id: 2,
-      title: "РФ атакувала дронами Сумщину вночі: є постраждалі — ОВА",
+      title: "Fusion Energy Breakthrough: ITER Project Achieves Sustained Plasma Reaction",
       time: "02:00, 24.06.25", 
       views: 826,
       url: "/article/sidebar-2"
     },
     {
       id: 3,
-      title: "Без електрикуну: енергетична криза у Дніпровських районах",
+      title: "Neuroscience Discovery: Brain Cells Found to Regenerate at Higher Rates Than Expected",
       time: "01:45, 24.06.25",
       views: 1234,
       url: "/article/sidebar-3"
     },
     {
       id: 4,
-      title: "Нові гуманітарні коридори для евакуації громадян",
+      title: "Space Exploration: New Exoplanet Shows Signs of Atmospheric Water Vapor",
       time: "01:30, 24.06.25",
       views: 567,
       url: "/article/sidebar-4"
     },
     {
       id: 5,
-      title: "Куртізані системи авто-2025 у футболі: 5М без викосу на дотацію",
+      title: "Biotech Innovation: 3D-Printed Heart Tissue Successfully Tested in Laboratory",
       time: "01:15, 24.06.25",
       views: 789,
       url: "/article/sidebar-5"
     },
     {
-      id:6,
-      title: "Україна обстрілює Росію НІЛНу: наприкінці ворожих цілей",
+      id: 6,
+      title: "Renewable Energy: Solar Panel Efficiency Reaches New Record of 47%",
       time: "01:00, 24.06.25",
       views: 2345,
       url: "/article/sidebar-6"
     },
     {
       id: 7,
-      title: "Курс долара змінився міцно: що чекає грошову систему",
+      title: "AI Research: Machine Learning Algorithm Predicts Protein Folding with 95% Accuracy",
       time: "00:45, 24.06.25",
       views: 1567,
       url: "/article/sidebar-7"
