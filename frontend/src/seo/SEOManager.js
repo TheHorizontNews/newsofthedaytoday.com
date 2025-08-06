@@ -93,15 +93,15 @@ const SEOManager = ({
             "height": 512
           },
           "sameAs": [
-            "https://twitter.com/edgechronicle",
-            "https://facebook.com/edgechronicle",
-            "https://linkedin.com/company/edgechronicle"
+            "https://twitter.com/sciencedigestnews",
+            "https://facebook.com/sciencedigestnews",
+            "https://linkedin.com/company/sciencedigestnews"
           ],
           "contactPoint": {
             "@type": "ContactPoint",
-            "telephone": "+1-555-0123",
+            "telephone": "+380-44-000-0000",
             "contactType": "customer service",
-            "email": "contact@edgechronicle.com"
+            "email": "contact@sciencedigestnews.com"
           }
         }
       ]
