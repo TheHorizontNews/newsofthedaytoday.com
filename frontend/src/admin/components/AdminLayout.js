@@ -12,7 +12,7 @@ const AdminLayout = ({ children }) => {
   const [seoMenuOpen, setSeoMenuOpen] = useState(false);
 
   const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
+    { name: t.dashboard, href: '/admin/dashboard', icon: '📊' },
     { name: 'Articles', href: '/admin/articles', icon: '📝' },
     { name: 'Media', href: '/admin/media', icon: '🖼️' },
     { name: 'Users', href: '/admin/users', icon: '👥' },
