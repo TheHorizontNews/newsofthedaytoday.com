@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import { Header, Footer } from './components';
 import HomePage from './HomePage';
 import ArticlePage from './ArticlePage';
-import AdminApp from './admin/AdminApp';
 import analytics from './utils/analytics';
+
+// Lazy load admin panel
+const AdminApp = lazy(() => import('./admin/AdminApp'));
 
 // Analytics wrapper component
 function AnalyticsWrapper({ children }) {
