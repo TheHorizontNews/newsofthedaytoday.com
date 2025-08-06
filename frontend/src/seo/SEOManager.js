@@ -22,10 +22,10 @@ const SEOManager = ({
   const location = useLocation();
   
   // Default values
-  const siteTitle = "Edge Chronicle";
-  const siteDescription = "Breaking news and analysis from around the world. Stay informed with the latest developments in politics, economics, sports, and culture.";
-  const siteUrl = process.env.REACT_APP_SITE_URL || "https://edgechronicle.com";
-  const defaultImage = `${siteUrl}/og-default.jpg`;
+  const siteTitle = "Science Digest News";
+  const siteDescription = "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.";
+  const siteUrl = process.env.REACT_APP_SITE_URL || "https://sciencedigestnews.com";
+  const defaultImage = "https://images.unsplash.com/photo-1576086213369-97a306d36557?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwxfHNlYXJjaHwxfHxzY2llbmNlJTIwcmVzZWFyY2h8ZW58MHx8fHwxNzU0NTE5MDEwfDA&ixlib=rb-4.1.0&q=85";
   const gaTrackingId = process.env.REACT_APP_GA_MEASUREMENT_ID || 'G-PLACEHOLDER123';
   
   // Build full title
