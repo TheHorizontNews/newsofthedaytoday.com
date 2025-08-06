@@ -52,33 +52,29 @@ def get_analytics_collection():
 
 # Database initialization
 async def init_db():
-    """Initialize database with indexes and default data"""
+    """Initialize database with default data (without creating indexes for Emergent compatibility)"""
     db = Database.get_database()
     
-    # Create indexes
-    await db.users.create_index("username", unique=True)
-    await db.users.create_index("email", unique=True)
-    await db.articles.create_index("slug", unique=True)
-    await db.articles.create_index("published_at")
-    await db.articles.create_index("category_id")
-    await db.articles.create_index("author_id")
-    await db.categories.create_index("slug", unique=True)
-    await db.analytics.create_index([("article_id", 1), ("date", 1)])
+    print("🔗 Initializing database...")
+    
+    # Skip index creation for Emergent deployment
+    # Indexes will be created automatically by MongoDB when needed
     
     # Create default categories if they don't exist
     categories_collection = get_categories_collection()
     default_categories = [
-        {"name": "Світ", "slug": "world", "description": "Міжнародні новини"},
-        {"name": "Війна", "slug": "war", "description": "Військові новини"},
-        {"name": "Україна", "slug": "ukraine", "description": "Новини України"},
-        {"name": "Політика", "slug": "politics", "description": "Політичні новини"},
-        {"name": "Наука та IT", "slug": "science-tech", "description": "Наука та технології"},
-        {"name": "Леді", "slug": "lifestyle", "description": "Стиль життя"},
+        {"name": "Technology", "slug": "technology", "description": "Latest technology news"},
+        {"name": "Medicine", "slug": "medicine", "description": "Medical breakthroughs"},
+        {"name": "Space & Physics", "slug": "space-physics", "description": "Space exploration and physics"},
+        {"name": "Environment", "slug": "environment", "description": "Environmental science"},
+        {"name": "AI & Computing", "slug": "ai-computing", "description": "Artificial Intelligence news"},
+        {"name": "Biology", "slug": "biology", "description": "Biological sciences"},
     ]
     
     for cat in default_categories:
         existing = await categories_collection.find_one({"slug": cat["slug"]})
         if not existing:
             await categories_collection.insert_one(cat)
+            print(f"✅ Created category: {cat['name']}")
     
-    print("Database initialized successfully")
+    print("✅ Database initialized successfully")
