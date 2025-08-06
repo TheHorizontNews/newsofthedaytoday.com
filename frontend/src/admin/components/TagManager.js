@@ -19,10 +19,19 @@ const TagManager = () => {
     try {
       setLoading(true);
       const response = await api.get('/articles/tags');
-      setTags(response.popular_tags || []);
+      setTags(response.data?.popular_tags || response.popular_tags || []);
+      setError('');
     } catch (err) {
       setError('Failed to fetch tags');
-      console.error('Tags fetch error:', err);
+      console.error('Error fetching tags:', err);
+      // Fallback to mock data
+      setTags([
+        { name: 'Технології', count: 15 },
+        { name: 'ШІ', count: 12 },
+        { name: 'Наука', count: 10 },
+        { name: 'Дослідження', count: 8 },
+        { name: 'Інновації', count: 6 }
+      ]);
     } finally {
       setLoading(false);
     }
