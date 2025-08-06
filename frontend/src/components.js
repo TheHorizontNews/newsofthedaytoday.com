@@ -473,7 +473,7 @@ export const Footer = () => {
 
           {/* Social Media */}
           <div className="md:col-span-1">
-            <h4 className="font-semibold mb-4">Соціальні мережі</h4>
+            <h4 className="font-semibold mb-4">Follow Us</h4>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => (
                 <a 
