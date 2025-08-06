@@ -269,7 +269,7 @@ export const SidebarNews = ({ sidebarData }) => {
         {sidebarData.map((item) => (
           <Link key={item.id} to={item.url}>
             <article className="group cursor-pointer">
-              <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:text-red-600 transition-colors duration-200 leading-snug">
+              <h4 className="text-sm font-semibold text-gray-900 mb-2 group-hover:opacity-80 transition-colors duration-200 leading-snug" style={{'&:hover': {color: '#0c61cf'}}}>
                 {item.title}
               </h4>
               <div className="flex items-center justify-between text-xs text-gray-500">
