@@ -33,20 +33,26 @@ export const Header = ({ currentTime }) => {
   };
 
   return (
-    <header className="text-white" style={{backgroundColor: '#0c61cf'}}>
+    <header className="text-white" style={{backgroundColor: '#0c61cf'}} role="banner">
       {/* Top Bar */}
       <div className="py-2" style={{backgroundColor: '#0a52b8'}}>
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center space-x-4">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatDate(currentTime)}</span>
-            <span>°C</span>
-            <span>USD/UAH</span>
+            <time dateTime={currentTime.toISOString()}>{formatTime(currentTime)}</time>
+            <time dateTime={currentTime.toISOString()}>{formatDate(currentTime)}</time>
+            <span aria-label="Температура">°C</span>
+            <span aria-label="Курс валют">USD/UAH</span>
           </div>
           <div className="hidden md:flex items-center space-x-4">
-            <span>НАЖИВО</span>
-            <span>ПОШУК</span>
-            <button className="px-3 py-1 rounded" style={{backgroundColor: '#0a52b8'}}>UA</button>
+            <span aria-label="Пряма трансляція">НАЖИВО</span>
+            <span aria-label="Пошук">ПОШУК</span>
+            <button 
+              className="px-3 py-1 rounded" 
+              style={{backgroundColor: '#0a52b8'}}
+              aria-label="Змінити мову на українську"
+            >
+              UA
+            </button>
           </div>
         </div>
       </div>
