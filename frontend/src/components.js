@@ -6,15 +6,15 @@ export const Header = ({ currentTime }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const navigationItems = [
-    'Latest News',
-    'Technology', 
-    'Medicine',
-    'Space & Physics',
-    'Environment',
-    'Research',
-    'AI & Computing',
-    'Biology',
-    'Innovation'
+    'Останні новини',
+    'Технології', 
+    'Медицина',
+    'Космос і Фізика',
+    'Довкілля',
+    'Дослідження',
+    'ШІ та Обчислення',
+    'Біологія',
+    'Інновації'
   ];
 
   const formatTime = (date) => {
