@@ -1,5 +1,5 @@
 """
-Authentication and authorization utilities
+Authentication and authorization utilities for SQLite
 """
 import os
 from datetime import datetime, timedelta
@@ -8,10 +8,11 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 from jose import JWTError, jwt
-from bson import ObjectId
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_users_collection
-from models import User, TokenData, UserRole
+from database import get_db
+from models import UserTable, TokenData, UserRole
 
 # Security configuration
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production")
@@ -41,20 +42,28 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def authenticate_user(username: str, password: str) -> Optional[User]:
+async def authenticate_user(username: str, password: str, db: AsyncSession) -> Optional[UserTable]:
     """Authenticate a user by username and password"""
-    users_collection = get_users_collection()
-    user_dict = await users_collection.find_one({"username": username, "is_active": True})
+    result = await db.execute(
+        select(UserTable).where(
+            UserTable.username == username,
+            UserTable.is_active == True
+        )
+    )
+    user = result.scalar_one_or_none()
     
-    if not user_dict:
+    if not user:
         return None
     
-    if not verify_password(password, user_dict["password_hash"]):
+    if not verify_password(password, user.password_hash):
         return None
     
-    return User(**user_dict)
+    return user
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: AsyncSession = Depends(get_db)
+) -> UserTable:
     """Get the current authenticated user"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -72,21 +81,24 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except JWTError:
         raise credentials_exception
     
-    users_collection = get_users_collection()
-    user_dict = await users_collection.find_one({"username": token_data.username, "is_active": True})
+    result = await db.execute(
+        select(UserTable).where(
+            UserTable.username == token_data.username,
+            UserTable.is_active == True
+        )
+    )
+    user = result.scalar_one_or_none()
     
-    if user_dict is None:
+    if user is None:
         raise credentials_exception
     
     # Update last login
-    await users_collection.update_one(
-        {"_id": user_dict["_id"]},
-        {"$set": {"last_login": datetime.utcnow()}}
-    )
+    user.last_login = datetime.utcnow()
+    await db.commit()
     
-    return User(**user_dict)
+    return user
 
-async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+async def get_current_active_user(current_user: UserTable = Depends(get_current_user)) -> UserTable:
     """Get the current active user"""
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
@@ -94,7 +106,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 def require_role(required_role: UserRole):
     """Decorator to require a specific role"""
-    async def role_checker(current_user: User = Depends(get_current_active_user)):
+    async def role_checker(current_user: UserTable = Depends(get_current_active_user)):
         if current_user.role != required_role and current_user.role != UserRole.ADMIN:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -109,7 +121,7 @@ def require_admin():
 
 def require_editor_or_admin():
     """Require editor or admin role"""
-    async def role_checker(current_user: User = Depends(get_current_active_user)):
+    async def role_checker(current_user: UserTable = Depends(get_current_active_user)):
         if current_user.role not in [UserRole.ADMIN, UserRole.EDITOR]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
