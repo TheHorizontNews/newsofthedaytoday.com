@@ -43,6 +43,8 @@ export const authAPI = {
 export const articlesAPI = {
   // Public Articles API (no auth needed)
   getPublicArticles: (params = {}) => api.get('/articles/', { params }),
+  // Admin Articles API (with auth)
+  getArticles: (params = {}) => api.get('/articles/admin', { params }),
   getArticle: (id) => api.get(`/articles/${id}`),
   createArticle: (data) => api.post('/articles/', data),
   updateArticle: (id, data) => api.put(`/articles/${id}`, data),
