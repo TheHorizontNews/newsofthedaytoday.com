@@ -228,18 +228,18 @@ const SEOManager = ({
       
       {/* Twitter Cards */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@edgechronicle" />
-      <meta name="twitter:creator" content="@edgechronicle" />
+      <meta name="twitter:site" content="@sciencedigestnews" />
+      <meta name="twitter:creator" content="@sciencedigestnews" />
       <meta name="twitter:title" content={title || siteTitle} />
       <meta name="twitter:description" content={description || siteDescription} />
       <meta name="twitter:image" content={image || defaultImage} />
       
       {/* Additional SEO Meta Tags */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta httpEquiv="Content-Language" content="en" />
-      <meta name="geo.region" content="US" />
-      <meta name="geo.placename" content="United States" />
-      <meta name="theme-color" content="#dc2626" />
+      <meta httpEquiv="Content-Language" content="uk" />
+      <meta name="geo.region" content="UA" />
+      <meta name="geo.placename" content="Ukraine" />
+      <meta name="theme-color" content="#0c61cf" />
       
       {/* Google Analytics */}
       {gaTrackingId && gaTrackingId !== 'G-PLACEHOLDER123' && (
