@@ -7,6 +7,7 @@ import ArticlePage from './ArticlePage';
 import AdminApp from './admin/AdminApp';  // СИНХРОННЫЙ ИМПОРТ
 import analytics from './utils/analytics';
 import { setupContentVisibility, addResourceHints, measurePerformance } from './utils/performanceOptimizer';
+import useSEO from './hooks/useSEO';
 
 // Analytics wrapper component
 function AnalyticsWrapper({ children }) {
