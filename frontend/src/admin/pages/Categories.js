@@ -26,6 +26,16 @@ const Categories = () => {
     },
   });
 
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => categoriesAPI.updateCategory(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['categories']);
+      setEditingCategory(null);
+      reset();
+    },
+  });
+
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: categoriesAPI.deleteCategory,
