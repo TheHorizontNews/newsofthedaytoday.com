@@ -46,6 +46,11 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AdminApp() {
+  // Debug: проверяем текущий URL
+  React.useEffect(() => {
+    console.log('AdminApp mounted, current location:', window.location.pathname);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -114,7 +119,11 @@ function AdminApp() {
             } />
             <Route path="seo/tags" element={
               <ProtectedRoute>
-                <TagManager />
+                <div style={{padding: '20px', background: 'white', minHeight: '500px'}}>
+                  <h1>DEBUG: TagManager Route Hit!</h1>
+                  <p>Current URL: {window.location.pathname}</p>
+                  <TagManager />
+                </div>
               </ProtectedRoute>
             } />
           </Routes>
