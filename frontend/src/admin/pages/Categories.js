@@ -52,6 +52,14 @@ const Categories = () => {
     }
   };
 
+  const handleUpdate = async (data) => {
+    try {
+      await updateMutation.mutateAsync({ id: editingCategory.id, data });
+    } catch (error) {
+      alert('Failed to update category');
+    }
+  };
+
   const handleDelete = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete category "${name}"?`)) {
       try {
