@@ -48,11 +48,11 @@ class HealthChecker:
     async def test_basic_health_check(self):
         """Test basic backend health and connectivity"""
         try:
-            # Test health endpoint
-            async with self.session.get(f"{BACKEND_URL}/health") as response:
+            # Test API articles endpoint as health check (public endpoint)
+            async with self.session.get(f"{BACKEND_URL}/api/articles/") as response:
                 if response.status == 200:
                     data = await response.json()
-                    self.log_result("Basic Health Check", True, f"Backend responding: {data.get('status', 'unknown')}")
+                    self.log_result("Basic Health Check", True, f"Backend API responding: {len(data)} articles found")
                     return True
                 else:
                     error_data = await response.text()
