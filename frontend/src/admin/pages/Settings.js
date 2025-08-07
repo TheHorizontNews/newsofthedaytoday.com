@@ -12,6 +12,7 @@ const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [saveStatus, setSaveStatus] = useState('');
   const [seoSettings, setSeoSettings] = useState({});
   
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
