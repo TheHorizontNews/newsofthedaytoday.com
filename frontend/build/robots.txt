@@ -1,0 +1,29 @@
+# Science Digest News - Robots.txt
+# Generated on 2025-08-06
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://sciencedigestnews.com/sitemap.xml
+Sitemap: https://sciencedigestnews.com/llms-sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important sections
+Allow: /category/
+Allow: /article/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Special instructions for search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
