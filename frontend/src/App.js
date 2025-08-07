@@ -47,9 +47,8 @@ function App() {
     <Router>
       <SkipToContent />
       <AnalyticsWrapper>
-        <Header currentTime={currentTime} />
         <Routes>
-          {/* Admin routes with lazy loading */}
+          {/* Admin routes with lazy loading - NO Header */}
           <Route path="/admin/*" element={
             <Suspense fallback={
               <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -63,9 +62,10 @@ function App() {
             </Suspense>
           } />
           
-          {/* Public routes */}
+          {/* Public routes with Header */}
           <Route path="/" element={
             <div className="App min-h-screen bg-gray-100">
+              <Header currentTime={currentTime} />
               <main>
                 <HomePage />
               </main>
@@ -74,6 +74,7 @@ function App() {
           } />
           <Route path="/article/:id" element={
             <div className="App min-h-screen bg-gray-100">
+              <Header currentTime={currentTime} />
               <main>
                 <ArticlePage />
               </main>
@@ -82,6 +83,7 @@ function App() {
           } />
           <Route path="/category/:categorySlug" element={
             <div className="App min-h-screen bg-gray-100">
+              <Header currentTime={currentTime} />
               <main>
                 <HomePage />
               </main>
