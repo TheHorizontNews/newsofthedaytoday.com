@@ -45,11 +45,6 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AdminApp() {
-  // Debug: проверяем текущий URL
-  React.useEffect(() => {
-    console.log('AdminApp mounted, current location:', window.location.pathname);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
