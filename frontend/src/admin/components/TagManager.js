@@ -74,7 +74,7 @@ const TagManager = () => {
   };
 
   const filteredTags = tags.filter(tag =>
-    tag.tag.toLowerCase().includes(searchTerm.toLowerCase())
+    tag.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading && tags.length === 0) {
