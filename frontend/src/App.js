@@ -33,6 +33,7 @@ function AnalyticsWrapper({ children }) {
 
 function App() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { seoData, loading, updateMetaTags } = useSEO();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -41,6 +42,13 @@ function App() {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    // Update meta tags when SEO data loads
+    if (!loading && seoData) {
+      updateMetaTags(seoData);
+    }
+  }, [seoData, loading, updateMetaTags]);
 
   return (
     <Router>
