@@ -72,7 +72,7 @@ async def get_meta_tags(
     page: str = "home",
     db: AsyncSession = Depends(get_db)
 ):
-    """Get meta tags for specific page"""
+    """Get meta tags for specific page - PUBLIC ENDPOINT"""
     base_tags = {
         "title": seo_settings["site_title"],
         "description": seo_settings["site_description"],
@@ -82,7 +82,7 @@ async def get_meta_tags(
         "og:image": seo_settings["og_image"],
         "og:url": seo_settings["canonical_url"],
         "og:type": "website",
-        "og:site_name": "Science Digest News",
+        "og:site_name": seo_settings["site_title"],
         "twitter:card": "summary_large_image",
         "twitter:site": seo_settings["twitter_handle"],
         "twitter:title": seo_settings["site_title"],
@@ -94,6 +94,52 @@ async def get_meta_tags(
     }
     
     return {"meta_tags": base_tags, "page": page}
+
+# Новый endpoint для обновления метатегов страницы
+@router.get("/page-meta")
+async def get_page_meta(
+    url: str = "/",
+    db: AsyncSession = Depends(get_db)  
+):
+    """Get complete HTML meta tags for page injection - PUBLIC ENDPOINT"""
+    
+    # Получаем базовые настройки
+    title = seo_settings["site_title"]
+    description = seo_settings["site_description"] 
+    keywords = seo_settings["site_keywords"]
+    og_image = seo_settings["og_image"]
+    canonical_url = seo_settings["canonical_url"]
+    
+    # Формируем HTML метатеги
+    meta_html = f"""
+    <!-- Dynamic SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content="{description}" />
+    <meta name="keywords" content="{keywords}" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{title}" />
+    <meta property="og:description" content="{description}" />
+    <meta property="og:image" content="{og_image}" />
+    <meta property="og:url" content="{canonical_url}{url}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{title}" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{title}" />
+    <meta name="twitter:description" content="{description}" />
+    <meta name="twitter:image" content="{og_image}" />
+    """
+    
+    return {
+        "meta_html": meta_html.strip(),
+        "title": title,
+        "description": description,
+        "keywords": keywords,
+        "og_image": og_image,
+        "canonical_url": f"{canonical_url}{url}"
+    }
 
 @router.get("/sitemap")
 async def generate_sitemap(
