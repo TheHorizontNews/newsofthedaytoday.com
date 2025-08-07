@@ -10,22 +10,52 @@ import { useAuth } from '../contexts/AuthContext';
 const Settings = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('general');
-  const [saveStatus, setSaveStatus] = useState('');
-
-  const { register, handleSubmit, watch } = useForm({
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [seoSettings, setSeoSettings] = useState({});
+  
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
     defaultValues: {
-      site_name: 'Edge Chronicle',
-      site_description: 'Breaking news and analysis from around the world',
-      site_url: 'https://edgechronicle.com',
-      admin_email: 'admin@edgechronicle.com',
-      posts_per_page: 20,
-      allow_comments: true,
-      moderation_required: true,
-      seo_enabled: true,
+      site_name: 'Science Digest News',
+      site_description: 'Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.',
+      site_keywords: 'наука, технології, медицина, дослідження, ШІ, космос, інновації',
+      og_image: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?w=1200&h=630&fit=crop&crop=entropy&fm=webp&q=85',
+      twitter_handle: '@sciencedigestnews',
+      language: 'uk-UA',
+      robots: 'index, follow',
+      canonical_url: 'https://sciencedigestnews.com',
       analytics_enabled: true,
-      maintenance_mode: false
+      comments_enabled: false,
+      user_registration: false,
+      moderation_required: true
     }
   });
+
+  // Загружаем текущие SEO настройки при монтировании
+  useEffect(() => {
+    const loadSEOSettings = async () => {
+      try {
+        const response = await api.get('/seo/settings');
+        const data = response.data;
+        setSeoSettings(data);
+        
+        // Обновляем форму
+        setValue('site_name', data.site_title || 'Science Digest News');
+        setValue('site_description', data.site_description || 'Останні наукові відкриття...');
+        setValue('site_keywords', data.site_keywords || 'наука, технології');
+        setValue('og_image', data.og_image || '');
+        setValue('twitter_handle', data.twitter_handle || '@sciencedigestnews');
+        setValue('language', data.language || 'uk-UA');
+        setValue('robots', data.robots || 'index, follow');
+        setValue('canonical_url', data.canonical_url || 'https://sciencedigestnews.com');
+        
+      } catch (error) {
+        console.error('Failed to load SEO settings:', error);
+      }
+    };
+    
+    loadSEOSettings();
+  }, [setValue]);
 
   const onSubmit = async (data) => {
     setSaveStatus('saving');
