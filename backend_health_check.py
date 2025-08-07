@@ -65,17 +65,25 @@ class HealthChecker:
     async def test_cors_headers(self):
         """Test CORS headers are properly configured"""
         try:
-            async with self.session.options(f"{BACKEND_URL}/api/articles/") as response:
-                cors_headers = {
-                    'access-control-allow-origin': response.headers.get('access-control-allow-origin'),
-                    'access-control-allow-methods': response.headers.get('access-control-allow-methods'),
-                    'access-control-allow-headers': response.headers.get('access-control-allow-headers'),
-                }
+            headers = {
+                'Origin': 'https://example.com',
+                'Access-Control-Request-Method': 'GET',
+                'Access-Control-Request-Headers': 'X-Requested-With'
+            }
+            async with self.session.options(f"{BACKEND_URL}/api/articles/", headers=headers) as response:
+                cors_origin = response.headers.get('access-control-allow-origin')
+                cors_methods = response.headers.get('access-control-allow-methods')
+                cors_credentials = response.headers.get('access-control-allow-credentials')
                 
-                if cors_headers['access-control-allow-origin']:
-                    self.log_result("CORS Headers", True, f"CORS properly configured: {cors_headers['access-control-allow-origin']}")
+                if cors_origin and cors_methods:
+                    self.log_result("CORS Headers", True, f"CORS properly configured: Origin={cors_origin}, Methods={cors_methods}, Credentials={cors_credentials}")
                     return True
                 else:
+                    cors_headers = {
+                        'access-control-allow-origin': cors_origin,
+                        'access-control-allow-methods': cors_methods,
+                        'access-control-allow-credentials': cors_credentials,
+                    }
                     self.log_result("CORS Headers", False, "CORS headers missing", cors_headers)
                     return False
         except Exception as e:
