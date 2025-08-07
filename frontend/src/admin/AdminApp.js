@@ -117,15 +117,6 @@ function AdminApp() {
                 <SEOAnalytics />
               </ProtectedRoute>
             } />
-            <Route path="seo/tags" element={
-              <ProtectedRoute>
-                <div style={{padding: '20px', background: 'white', minHeight: '500px'}}>
-                  <h1>DEBUG: TagManager Route Hit!</h1>
-                  <p>Current URL: {window.location.pathname}</p>
-                  <TagManager />
-                </div>
-              </ProtectedRoute>
-            } />
           </Routes>
         </div>
       </AuthProvider>
