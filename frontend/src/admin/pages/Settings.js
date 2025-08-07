@@ -5,7 +5,6 @@ import { ukTranslations } from '../i18n/uk';
 import SEOSettings from '../components/SEOSettings';
 
 const t = ukTranslations;
-import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
 
 const Settings = () => {
