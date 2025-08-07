@@ -1,5 +1,4 @@
-import React, { memo } from 'react';
-import OptimizedImage from './components/OptimizedImage';
+import React from 'react';
 import { HeroSection, MainNews, SidebarNews, TrendingSection, PublicationsSection } from './components';
 
 // Mock data for the news website
