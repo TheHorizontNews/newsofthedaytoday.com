@@ -63,20 +63,13 @@ const TagManager = () => {
   };
 
   const handleCleanupTags = async () => {
-    if (!window.confirm('This will normalize and clean up all tags across articles. Continue?')) {
-      return;
-    }
-
     try {
       setLoading(true);
-      const response = await api.post('/seo/tags/cleanup');
-      alert(`Tag cleanup completed! ${response.data.articles_updated} articles updated.`);
-      await fetchTags();
-      await fetchPopularTags();
+      await api.post('/seo/tags/cleanup');
+      await fetchTagsInBackground();
     } catch (err) {
-      alert('Failed to cleanup tags: ' + (err.response?.data?.detail || err.message));
-    } finally {
-      setLoading(false);
+      setError('Failed to cleanup tags');
+      console.error('Cleanup error:', err);
     }
   };
 
