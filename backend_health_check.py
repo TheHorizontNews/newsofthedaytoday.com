@@ -85,11 +85,10 @@ class HealthChecker:
     async def test_api_routing(self):
         """Test API routing is working with /api prefix"""
         try:
-            # Test root API endpoint
-            async with self.session.get(f"{BACKEND_URL}/") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    self.log_result("API Routing", True, f"Root endpoint accessible: {data.get('message', 'OK')}")
+            # Test API auth endpoint (should return 422 for missing data)
+            async with self.session.post(f"{BACKEND_URL}/api/auth/login", json={}) as response:
+                if response.status == 422:  # Validation error for missing username/password
+                    self.log_result("API Routing", True, "API routing working - validation error returned as expected")
                     return True
                 else:
                     error_data = await response.text()
