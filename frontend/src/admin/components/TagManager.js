@@ -8,7 +8,6 @@ const TagManager = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
-  const [showArticles, setShowArticles] = useState(false);
 
   // Инициализация с mock данными для предотвращения белого экрана
   useEffect(() => {
