@@ -14,12 +14,12 @@ router = APIRouter(prefix="/api/seo", tags=["seo"])
 
 # In-memory SEO settings (можно потом перенести в БД)
 seo_settings = {
-    "site_title": "Science Digest News",
+    "site_title": "Science Digest News - Наукові відкриття та дослідження",
     "site_description": "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.",
-    "site_keywords": "наука, технології, медицина, дослідження, ШІ, космос, інновації",
-    "og_image": "https://sciencedigestnews.com/og-image.jpg",
-    "twitter_handle": "@ScienceDigest",
-    "language": "uk",
+    "site_keywords": "наука, технології, медицина, дослідження, ШІ, космос, інновації, Science Digest News",
+    "og_image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=1200&h=630&fit=crop&crop=entropy&fm=webp&q=85",
+    "twitter_handle": "@sciencedigestnews",
+    "language": "uk-UA",
     "robots": "index, follow",
     "canonical_url": "https://sciencedigestnews.com"
 }
