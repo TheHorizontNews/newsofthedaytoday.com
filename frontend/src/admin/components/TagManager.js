@@ -61,7 +61,6 @@ const TagManager = () => {
       setLoading(false);
     }
   };
-  };
 
   const handleCleanupTags = async () => {
     if (!window.confirm('This will normalize and clean up all tags across articles. Continue?')) {
