@@ -13,7 +13,6 @@ import Analytics from './pages/Analytics';
 import MediaLibrary from './pages/MediaLibraryPage';
 import Settings from './pages/Settings';
 import SEOAnalytics from './components/SEOAnalytics';
-import TagManager from './components/TagManager';
 import './Admin.css';
 
 // Create a client
