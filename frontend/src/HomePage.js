@@ -51,7 +51,7 @@ const mockNewsData = {
       time: "13:45, 23.06.25", 
       views: 1876,
       author: "Andrew Petrenko",
-      image: "https://images.unsplash.com/photo-1569163139394-de44cb5cd02c",
+      image: "https://images.unsplash.com/photo-1569163139394-de44cb5cd02c?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
       url: "/article/4"
     },
     {
