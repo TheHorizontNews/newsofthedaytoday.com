@@ -241,6 +241,66 @@ const Settings = () => {
 
                 {activeTab === 'integrations' && (
                   <div className="space-y-6">
+                    {/* Google Search Console Section */}
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-3 flex items-center">
+                        🔍 Google Search Console
+                      </h4>
+                      
+                      <div className="space-y-4">
+                        <div className="form-group">
+                          <label className="form-label">Google Search Console Verification Code</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="google1234567890abcdef.html"
+                            {...register('gsc_verification_code')}
+                          />
+                          <div className="text-xs text-gray-600 mt-1">
+                            HTML file verification code from Google Search Console
+                          </div>
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label">Meta Tag Verification</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            placeholder="content=abcd1234567890..."
+                            {...register('gsc_meta_verification')}
+                          />
+                          <div className="text-xs text-gray-600 mt-1">
+                            Meta tag content value for verification
+                          </div>
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label">Property URL</label>
+                          <input
+                            type="url"
+                            className="form-input"
+                            placeholder="https://sciencedigestnews.com"
+                            {...register('gsc_property_url')}
+                          />
+                          <div className="text-xs text-gray-600 mt-1">
+                            Your verified Search Console property URL
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-3 rounded border">
+                          <h5 className="font-medium text-sm mb-2">Setup Instructions:</h5>
+                          <ol className="text-xs text-gray-600 space-y-1 list-decimal list-inside">
+                            <li>Go to <a href="https://search.google.com/search-console" target="_blank" className="text-blue-600 hover:underline">Google Search Console</a></li>
+                            <li>Add your property (sciencedigestnews.com)</li>
+                            <li>Choose HTML file or Meta tag verification method</li>
+                            <li>Copy the verification code and paste it above</li>
+                            <li>Save settings and verify in Search Console</li>
+                          </ol>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Analytics Section */}
                     <div className="form-group">
                       <label className="flex items-center">
                         <input
@@ -266,6 +326,14 @@ const Settings = () => {
                           
                           <div className="border rounded-lg p-4">
                             <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium">Google Search Console</span>
+                              <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Configured</span>
+                            </div>
+                            <div className="text-sm text-gray-600">Monitor search performance and SEO</div>
+                          </div>
+                          
+                          <div className="border rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
                               <span className="font-medium">Social Media</span>
                               <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Available</span>
                             </div>
@@ -278,14 +346,6 @@ const Settings = () => {
                               <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Available</span>
                             </div>
                             <div className="text-sm text-gray-600">Send newsletters to subscribers</div>
-                          </div>
-                          
-                          <div className="border rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-medium">CDN</span>
-                              <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Recommended</span>
-                            </div>
-                            <div className="text-sm text-gray-600">Faster content delivery worldwide</div>
                           </div>
                         </div>
                       </div>
