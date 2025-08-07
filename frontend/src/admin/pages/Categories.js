@@ -106,7 +106,10 @@ const Categories = () => {
                 </h3>
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => setEditingCategory(category)}
+                    onClick={() => {
+                      setEditingCategory(category);
+                      reset(category); // Pre-fill form with current values
+                    }}
                     className="btn btn-sm btn-secondary"
                   >
                     Edit
