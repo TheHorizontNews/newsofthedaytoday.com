@@ -23,7 +23,6 @@ const AdminLayout = ({ children }) => {
       icon: '🔍',
       submenu: [
         { name: 'SEO Analytics', href: '/admin/seo/analytics', icon: '📊' },
-        { name: 'Tag Manager', href: '/admin/seo/tags', icon: '🏷️' },
       ]
     },
     { name: t.settings, href: '/admin/settings', icon: '⚙️' },
