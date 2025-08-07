@@ -61,7 +61,7 @@ const mockNewsData = {
       time: "12:15, 23.06.25",
       views: 4562,
       author: "Marina Gavrilenko",
-      image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063",
+      image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
       url: "/article/5"
     }
   ],
