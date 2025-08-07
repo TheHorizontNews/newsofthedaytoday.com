@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 // Skip to content component for accessibility
 export const SkipToContent = () => {
   return (
-    <Link 
-      to="#main-content"
+    <a 
+      href="#main-content"
       className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-blue-600 text-white px-4 py-2 rounded-md z-50 focus:outline-none focus:ring-2 focus:ring-white"
     >
       Перейти до основного контенту
-    </Link>
+    </a>
   );
 };
 
