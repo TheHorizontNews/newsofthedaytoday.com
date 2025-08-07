@@ -261,7 +261,119 @@ const Settings = () => {
                 )}
 
                 {activeTab === 'seo' && (
-                  <SEOSettings />
+                  <div className="space-y-6">
+                    {/* Success/Error Message */}
+                    {message && (
+                      <div className={`p-4 rounded-lg ${message.includes('✅') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+                        {message}
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="form-group">
+                        <label className="form-label">Назва сайту *</label>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="Science Digest News"
+                          {...register('site_name', { required: 'Site name is required' })}
+                        />
+                        {errors.site_name && (
+                          <div className="form-error">{errors.site_name.message}</div>
+                        )}
+                      </div>
+
+                      <div className="form-group">
+                        <label className="form-label">Canonical URL</label>
+                        <input
+                          type="url"
+                          className="form-input"
+                          placeholder="https://sciencedigestnews.com"
+                          {...register('canonical_url')}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Опис сайту *</label>
+                      <textarea
+                        className="form-input"
+                        rows="3"
+                        placeholder="Останні наукові відкриття та дослідження з усього світу..."
+                        {...register('site_description', { required: 'Description is required' })}
+                      />
+                      {errors.site_description && (
+                        <div className="form-error">{errors.site_description.message}</div>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Ключові слова</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="наука, технології, медицина, дослідження"
+                        {...register('site_keywords')}
+                      />
+                      <div className="text-xs text-gray-500 mt-1">
+                        Розділяйте ключові слова комами
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Open Graph зображення</label>
+                      <input
+                        type="url"
+                        className="form-input"
+                        placeholder="https://images.unsplash.com/photo-..."
+                        {...register('og_image')}
+                      />
+                      <div className="text-xs text-gray-500 mt-1">
+                        Рекомендований розмір: 1200x630 пікселів
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="form-group">
+                        <label className="form-label">Twitter Handle</label>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="@sciencedigestnews"
+                          {...register('twitter_handle')}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label className="form-label">Мова сайту</label>
+                        <select className="form-input" {...register('language')}>
+                          <option value="uk-UA">Українська (uk-UA)</option>
+                          <option value="en-US">English (en-US)</option>
+                          <option value="ru-RU">Русский (ru-RU)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label">Robots Meta Tag</label>
+                      <select className="form-input" {...register('robots')}>
+                        <option value="index, follow">Index, Follow (рекомендовано)</option>
+                        <option value="index, nofollow">Index, No Follow</option>
+                        <option value="noindex, follow">No Index, Follow</option>
+                        <option value="noindex, nofollow">No Index, No Follow</option>
+                      </select>
+                    </div>
+
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">💡 Важливо для соціальних мереж</h4>
+                      <ul className="text-sm text-blue-800 space-y-1">
+                        <li>• Зміни в WhatsApp/Telegram відображаються через 5-10 хвилин</li>
+                        <li>• Facebook/Instagram можуть кешувати до 24 годин</li>
+                        <li>• Для негайного оновлення використовуйте Facebook Debugger</li>
+                        <li>• Open Graph зображення повинно бути доступне публічно</li>
+                      </ul>
+                    </div>
+                  </div>
                 )}
 
                 {activeTab === 'security' && (
