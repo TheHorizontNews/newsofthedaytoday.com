@@ -60,11 +60,45 @@ const Settings = () => {
 
   const onSubmit = async (data) => {
     setSaveStatus('saving');
-    // Simulate API call
-    setTimeout(() => {
+    setLoading(true);
+    
+    try {
+      // Подготавливаем данные для отправки
+      const seoData = {
+        site_title: data.site_name,
+        site_description: data.site_description,
+        site_keywords: data.site_keywords,
+        og_image: data.og_image,
+        twitter_handle: data.twitter_handle,
+        language: data.language,
+        robots: data.robots,
+        canonical_url: data.canonical_url
+      };
+      
+      // Отправляем обновленные SEO настройки
+      await api.put('/seo/settings', seoData);
+      
       setSaveStatus('saved');
-      setTimeout(() => setSaveStatus(''), 2000);
-    }, 1000);
+      setMessage('✅ Настройки успешно сохранены! Изменения отображаются в социальных сетях через 5-10 минут.');
+      
+      // Очищаем сообщение через 5 секунд
+      setTimeout(() => {
+        setMessage('');
+        setSaveStatus('');
+      }, 5000);
+      
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      setSaveStatus('error');
+      setMessage('❌ Ошибка при сохранении настроек. Попробуйте еще раз.');
+      
+      setTimeout(() => {
+        setMessage('');
+        setSaveStatus('');
+      }, 5000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const tabs = [
