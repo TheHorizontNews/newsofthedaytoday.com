@@ -47,6 +47,7 @@ function App() {
     <Router>
       <SkipToContent />
       <AnalyticsWrapper>
+        <Header currentTime={currentTime} />
         <Routes>
           {/* Admin routes with lazy loading */}
           <Route path="/admin/*" element={
@@ -65,7 +66,6 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={
             <div className="App min-h-screen bg-gray-100">
-              <Header currentTime={currentTime} />
               <main>
                 <HomePage />
               </main>
@@ -74,7 +74,6 @@ function App() {
           } />
           <Route path="/article/:id" element={
             <div className="App min-h-screen bg-gray-100">
-              <Header currentTime={currentTime} />
               <main>
                 <ArticlePage />
               </main>
@@ -83,7 +82,6 @@ function App() {
           } />
           <Route path="/category/:categorySlug" element={
             <div className="App min-h-screen bg-gray-100">
-              <Header currentTime={currentTime} />
               <main>
                 <HomePage />
               </main>
