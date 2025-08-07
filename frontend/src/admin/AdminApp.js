@@ -51,7 +51,7 @@ function AdminApp() {
         <div className="admin-app">
           <Routes>
             <Route path="login" element={<Login />} />
-            <Route path="" element={
+            <Route index element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
