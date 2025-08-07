@@ -201,6 +201,70 @@ const Categories = () => {
           </div>
         </div>
       )}
+
+      {/* Edit Category Modal */}
+      {editingCategory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-medium mb-4">Edit Category</h3>
+            
+            <form onSubmit={handleSubmit(handleUpdate)}>
+              <div className="form-group">
+                <label className="form-label">Name *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Category name"
+                  {...register('name', { required: 'Name is required' })}
+                />
+                {errors.name && (
+                  <div className="form-error">{errors.name.message}</div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea
+                  className="form-input"
+                  rows="3"
+                  placeholder="Category description"
+                  {...register('description')}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Slug</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="category-slug"
+                  {...register('slug')}
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingCategory(null);
+                    reset();
+                  }}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={updateMutation.isLoading}
+                  className="btn btn-primary"
+                >
+                  {updateMutation.isLoading ? 'Updating...' : 'Update Category'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
