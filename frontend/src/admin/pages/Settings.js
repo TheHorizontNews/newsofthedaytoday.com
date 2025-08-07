@@ -37,7 +37,6 @@ const Settings = () => {
 
   const tabs = [
     { id: 'general', name: t.settings, icon: '⚙️' },
-    { id: 'seo', name: 'SEO', icon: '🔍' },
     { id: 'content', name: 'Зміст', icon: '📝' },
     { id: 'seo', name: 'SEO', icon: '🔍' },
     { id: 'security', name: 'Security', icon: '🔒' },
