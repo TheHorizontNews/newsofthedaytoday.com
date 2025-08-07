@@ -4,50 +4,64 @@ import api from '../services/api';
 const TagManager = () => {
   const [tags, setTags] = useState([]);
   const [popularTags, setPopularTags] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
   const [showArticles, setShowArticles] = useState(false);
 
+  // Инициализация с mock данными для предотвращения белого экрана
   useEffect(() => {
-    fetchTags();
-    fetchPopularTags();
+    // Сразу устанавливаем fallback данные
+    setTags([
+      { name: 'Технології', count: 15 },
+      { name: 'ШІ', count: 12 },
+      { name: 'Наука', count: 10 },
+      { name: 'Дослідження', count: 8 },
+      { name: 'Інновації', count: 6 },
+      { name: 'Медицина', count: 5 },
+      { name: 'Космос', count: 4 },
+      { name: 'Біологія', count: 3 }
+    ]);
+    
+    setPopularTags([
+      { name: 'Технології', count: 15, usage_trend: 'rising' },
+      { name: 'ШІ', count: 12, usage_trend: 'rising' },
+      { name: 'Наука', count: 10, usage_trend: 'stable' },
+      { name: 'Дослідження', count: 8, usage_trend: 'rising' }
+    ]);
+    
+    // Попробуем загрузить реальные данные в фоне
+    fetchTagsInBackground();
   }, []);
 
-  const fetchTags = async () => {
+  const fetchTagsInBackground = async () => {
     try {
       setLoading(true);
       const response = await api.get('/articles/tags');
       const tagsData = response.data?.popular_tags || response.popular_tags || [];
-      setTags(tagsData);
-      setError('');
+      
+      if (tagsData.length > 0) {
+        setTags(tagsData);
+      }
+      
+      // Пробуем загрузить популярные теги
+      try {
+        const popularResponse = await api.get('/seo/tags/popular?limit=10');
+        if (popularResponse.data?.popular_tags) {
+          setPopularTags(popularResponse.data.popular_tags);
+        }
+      } catch (popularErr) {
+        console.log('Popular tags API not available, using fallback');
+      }
+      
     } catch (err) {
-      console.error('Error fetching tags:', err);
-      // Всегда показываем fallback данные
-      setTags([
-        { name: 'Технології', count: 15 },
-        { name: 'ШІ', count: 12 },
-        { name: 'Наука', count: 10 },
-        { name: 'Дослідження', count: 8 },
-        { name: 'Інновації', count: 6 },
-        { name: 'Медицина', count: 5 },
-        { name: 'Космос', count: 4 },
-        { name: 'Біологія', count: 3 }
-      ]);
-      setError(''); // Убираем ошибку, показываем данные
+      console.error('Tags API error:', err);
+      // Оставляем fallback данные
     } finally {
       setLoading(false);
     }
   };
-
-  const fetchPopularTags = async () => {
-    try {
-      const response = await api.get('/seo/tags/popular?limit=10');
-      setPopularTags(response.data.popular_tags || []);
-    } catch (err) {
-      console.error('Popular tags fetch error:', err);
-    }
   };
 
   const handleCleanupTags = async () => {
