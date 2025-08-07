@@ -63,15 +63,6 @@ function App() {
           } />
           
           {/* Public routes with Header */}
-          <Route path="/" element={
-            <div className="App min-h-screen bg-gray-100">
-              <Header currentTime={currentTime} />
-              <main>
-                <HomePage />
-              </main>
-              <Footer />
-            </div>
-          } />
           <Route path="/article/:id" element={
             <div className="App min-h-screen bg-gray-100">
               <Header currentTime={currentTime} />
@@ -82,6 +73,16 @@ function App() {
             </div>
           } />
           <Route path="/category/:categorySlug" element={
+            <div className="App min-h-screen bg-gray-100">
+              <Header currentTime={currentTime} />
+              <main>
+                <HomePage />
+              </main>
+              <Footer />
+            </div>
+          } />
+          {/* Catch-all route - должен быть ПОСЛЕДНИМ */}
+          <Route path="*" element={
             <div className="App min-h-screen bg-gray-100">
               <Header currentTime={currentTime} />
               <main>
