@@ -283,6 +283,18 @@ frontend:
         -agent: "testing"
         -comment: "All public SEO endpoints working perfectly: 1) /api/seo/sitemap.xml - Returns valid XML sitemap (1609 bytes, application/xml). 2) /api/seo/robots.txt - Returns proper robots.txt (586 bytes, text/plain). 3) /api/seo/llms.txt - Returns LLMS training data file (1029 bytes, text/plain). 4) /api/seo/llms-sitemap.xml - Returns LLMS-specific sitemap (469 bytes, application/xml). All endpoints return correct MIME types and valid content structure."
 
+  - task: "SEO Settings Page"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/admin/pages/Settings.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "testing"
+        -comment: "CRITICAL AUTHENTICATION ISSUE IDENTIFIED. Backend SEO settings API working perfectly (GET/PUT /api/seo/settings), but frontend admin authentication flow has critical bug where login redirects to /admin/settings/login instead of maintaining authenticated session. Fixed API path issue in Settings.js from '/seo/settings' to '/api/seo/settings'. Settings page structure confirmed working with proper tabs and Ukrainian localization. Root cause: Frontend authentication context not properly maintaining login state. IMMEDIATE ACTION REQUIRED: Fix admin authentication context to maintain login sessions properly."
+
 metadata:
   created_by: "testing_agent"
   version: "2.0"
