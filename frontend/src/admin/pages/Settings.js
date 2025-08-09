@@ -76,7 +76,7 @@ const Settings = () => {
       };
       
       // Отправляем обновленные SEO настройки
-      await api.put('/seo/settings', seoData);
+      await api.put('/api/seo/settings', seoData);
       
       setSaveStatus('saved');
       setMessage('✅ Настройки успешно сохранены! Изменения отображаются в социальных сетях через 5-10 минут.');
