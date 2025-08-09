@@ -44,9 +44,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('admin_token');
+      console.log('Checking auth with token:', token ? 'EXISTS' : 'NONE');
+      
       if (token) {
         try {
           const user = await authAPI.getCurrentUser();
+          console.log('Auth check successful, user:', user);
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: { user, token }
