@@ -26,7 +26,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('admin_token');
-      window.location.href = '/admin/login';
+      // Не используем window.location.href, пусть React Router обработает
+      console.log('Authentication expired, token removed');
     }
     return Promise.reject(error);
   }
