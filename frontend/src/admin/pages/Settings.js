@@ -36,7 +36,7 @@ const Settings = () => {
   useEffect(() => {
     const loadSEOSettings = async () => {
       try {
-        const response = await api.get('/seo/settings');
+        const response = await api.get('/api/seo/settings');
         const data = response.data;
         setSeoSettings(data);
         
