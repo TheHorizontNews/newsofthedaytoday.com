@@ -52,12 +52,13 @@ export const AuthProvider = ({ children }) => {
             payload: { user, token }
           });
         } catch (error) {
+          console.error('Auth check failed:', error);
           localStorage.removeItem('admin_token');
           dispatch({ type: 'LOGOUT' });
         }
-      } else {
-        dispatch({ type: 'SET_LOADING', payload: false });
       }
+      // Всегда устанавливаем loading в false после проверки
+      dispatch({ type: 'SET_LOADING', payload: false });
     };
 
     checkAuth();
