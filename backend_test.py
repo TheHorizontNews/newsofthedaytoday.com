@@ -1073,7 +1073,7 @@ class BackendTester:
 
     async def run_all_tests(self):
         """Run all backend tests"""
-        print(f"🚀 Starting Backend API Tests for Ukrainian Article Creation Workflow")
+        print(f"🚀 Starting Backend API Tests for Article Display Fix")
         print(f"Backend URL: {BACKEND_URL}")
         print("=" * 80)
         
@@ -1087,7 +1087,17 @@ class BackendTester:
             print("❌ Cannot proceed without valid category")
             return False
         
-        # Step 3: Test English slug generation functionality
+        # Step 3: Test NEW SLUG ENDPOINT functionality (main focus)
+        print("\n🔗 NEW SLUG ENDPOINT TESTS (MAIN FOCUS)")
+        print("-" * 50)
+        
+        await self.test_new_slug_endpoint_basic()
+        await self.test_slug_endpoint_404_cases()
+        await self.test_slug_endpoint_no_auth_required()
+        await self.test_slug_endpoint_view_count_increment()
+        await self.test_slug_endpoint_with_existing_articles()
+        
+        # Step 4: Test English slug generation functionality
         print("\n🔤 ENGLISH SLUG GENERATION TESTS")
         print("-" * 50)
         
@@ -1096,7 +1106,7 @@ class BackendTester:
         await self.test_url_compatibility()
         await self.test_database_slug_persistence()
         
-        # Step 4: Test Ukrainian article creation workflow
+        # Step 5: Test Ukrainian article creation workflow
         print("\n🇺🇦 UKRAINIAN ARTICLE WORKFLOW TESTS")
         print("-" * 50)
         
@@ -1105,7 +1115,7 @@ class BackendTester:
         await self.test_featured_image_field()
         await self.test_database_content_verification()
         
-        # Step 4: Test basic article operations for comparison
+        # Step 6: Test basic article operations for comparison
         print("\n📝 BASIC ARTICLE OPERATIONS")
         print("-" * 50)
         
@@ -1115,7 +1125,7 @@ class BackendTester:
         await self.test_update_article()
         await self.test_delete_article()
         
-        # Step 5: Test error handling
+        # Step 7: Test error handling
         print("\n🔍 ERROR HANDLING TESTS")
         print("-" * 50)
         
@@ -1136,11 +1146,17 @@ class BackendTester:
         print(f"Failed: {total - passed}")
         print(f"Success Rate: {(passed/total)*100:.1f}%")
         
+        # Separate NEW SLUG ENDPOINT results (main focus)
+        slug_endpoint_tests = [r for r in self.results if "Slug Endpoint" in r["test"]]
+        slug_endpoint_passed = sum(1 for r in slug_endpoint_tests if r["success"])
+        
+        print(f"\n🔗 NEW Slug Endpoint Tests: {slug_endpoint_passed}/{len(slug_endpoint_tests)} passed")
+        
         # Separate English slug generation results
         english_slug_tests = [r for r in self.results if "English Slug" in r["test"] or "Slug Uniqueness" in r["test"] or "URL Compatibility" in r["test"] or "Database Slug" in r["test"]]
         english_slug_passed = sum(1 for r in english_slug_tests if r["success"])
         
-        print(f"\n🔤 English Slug Generation Tests: {english_slug_passed}/{len(english_slug_tests)} passed")
+        print(f"🔤 English Slug Generation Tests: {english_slug_passed}/{len(english_slug_tests)} passed")
         
         # Separate Ukrainian-specific results
         ukrainian_tests = [r for r in self.results if "Ukrainian" in r["test"] or "Featured Image" in r["test"] or "Database Content" in r["test"]]
