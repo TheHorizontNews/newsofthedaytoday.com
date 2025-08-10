@@ -224,6 +224,7 @@ const WorkingArticleEditor = () => {
     { label: 'Link', action: () => insertText('[текст](https://example.com)'), title: 'Посилання' },
     { label: 'List', action: () => insertText('\n- '), title: 'Список' },
     { label: 'Quote', action: () => insertText('\n> '), title: 'Цитата' },
+    { label: '📷', action: insertImage, title: 'Вставити зображення' },
   ];
 
   if (loading) {
