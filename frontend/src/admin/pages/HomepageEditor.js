@@ -22,8 +22,8 @@ const HomepageEditor = () => {
 
   const loadArticles = async () => {
     try {
-      const response = await api.get('/articles?status=published&limit=50');
-      setAvailableArticles(response.articles || response);
+      const response = await api.get('/articles/admin?status=published&limit=50');
+      setAvailableArticles(response.data || response);
     } catch (error) {
       console.error('Failed to load articles:', error);
     }
@@ -31,8 +31,11 @@ const HomepageEditor = () => {
 
   const loadHomepageConfig = async () => {
     try {
-      // Пока используем mock данные, потом подключим к API
-      console.log('Loading homepage configuration...');
+      const response = await api.get('/homepage/config');
+      const config = response.data || response;
+      if (config && config.blocks) {
+        setBlocks(config.blocks);
+      }
     } catch (error) {
       console.error('Failed to load homepage config:', error);
     }
