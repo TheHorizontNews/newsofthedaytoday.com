@@ -445,8 +445,7 @@ test_plan:
 test_plan:
   current_focus:
     - "Homepage Editor Frontend Interface"
-  stuck_tasks: 
-    - "Homepage Editor Frontend Interface"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
