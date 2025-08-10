@@ -89,6 +89,33 @@ const WorkingArticleEditor = () => {
     }));
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage('Розмір файлу не повинен перевищувати 5MB');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setMessage('Будь ласка, оберіть файл зображення');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        handleInputChange('featured_image', event.target.result);
+        setMessage('');
+      };
+      reader.onerror = () => {
+        setMessage('Помилка завантаження файлу');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = async (status = formData.status) => {
     if (!formData.title.trim() || !formData.content.trim()) {
       setMessage('Заголовок і зміст є обов\'язковими полями');
