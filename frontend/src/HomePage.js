@@ -118,35 +118,64 @@ function HomePage() {
     const loadHomepageData = async () => {
       try {
         const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        console.log('Loading homepage data from:', `${backendUrl}/api/homepage/public`);
+        
         const response = await fetch(`${backendUrl}/api/homepage/public`);
+        
+        if (!response.ok) {
+          console.error('Homepage API response not ok:', response.status);
+          setHomepageData(mockNewsData);
+          return;
+        }
+        
         const config = await response.json();
+        console.log('Homepage config loaded:', config);
         
         if (config && config.blocks && config.blocks.length > 0) {
           // Convert homepage config to component data format
-          const convertArticle = (article) => ({
-            id: article.id,
-            title: article.title,
-            subtitle: article.subtitle,
-            category: article.category?.name || article.category,
-            time: article.published_at ? new Date(article.published_at).toLocaleString('uk-UA') : 'Щойно',
-            views: article.views || 0,
-            author: article.author?.profile?.name || article.author?.username || article.author,
-            image: article.featured_image || article.image || 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
-            url: `/article/${article.slug}`
-          });
+          const convertArticle = (article) => {
+            if (!article) return null;
+            return {
+              id: article.id,
+              title: article.title || 'Без заголовка',
+              subtitle: article.subtitle,
+              category: article.category?.name || article.category || 'Новини',
+              time: article.published_at ? new Date(article.published_at).toLocaleString('uk-UA') : 'Щойно',
+              views: article.views || 0,
+              author: article.author?.profile?.name || article.author?.username || article.author || 'Science Admin',
+              image: article.featured_image || article.image || 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
+              url: `/article/${article.slug}`
+            };
+          };
+
+          const heroBlock = config.blocks.find(b => b.id === 'hero');
+          const mainBlock = config.blocks.find(b => b.id === 'main');
+          const sidebarBlock = config.blocks.find(b => b.id === 'sidebar');
+          const trendingBlock = config.blocks.find(b => b.id === 'trending');
+          const featuredBlock = config.blocks.find(b => b.id === 'featured');
 
           const data = {
-            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] ? 
-                  convertArticle(config.blocks.find(b => b.id === 'hero').articles[0]) : 
+            hero: heroBlock && heroBlock.articles && heroBlock.articles.length > 0 ? 
+                  convertArticle(heroBlock.articles[0]) : 
                   mockNewsData.hero,
-            mainNews: config.blocks.find(b => b.id === 'main')?.articles.map(convertArticle) || mockNewsData.mainNews,
-            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles.map(convertArticle) || mockNewsData.sidebarNews,
-            trending: config.blocks.find(b => b.id === 'trending')?.articles.map(convertArticle) || mockNewsData.trending,
-            publications: config.blocks.find(b => b.id === 'featured')?.articles.map(convertArticle) || mockNewsData.publications
+            mainNews: mainBlock && mainBlock.articles ? 
+                     mainBlock.articles.map(convertArticle).filter(Boolean) : 
+                     mockNewsData.mainNews,
+            sidebarNews: sidebarBlock && sidebarBlock.articles ? 
+                        sidebarBlock.articles.map(convertArticle).filter(Boolean) : 
+                        mockNewsData.sidebarNews,
+            trending: trendingBlock && trendingBlock.articles ? 
+                     trendingBlock.articles.map(convertArticle).filter(Boolean) : 
+                     mockNewsData.trending,
+            publications: featuredBlock && featuredBlock.articles ? 
+                         featuredBlock.articles.map(convertArticle).filter(Boolean) : 
+                         mockNewsData.publications
           };
+          
+          console.log('Converted data:', data);
           setHomepageData(data);
         } else {
-          // Use mock data if no configuration
+          console.log('No blocks found, using mock data');
           setHomepageData(mockNewsData);
         }
       } catch (error) {
