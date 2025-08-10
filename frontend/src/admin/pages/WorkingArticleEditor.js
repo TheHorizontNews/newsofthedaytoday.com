@@ -562,6 +562,16 @@ const WorkingArticleEditor = () => {
                 </p>
               )}
               
+              {formData.featured_image && (
+                <div className="mb-6">
+                  <img 
+                    src={formData.featured_image} 
+                    alt="Заглавне фото статті" 
+                    className="w-full max-h-96 object-cover rounded-lg"
+                  />
+                </div>
+              )}
+              
               {formData.tags && (
                 <div className="flex flex-wrap gap-2 mb-6">
                   {formData.tags.split(',').map((tag, index) => (
