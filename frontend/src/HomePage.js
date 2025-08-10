@@ -1,7 +1,88 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HeroSection, MainNews, SidebarNews, TrendingSection, PublicationsSection } from './components';
 
-// Mock data for the news website
+const HomePage = () => {
+  const [homepageData, setHomepageData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHomepageData = async () => {
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        const response = await fetch(`${backendUrl}/api/homepage/public`);
+        const config = await response.json();
+        
+        if (config && config.blocks && config.blocks.length > 0) {
+          // Convert homepage config to component data format
+          const data = {
+            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || null,
+            mainNews: config.blocks.find(b => b.id === 'main')?.articles || [],
+            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || [],
+            trending: config.blocks.find(b => b.id === 'trending')?.articles || [],
+            featured: config.blocks.find(b => b.id === 'featured')?.articles || []
+          };
+          setHomepageData(data);
+        } else {
+          // Use mock data if no configuration
+          setHomepageData(mockNewsData);
+        }
+      } catch (error) {
+        console.error('Error loading homepage data:', error);
+        // Fallback to mock data
+        setHomepageData(mockNewsData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHomepageData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  const data = homepageData || mockNewsData;
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      {data.hero && <HeroSection article={data.hero} />}
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main content area */}
+          <div className="lg:col-span-8">
+            {data.mainNews && data.mainNews.length > 0 && (
+              <MainNews articles={data.mainNews} />
+            )}
+            
+            {data.trending && data.trending.length > 0 && (
+              <TrendingSection articles={data.trending} />
+            )}
+            
+            {data.featured && data.featured.length > 0 && (
+              <PublicationsSection articles={data.featured} />
+            )}
+          </div>
+
+          {/* Sidebar */}
+          {data.sidebarNews && data.sidebarNews.length > 0 && (
+            <div className="lg:col-span-4">
+              <SidebarNews articles={data.sidebarNews} />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Mock data for fallback (keeping existing mock data)
 const mockNewsData = {
   hero: {
     id: 'hero-1',
