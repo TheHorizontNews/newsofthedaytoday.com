@@ -15,11 +15,11 @@ const HomePage = () => {
         if (config && config.blocks && config.blocks.length > 0) {
           // Convert homepage config to component data format
           const data = {
-            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || null,
-            mainNews: config.blocks.find(b => b.id === 'main')?.articles || [],
-            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || [],
-            trending: config.blocks.find(b => b.id === 'trending')?.articles || [],
-            featured: config.blocks.find(b => b.id === 'featured')?.articles || []
+            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || mockNewsData.hero,
+            mainNews: config.blocks.find(b => b.id === 'main')?.articles || mockNewsData.mainNews,
+            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || mockNewsData.sidebarNews,
+            trending: config.blocks.find(b => b.id === 'trending')?.articles || mockNewsData.trending,
+            featured: config.blocks.find(b => b.id === 'featured')?.articles || mockNewsData.publications
           };
           setHomepageData(data);
         } else {
@@ -48,37 +48,56 @@ const HomePage = () => {
 
   const data = homepageData || mockNewsData;
 
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      {data.hero && <HeroSection article={data.hero} />}
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main content area */}
-          <div className="lg:col-span-8">
-            {data.mainNews && data.mainNews.length > 0 && (
-              <MainNews articles={data.mainNews} />
-            )}
-            
-            {data.trending && data.trending.length > 0 && (
-              <TrendingSection articles={data.trending} />
-            )}
-            
-            {data.featured && data.featured.length > 0 && (
-              <PublicationsSection articles={data.featured} />
-            )}
-          </div>
+  // Structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "Science Digest News",
+    "url": "https://sciencedigestnews.com",
+    "logo": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=200&h=200&fit=crop&crop=entropy&fm=webp&q=85",
+    "description": "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.",
+    "mainEntity": {
+      "@type": "NewsArticle",
+      "headline": data.hero.title,
+      "image": data.hero.image,
+      "author": {
+        "@type": "Person",
+        "name": data.hero.author
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Science Digest News"
+      },
+      "datePublished": "2025-06-23T18:15:00Z",
+      "dateModified": "2025-06-23T18:15:00Z"
+    }
+  };
 
-          {/* Sidebar */}
-          {data.sidebarNews && data.sidebarNews.length > 0 && (
-            <div className="lg:col-span-4">
-              <SidebarNews articles={data.sidebarNews} />
+  return (
+    <>
+      {/* Structured Data */}
+      <script 
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      {/* Main Content */}
+      <main id="main-content" role="main">
+        <HeroSection heroData={data.hero} />
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <MainNews newsData={data.mainNews} />
+              <TrendingSection trendingData={data.trending} />
+              <PublicationsSection publicationsData={data.publications} />
             </div>
-          )}
+            <div className="lg:col-span-1">
+              <SidebarNews sidebarData={data.sidebarNews} />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 };
 
