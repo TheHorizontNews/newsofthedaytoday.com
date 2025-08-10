@@ -184,6 +184,33 @@ const Articles = () => {
                         )}
                       </div>
                     </td>
+                    <td className="text-sm">
+                      <div className="flex items-center space-x-2">
+                        <code className="bg-gray-100 px-2 py-1 rounded text-xs">
+                          /article/{article.slug || article.id}
+                        </code>
+                        <button
+                          onClick={() => {
+                            const url = `https://sciencedigestnews.com/article/${article.slug || article.id}`;
+                            navigator.clipboard.writeText(url);
+                            // Можно добавить уведомление о копировании
+                          }}
+                          className="text-blue-600 hover:text-blue-800"
+                          title="Копіювати URL"
+                        >
+                          📋
+                        </button>
+                        <a
+                          href={`https://sciencedigestnews.com/article/${article.slug || article.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800"
+                          title="Відкрити статтю"
+                        >
+                          🔗
+                        </a>
+                      </div>
+                    </td>
                     <td className="text-sm text-gray-600">
                       {article.author?.profile?.name || article.author?.username}
                     </td>
