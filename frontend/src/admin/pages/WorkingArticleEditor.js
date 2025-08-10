@@ -251,7 +251,6 @@ const WorkingArticleEditor = () => {
     { label: 'Quote', action: () => insertText('\n> '), title: 'Цитата' },
     { label: '📷', action: insertImage, title: 'Вставити зображення' },
   ];
-  ];
 
   if (loading) {
     return (
