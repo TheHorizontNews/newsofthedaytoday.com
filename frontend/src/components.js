@@ -51,10 +51,8 @@ export const Header = ({ currentTime }) => {
     { name: 'Медицина', href: '/category/medicine' },
     { name: 'Космос і Фізика', href: '/category/space-physics' },
     { name: 'Довкілля', href: '/category/environment' },
-    { name: 'Дослідження', href: '/category/research' },
     { name: 'ШІ та Обчислення', href: '/category/ai-computing' },
-    { name: 'Біологія', href: '/category/biology' },
-    { name: 'Інновації', href: '/category/innovation' }
+    { name: 'Біологія', href: '/category/biology' }
   ];
 
   const formatTime = (date) => {
