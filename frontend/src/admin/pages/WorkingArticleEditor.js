@@ -22,14 +22,7 @@ const WorkingArticleEditor = () => {
     seo_description: ''
   });
   
-  const [categories, setCategories] = useState([
-    { id: '8f8284e0-dc51-4788-93c0-a56f3fcd3f1c', name: 'ШІ та Обчислення' },
-    { id: 'tech-id-1', name: 'Технології' },
-    { id: 'med-id-1', name: 'Медицина' },
-    { id: 'space-id-1', name: 'Космос і Фізика' },
-    { id: 'bio-id-1', name: 'Біологія' },
-    { id: 'env-id-1', name: 'Довкілля' }
-  ]);
+  const [categories, setCategories] = useState([]);
   
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
