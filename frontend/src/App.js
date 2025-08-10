@@ -102,6 +102,7 @@ function App() {
         </Routes>
       </AnalyticsWrapper>
     </Router>
+    </HelmetProvider>
   );
 }
 
