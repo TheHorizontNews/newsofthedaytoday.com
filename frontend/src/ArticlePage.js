@@ -97,7 +97,36 @@ function ArticlePage() {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <>
+      {/* Dynamic SEO Meta Tags for Social Sharing */}
+      <Helmet>
+        <title>{article.title ? `${article.title} - Science Digest News` : 'Science Digest News'}</title>
+        <meta name="description" content={article.subtitle || article.seo_description || 'Останні наукові відкриття та дослідження з усього світу'} />
+        
+        {/* Open Graph tags */}
+        <meta property="og:title" content={article.title || 'Science Digest News'} />
+        <meta property="og:description" content={article.subtitle || article.seo_description || 'Останні наукові відкриття та дослідження з усього світу'} />
+        <meta property="og:image" content={article.featured_image || 'https://images.unsplash.com/photo-1576086213369-97a306d36557?w=1200&h=630&fit=crop'} />
+        <meta property="og:url" content={`https://sciencedigestnews.com/article/${slug}`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Science Digest News" />
+        
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title || 'Science Digest News'} />
+        <meta name="twitter:description" content={article.subtitle || article.seo_description || 'Останні наукові відкриття та дослідження з усього світу'} />
+        <meta name="twitter:image" content={article.featured_image || 'https://images.unsplash.com/photo-1576086213369-97a306d36557?w=1200&h=630&fit=crop'} />
+        
+        {/* Article specific tags */}
+        {article.published_at && <meta property="article:published_time" content={article.published_at} />}
+        {article.author?.username && <meta property="article:author" content={article.author.username} />}
+        {article.category?.name && <meta property="article:section" content={article.category.name} />}
+        {article.tags && article.tags.map((tag, index) => (
+          <meta key={index} property="article:tag" content={tag} />
+        ))}
+      </Helmet>
+
+      <div className="bg-white min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Article Header */}
