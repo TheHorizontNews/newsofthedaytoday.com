@@ -65,6 +65,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add social media middleware for meta tags
+app.middleware("http")(social_media_meta_middleware)
+
 # Include routers
 app.include_router(articles_router)
 app.include_router(users_router)
