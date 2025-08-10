@@ -70,75 +70,86 @@ function ArticlePage() {
   };
 
   return (
-    <div className="bg-white">
-      {/* Breadcrumb */}
-      <div className="bg-red-600 text-white py-2">
-        <div className="container mx-auto px-4">
-          <nav className="text-sm">
-            <Link to="/" className="hover:text-red-200 transition-colors">Головна</Link>
-            <span className="mx-2">•</span>
-            <span className="text-red-200">{article.category}</span>
-            <span className="mx-2">•</span>
-            <span className="text-red-200">Стаття</span>
-          </nav>
-        </div>
-      </div>
-
-      {/* Article Header */}
-      <div className="relative bg-black text-white overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={article.image}
-            alt="Article background"
-            className="w-full h-full object-cover opacity-70"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
-        </div>
-
-        <div className="relative container mx-auto px-4 py-16">
-          <div className="max-w-4xl">
+    <div className="bg-white min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Article Header */}
+          <div className="mb-8">
+            {article.image && (
+              <img
+                src={article.image}
+                alt={article.title}
+                className="w-full h-64 object-cover rounded-lg mb-6"
+              />
+            )}
+            
             <div className="flex items-center space-x-2 mb-4">
-              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
-                {article.category}
-              </span>
-              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
-                Edge Chronicle
-              </span>
+              {article.category && (
+                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                  {article.category}
+                </span>
+              )}
+              {article.time && (
+                <span className="text-gray-500 text-sm">{article.time}</span>
+              )}
             </div>
 
-            <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-gray-900">
               {article.title}
             </h1>
 
             {article.subtitle && (
-              <p className="text-xl text-gray-300 mb-6 leading-relaxed">
+              <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 {article.subtitle}
               </p>
             )}
 
-            <ArticleMeta article={article} />
-            <SocialShare article={article} />
+            {article.author && (
+              <div className="flex items-center mb-6">
+                <div className="text-sm text-gray-600">
+                  Автор: <span className="font-medium">{article.author}</span>
+                </div>
+                {article.views && (
+                  <div className="ml-4 text-sm text-gray-500">
+                    Переглядів: {article.views}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-      </div>
 
-      {/* Article Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <ArticleContent article={article} />
+          {/* Article Content */}
+          <div className="prose max-w-none mb-8">
+            {article.content && (
+              <div 
+                className="text-gray-800 leading-relaxed"
+                dangerouslySetInnerHTML={{ 
+                  __html: formatContent(
+                    Array.isArray(article.content) 
+                      ? article.content.join('\n\n') 
+                      : article.content
+                  ) 
+                }}
+              />
+            )}
           </div>
-          <div className="lg:col-span-1">
-            <RelatedArticles articles={article.relatedArticles} />
-            
-            {/* Ad Space */}
-            <div className="bg-gray-100 rounded-lg p-6 mb-8 text-center">
-              <p className="text-gray-500 text-sm mb-2">НОВИНИ ПАРТНЕРІВ</p>
-              <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Рекламний блок</p>
+
+          {/* Tags */}
+          {article.tags && article.tags.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold mb-3">Теги:</h3>
+              <div className="flex flex-wrap gap-2">
+                {article.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
