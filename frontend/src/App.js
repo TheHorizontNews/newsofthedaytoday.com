@@ -53,9 +53,10 @@ function App() {
   }, [seoData, loading, updateMetaTags]);
 
   return (
-    <Router>
-      <SkipToContent />
-      <AnalyticsWrapper>
+    <HelmetProvider>
+      <Router>
+        <SkipToContent />
+        <AnalyticsWrapper>
         <Routes>
           {/* Admin routes - ПЕРВЫМИ для приоритета */}
           <Route path="/admin/*" element={<AdminApp />} />
