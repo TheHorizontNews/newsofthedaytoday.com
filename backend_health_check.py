@@ -12,7 +12,7 @@ import os
 import sys
 
 # Get backend URL from environment
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://8ca882a8-83c2-4c10-93ce-a296b7f160ab.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://77b80d3b-08a9-4440-a9ff-928d52268df6.preview.emergentagent.com')
 
 class HealthChecker:
     def __init__(self):
