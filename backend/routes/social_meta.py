@@ -128,9 +128,9 @@ async def get_article_meta(slug: str, request: Request, db: Session = Depends(ge
 <body>
     <div class="article-header">
         <h1>{title}</h1>
-        {f'<div class="category">{article.category.name}</div>' if article.category else ''}
+        {f'<div class="category">{category.name}</div>' if category else ''}
         <div class="meta">
-            {f'Автор: {article.author.username} | ' if article.author else ''}
+            {f'Автор: {author.username} | ' if author else ''}
             {f'Опубліковано: {article.published_at.strftime("%d.%m.%Y")}' if article.published_at else ''}
         </div>
         <p><strong>{description}</strong></p>
