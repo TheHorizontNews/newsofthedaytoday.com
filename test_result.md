@@ -285,11 +285,11 @@ frontend:
 
   - task: "English Slug Generation"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/utils.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: false
         -agent: "main"
@@ -297,6 +297,9 @@ frontend:
         -working: false
         -agent: "main"
         -comment: "Implemented Ukrainian to English transliteration in create_slug function. Added comprehensive transliteration mapping to convert Ukrainian characters to English equivalents. Ready for testing."
+        -working: true
+        -agent: "testing"
+        -comment: "ENGLISH SLUG GENERATION TESTING COMPLETED - ALL FUNCTIONALITY WORKING PERFECTLY! Comprehensive testing of Ukrainian to English transliteration completed with 100% success rate (4/4 English slug tests passed). CRITICAL FINDINGS: 1) TRANSLITERATION ACCURACY ✅ - All test cases generate correct English slugs: 'Новітні технології штучного інтелекту' → 'novitni-tekhnolohiyi-shtuchnoho-intelektu', 'Штучний інтелект революційний прорив' → 'shtuchnyyi-intelekt-revolyutsiyinyyi-proryv', 'Дивні новини про технології' → 'dyvni-novyny-pro-tekhnolohiyi'. 2) URL COMPATIBILITY ✅ - Generated slugs are fully URL-safe with no URL-encoded characters, ASCII-only characters, proper hyphenation, no double hyphens or leading/trailing hyphens. 3) SLUG UNIQUENESS ✅ - Duplicate titles generate unique slugs with proper suffixes (base, -1, -2, etc.). 4) DATABASE PERSISTENCE ✅ - English slugs properly saved and retrieved from database. 5) COMPREHENSIVE TESTING ✅ - Tested various Ukrainian titles with special characters, punctuation, and numbers - all generate clean English slugs. The Ukrainian to English transliteration implementation is production-ready and meets all specified requirements from the review request."
 
   - task: "Main Photo Functionality"
     implemented: false
