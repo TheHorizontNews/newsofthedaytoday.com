@@ -366,12 +366,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "SEO Analytics Dashboard"
-    - "Tag Manager"
-    - "Enhanced Tag Input Component"
-    - "SEO Metadata Injection"
-    - "Google Analytics Integration"
-    - "Public SEO Endpoints"
+    - "English Slug Generation"
+    - "Main Photo Functionality"
+    - "In-Text Photo Integration"
+    - "Content Saving Investigation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
