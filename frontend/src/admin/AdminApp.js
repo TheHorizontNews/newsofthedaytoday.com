@@ -97,6 +97,11 @@ function AdminApp() {
                 <MediaLibrary />
               </ProtectedRoute>
             } />
+            <Route path="homepage" element={
+              <ProtectedRoute>
+                <HomepageEditor />
+              </ProtectedRoute>
+            } />
             <Route path="settings" element={
               <ProtectedRoute>
                 <Settings />
