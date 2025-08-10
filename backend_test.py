@@ -758,6 +758,319 @@ class BackendTester:
             self.log_result("Database Content Verification", False, f"Exception: {str(e)}")
             return False
 
+    async def test_new_slug_endpoint_basic(self):
+        """Test the new GET /api/articles/slug/{slug} endpoint with basic functionality"""
+        try:
+            # First, create a published article to test with
+            if not self.test_category_id:
+                self.log_result("New Slug Endpoint Basic", False, "No valid category ID available")
+                return False
+                
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Create a published article
+            article_data = {
+                "title": "Тестова стаття для slug endpoint",
+                "subtitle": "Перевірка нового публічного endpoint",
+                "content": "Це тестовий контент для перевірки нового endpoint /api/articles/slug/{slug}. Контент має бути доступний без автентифікації.",
+                "category_id": self.test_category_id,
+                "tags": ["тест", "slug", "endpoint"],
+                "status": "published",
+                "seo_title": "Тестова стаття SEO",
+                "seo_description": "Опис для тестової статті"
+            }
+            
+            # Create the article
+            async with self.session.post(f"{BACKEND_URL}/api/articles/", json=article_data, headers=headers) as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("New Slug Endpoint Basic", False, f"Failed to create test article: {response.status} - {error_data}")
+                    return False
+                
+                created_article = await response.json()
+                test_slug = created_article.get("slug")
+                test_article_id = created_article.get("id")
+                
+                if not test_slug:
+                    self.log_result("New Slug Endpoint Basic", False, "No slug returned from article creation")
+                    return False
+            
+            # Test the new slug endpoint WITHOUT authentication
+            async with self.session.get(f"{BACKEND_URL}/api/articles/slug/{test_slug}") as response:
+                if response.status == 200:
+                    article = await response.json()
+                    
+                    # Verify article structure and content
+                    title_correct = article.get("title") == article_data["title"]
+                    content_correct = article_data["content"] in article.get("content", "")
+                    status_published = article.get("status") == "published"
+                    has_author = "author" in article and article["author"] is not None
+                    has_category = "category" in article and article["category"] is not None
+                    slug_correct = article.get("slug") == test_slug
+                    
+                    # Check if views were incremented (should be at least 1)
+                    views_incremented = article.get("views", 0) >= 1
+                    
+                    details = f"Slug endpoint working - Title: {title_correct}, Content: {content_correct}, Status: {status_published}, Author: {has_author}, Category: {has_category}, Slug: {slug_correct}, Views incremented: {views_incremented}"
+                    
+                    success = all([title_correct, content_correct, status_published, has_author, has_category, slug_correct, views_incremented])
+                    
+                    # Clean up test article
+                    if test_article_id:
+                        await self.session.delete(f"{BACKEND_URL}/api/articles/{test_article_id}", headers=headers)
+                    
+                    self.log_result("New Slug Endpoint Basic", success, details)
+                    return success
+                else:
+                    error_data = await response.text()
+                    # Clean up test article
+                    if test_article_id:
+                        await self.session.delete(f"{BACKEND_URL}/api/articles/{test_article_id}", headers=headers)
+                    
+                    self.log_result("New Slug Endpoint Basic", False, f"HTTP {response.status}", error_data)
+                    return False
+                    
+        except Exception as e:
+            self.log_result("New Slug Endpoint Basic", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_slug_endpoint_404_cases(self):
+        """Test that slug endpoint returns 404 for non-existent and unpublished articles"""
+        try:
+            # Test 1: Non-existent slug
+            non_existent_slug = "non-existent-article-slug-12345"
+            async with self.session.get(f"{BACKEND_URL}/api/articles/slug/{non_existent_slug}") as response:
+                if response.status != 404:
+                    self.log_result("Slug Endpoint 404 Cases", False, f"Non-existent slug should return 404, got {response.status}")
+                    return False
+            
+            # Test 2: Create draft article and verify it returns 404
+            if not self.test_category_id:
+                self.log_result("Slug Endpoint 404 Cases", False, "No valid category ID available")
+                return False
+                
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Create a draft (unpublished) article
+            draft_article_data = {
+                "title": "Чернетка статті для тестування",
+                "content": "Цей контент не повинен бути доступний через slug endpoint",
+                "category_id": self.test_category_id,
+                "tags": ["чернетка"],
+                "status": "draft"
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/api/articles/", json=draft_article_data, headers=headers) as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("Slug Endpoint 404 Cases", False, f"Failed to create draft article: {response.status} - {error_data}")
+                    return False
+                
+                draft_article = await response.json()
+                draft_slug = draft_article.get("slug")
+                draft_article_id = draft_article.get("id")
+                
+                if not draft_slug:
+                    self.log_result("Slug Endpoint 404 Cases", False, "No slug returned from draft article creation")
+                    return False
+            
+            # Test that draft article returns 404 via slug endpoint
+            async with self.session.get(f"{BACKEND_URL}/api/articles/slug/{draft_slug}") as response:
+                if response.status != 404:
+                    # Clean up
+                    if draft_article_id:
+                        await self.session.delete(f"{BACKEND_URL}/api/articles/{draft_article_id}", headers=headers)
+                    
+                    self.log_result("Slug Endpoint 404 Cases", False, f"Draft article should return 404, got {response.status}")
+                    return False
+            
+            # Clean up draft article
+            if draft_article_id:
+                await self.session.delete(f"{BACKEND_URL}/api/articles/{draft_article_id}", headers=headers)
+            
+            self.log_result("Slug Endpoint 404 Cases", True, "Both non-existent and draft articles correctly return 404")
+            return True
+            
+        except Exception as e:
+            self.log_result("Slug Endpoint 404 Cases", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_slug_endpoint_no_auth_required(self):
+        """Test that slug endpoint works without authentication"""
+        try:
+            # First create a published article
+            if not self.test_category_id:
+                self.log_result("Slug Endpoint No Auth", False, "No valid category ID available")
+                return False
+                
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            article_data = {
+                "title": "Публічна стаття без автентифікації",
+                "content": "Цей контент має бути доступний без логіну",
+                "category_id": self.test_category_id,
+                "tags": ["публічний", "доступ"],
+                "status": "published"
+            }
+            
+            # Create article with auth
+            async with self.session.post(f"{BACKEND_URL}/api/articles/", json=article_data, headers=headers) as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("Slug Endpoint No Auth", False, f"Failed to create article: {response.status} - {error_data}")
+                    return False
+                
+                article = await response.json()
+                test_slug = article.get("slug")
+                test_article_id = article.get("id")
+            
+            # Test access WITHOUT any authentication headers
+            async with self.session.get(f"{BACKEND_URL}/api/articles/slug/{test_slug}") as response:
+                if response.status == 200:
+                    article_data = await response.json()
+                    content_accessible = "без логіну" in article_data.get("content", "")
+                    
+                    # Clean up
+                    if test_article_id:
+                        await self.session.delete(f"{BACKEND_URL}/api/articles/{test_article_id}", headers=headers)
+                    
+                    if content_accessible:
+                        self.log_result("Slug Endpoint No Auth", True, "Article accessible without authentication")
+                        return True
+                    else:
+                        self.log_result("Slug Endpoint No Auth", False, "Article content not properly returned")
+                        return False
+                else:
+                    error_data = await response.text()
+                    # Clean up
+                    if test_article_id:
+                        await self.session.delete(f"{BACKEND_URL}/api/articles/{test_article_id}", headers=headers)
+                    
+                    self.log_result("Slug Endpoint No Auth", False, f"HTTP {response.status} - should be accessible without auth", error_data)
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Slug Endpoint No Auth", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_slug_endpoint_view_count_increment(self):
+        """Test that slug endpoint increments view count"""
+        try:
+            # Create a published article
+            if not self.test_category_id:
+                self.log_result("Slug Endpoint View Count", False, "No valid category ID available")
+                return False
+                
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            article_data = {
+                "title": "Стаття для тестування лічильника переглядів",
+                "content": "Перегляди мають збільшуватися при кожному запиті",
+                "category_id": self.test_category_id,
+                "tags": ["перегляди"],
+                "status": "published"
+            }
+            
+            # Create article
+            async with self.session.post(f"{BACKEND_URL}/api/articles/", json=article_data, headers=headers) as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("Slug Endpoint View Count", False, f"Failed to create article: {response.status} - {error_data}")
+                    return False
+                
+                article = await response.json()
+                test_slug = article.get("slug")
+                test_article_id = article.get("id")
+                initial_views = article.get("views", 0)
+            
+            # Make multiple requests and check view count increment
+            view_counts = []
+            for i in range(3):
+                async with self.session.get(f"{BACKEND_URL}/api/articles/slug/{test_slug}") as response:
+                    if response.status == 200:
+                        article_data = await response.json()
+                        view_counts.append(article_data.get("views", 0))
+                    else:
+                        # Clean up and fail
+                        if test_article_id:
+                            await self.session.delete(f"{BACKEND_URL}/api/articles/{test_article_id}", headers=headers)
+                        
+                        self.log_result("Slug Endpoint View Count", False, f"Request {i+1} failed with status {response.status}")
+                        return False
+            
+            # Clean up
+            if test_article_id:
+                await self.session.delete(f"{BACKEND_URL}/api/articles/{test_article_id}", headers=headers)
+            
+            # Verify view counts are incrementing
+            views_incrementing = all(view_counts[i] < view_counts[i+1] for i in range(len(view_counts)-1))
+            expected_final_views = initial_views + 3
+            final_views_correct = view_counts[-1] == expected_final_views
+            
+            details = f"View counts: {view_counts}, Incrementing: {views_incrementing}, Final count correct: {final_views_correct}"
+            success = views_incrementing and final_views_correct
+            
+            self.log_result("Slug Endpoint View Count", success, details)
+            return success
+            
+        except Exception as e:
+            self.log_result("Slug Endpoint View Count", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_slug_endpoint_with_existing_articles(self):
+        """Test slug endpoint with existing articles in database"""
+        try:
+            # Get all published articles
+            async with self.session.get(f"{BACKEND_URL}/api/articles/?status=published") as response:
+                if response.status != 200:
+                    self.log_result("Slug Endpoint Existing Articles", False, f"Failed to get published articles: {response.status}")
+                    return False
+                
+                published_articles = await response.json()
+                
+                if not published_articles:
+                    self.log_result("Slug Endpoint Existing Articles", True, "No existing published articles to test with")
+                    return True
+                
+                # Test first few published articles
+                tested_count = 0
+                successful_tests = 0
+                
+                for article in published_articles[:3]:  # Test up to 3 existing articles
+                    slug = article.get("slug")
+                    if not slug:
+                        continue
+                        
+                    tested_count += 1
+                    
+                    # Test slug endpoint
+                    async with self.session.get(f"{BACKEND_URL}/api/articles/slug/{slug}") as slug_response:
+                        if slug_response.status == 200:
+                            slug_article = await slug_response.json()
+                            
+                            # Verify article data matches
+                            title_matches = slug_article.get("title") == article.get("title")
+                            id_matches = slug_article.get("id") == article.get("id")
+                            status_published = slug_article.get("status") == "published"
+                            has_proper_structure = all(key in slug_article for key in ["author", "category", "content"])
+                            
+                            if all([title_matches, id_matches, status_published, has_proper_structure]):
+                                successful_tests += 1
+                
+                success = tested_count > 0 and successful_tests == tested_count
+                details = f"Tested {tested_count} existing articles, {successful_tests} successful"
+                
+                self.log_result("Slug Endpoint Existing Articles", success, details)
+                return success
+                
+        except Exception as e:
+            self.log_result("Slug Endpoint Existing Articles", False, f"Exception: {str(e)}")
+            return False
+
     async def run_all_tests(self):
         """Run all backend tests"""
         print(f"🚀 Starting Backend API Tests for Ukrainian Article Creation Workflow")
