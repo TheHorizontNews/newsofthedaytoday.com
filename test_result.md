@@ -302,28 +302,34 @@ frontend:
         -comment: "English slug generation working perfectly with 100% success rate (8/8 tests passed). Ukrainian titles now properly transliterate to English: 'Новітні технології штучного інтелекту' -> 'novitni-tekhnolohiyi-shtuchnoho-intelektu', 'Штучний інтелект революційний прорив' -> 'shtuchnyyi-intelekt-revolyutsiyinyyi-proryv', 'Дивні новини про технології' -> 'dyvni-novyny-pro-tekhnolohiyi'. Slug uniqueness working with numeric suffixes for duplicates. All generated slugs are URL-safe with no encoded characters. Task completed."
 
   - task: "Main Photo Functionality"
-    implemented: false
+    implemented: true
     working: false
     file: "/app/frontend/src/admin/pages/WorkingArticleEditor.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: false
         -agent: "main"
         -comment: "User requests 'zaглавное фото' (main/cover photo) functionality. featured_image field exists in backend but UI needs proper main photo upload interface in article editor."
+        -working: false
+        -agent: "main"
+        -comment: "Implemented main photo upload functionality in WorkingArticleEditor. Added image upload with file validation (5MB max, image types only), preview with delete option, base64 encoding for storage. Ready for testing."
 
   - task: "In-Text Photo Integration"
-    implemented: false
+    implemented: true
     working: false
     file: "/app/frontend/src/admin/pages/WorkingArticleEditor.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: false
         -agent: "main"
         -comment: "User requests ability to add images within article content with alt text attributes. Current editor only supports markdown text formatting."
+        -working: false
+        -agent: "main"
+        -comment: "Implemented in-text photo integration with 📷 button in formatting toolbar. Users can upload images that get inserted as markdown with alt text prompt. Enhanced preview renderer to display markdown images properly. Ready for testing."
 
   - task: "Content Saving Investigation"
     implemented: false
