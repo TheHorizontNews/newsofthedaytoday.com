@@ -42,7 +42,9 @@ async def get_article_meta(slug: str, request: Request, db: AsyncSession = Depen
     author = None
     
     if article.category_id:
-        category = db.query(CategoryTable).filter(CategoryTable.id == article.category_id).first()
+        stmt = select(CategoryTable).where(CategoryTable.id == article.category_id)
+        result = await db.execute(stmt)
+        category = result.scalar_one_or_none()
     
     if article.author_id:
         author = db.query(UserTable).filter(UserTable.id == article.author_id).first()
