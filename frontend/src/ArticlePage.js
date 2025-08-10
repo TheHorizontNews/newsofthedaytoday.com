@@ -127,97 +127,98 @@ function ArticlePage() {
       </Helmet>
 
       <div className="bg-white min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Article Header */}
-          <div className="mb-8">
-            {article.featured_image && (
-              <img
-                src={article.featured_image}
-                alt={article.title}
-                className="w-full h-64 object-cover rounded-lg mb-6"
-              />
-            )}
-            
-            <div className="flex items-center space-x-2 mb-4">
-              {article.category && (
-                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
-                  {article.category.name}
-                </span>
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Article Header */}
+            <div className="mb-8">
+              {article.featured_image && (
+                <img
+                  src={article.featured_image}
+                  alt={article.title}
+                  className="w-full h-64 object-cover rounded-lg mb-6"
+                />
               )}
-              {article.published_at && (
-                <span className="text-gray-500 text-sm">
-                  {new Date(article.published_at).toLocaleDateString('uk-UA')}
-                </span>
-              )}
-            </div>
-
-            <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-gray-900">
-              {article.title}
-            </h1>
-
-            {article.subtitle && (
-              <p className="text-xl text-gray-600 mb-6 leading-relaxed">
-                {article.subtitle}
-              </p>
-            )}
-
-            {article.author && (
-              <div className="flex items-center mb-6">
-                <div className="text-sm text-gray-600">
-                  Автор: <span className="font-medium">{article.author.profile?.name || article.author.username}</span>
-                </div>
-                {article.views && (
-                  <div className="ml-4 text-sm text-gray-500">
-                    Переглядів: {article.views}
-                  </div>
+              
+              <div className="flex items-center space-x-2 mb-4">
+                {article.category && (
+                  <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                    {article.category.name}
+                  </span>
+                )}
+                {article.published_at && (
+                  <span className="text-gray-500 text-sm">
+                    {new Date(article.published_at).toLocaleDateString('uk-UA')}
+                  </span>
                 )}
               </div>
-            )}
-          </div>
 
-          {/* Article Content */}
-          <div className="prose max-w-none mb-8 bg-white rounded-lg p-6">
-            {article.content && (
-              <div 
-                className="text-gray-800 leading-relaxed text-lg"
-                dangerouslySetInnerHTML={{ 
-                  __html: formatContent(
-                    Array.isArray(article.content) 
-                      ? article.content.join('\n\n') 
-                      : article.content
-                  ) 
-                }}
-              />
-            )}
-            
-            {!article.content && (
-              <div className="text-center py-12 text-gray-500">
-                <p className="text-xl mb-2">Контент статті недоступний</p>
-                <p>Можливо, стаття ще не була опублікована або видалена.</p>
-              </div>
-            )}
-          </div>
+              <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-gray-900">
+                {article.title}
+              </h1>
 
-          {/* Tags */}
-          {article.tags && article.tags.length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-3">Теги:</h3>
-              <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {article.subtitle && (
+                <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+                  {article.subtitle}
+                </p>
+              )}
+
+              {article.author && (
+                <div className="flex items-center mb-6">
+                  <div className="text-sm text-gray-600">
+                    Автор: <span className="font-medium">{article.author.profile?.name || article.author.username}</span>
+                  </div>
+                  {article.views && (
+                    <div className="ml-4 text-sm text-gray-500">
+                      Переглядів: {article.views}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Article Content */}
+            <div className="prose max-w-none mb-8 bg-white rounded-lg p-6">
+              {article.content && (
+                <div 
+                  className="text-gray-800 leading-relaxed text-lg"
+                  dangerouslySetInnerHTML={{ 
+                    __html: formatContent(
+                      Array.isArray(article.content) 
+                        ? article.content.join('\n\n') 
+                        : article.content
+                    ) 
+                  }}
+                />
+              )}
+              
+              {!article.content && (
+                <div className="text-center py-12 text-gray-500">
+                  <p className="text-xl mb-2">Контент статті недоступний</p>
+                  <p>Можливо, стаття ще не була опублікована або видалена.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Tags */}
+            {article.tags && article.tags.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-3">Теги:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {article.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
