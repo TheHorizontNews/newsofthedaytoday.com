@@ -429,7 +429,7 @@ test_plan:
 
 test_plan:
   current_focus:
-    - "Article Display Fix (ArticlePage.js)"
+    - "Homepage Editor Backend Endpoints"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
