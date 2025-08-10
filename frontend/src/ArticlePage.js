@@ -75,20 +75,7 @@ function ArticlePage() {
         const isBase64 = src.startsWith('data:image/');
         const altText = alt || 'Зображення в статті';
         
-        return `<div class="image-container my-6">
-          <img 
-            src="${src}" 
-            alt="${altText}" 
-            class="max-w-full h-auto rounded-lg shadow-lg border gpu-accelerated mx-auto block"
-            loading="lazy"
-            style="max-height: 600px; object-fit: contain;"
-            onload="this.classList.remove('loading')"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-          />
-          <div style="display: none;" class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-            <p>Не вдалося завантажити зображення: ${altText}</p>
-          </div>
-        </div>`;
+        return `<div class="image-container my-6"><img src="${src}" alt="${altText}" class="max-w-full h-auto rounded-lg shadow-lg border gpu-accelerated mx-auto block" loading="lazy" style="max-height: 600px; object-fit: contain;" onload="this.classList.remove('loading')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" /><div style="display: none;" class="bg-gray-100 p-4 rounded-lg text-center text-gray-500"><p>Не вдалося завантажити зображення: ${altText}</p></div></div>`;
       })
       // Convert links AFTER images to avoid interference
       .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener noreferrer">$1</a>')
