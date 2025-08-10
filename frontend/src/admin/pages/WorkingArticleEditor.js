@@ -125,6 +125,12 @@ const WorkingArticleEditor = () => {
       return;
     }
 
+    // Additional validation for category ID format
+    if (!formData.category_id.includes('-')) {
+      setMessage('Неправильний ID категорії. Спробуйте перезавантажити сторінку.');
+      return;
+    }
+
     try {
       setSaving(true);
       setMessage('');
@@ -140,6 +146,8 @@ const WorkingArticleEditor = () => {
         seo_title: formData.seo_title || '',
         seo_description: formData.seo_description || ''
       };
+      
+      console.log('Saving article with data:', articleData);
       
       let response;
       if (isEditing) {
