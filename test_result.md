@@ -367,6 +367,18 @@ frontend:
         -agent: "testing"
         -comment: "UKRAINIAN ARTICLE CREATION WORKFLOW TESTING COMPLETED - ALL ISSUES RESOLVED! Comprehensive testing shows NO PROBLEMS with current implementation. Test results: 1) CONTENT SAVING ✅ - Ukrainian article 'Новітні технології штучного інтелекту' with content 'Це тестова стаття для перевірки збереження контенту. Контент має бути збережений після публікації.' successfully created and content properly persisted in database after publication. 2) URL SLUG GENERATION ✅ - Ukrainian characters properly handled: 'Новітні технології штучного інтелекту' → 'новітні-технології-штучного-інтелекту'. User-reported URLs like 'article/%D0%B4%D0%B8%D0%B2%D0%BD%D1%96-...' are simply URL-encoded Ukrainian characters (normal behavior). 3) FEATURED IMAGE FIELD ✅ - featured_image field properly handled in article creation/update, base64 images correctly saved and retrieved. 4) DATABASE CONTENT VERIFICATION ✅ - All fields properly saved and retrieved. Ukrainian tags ['штучний інтелект', 'технології', 'наука', 'дослідження'] correctly stored. 5) COMPREHENSIVE TESTING ✅ - 15/15 tests passed (100% success rate) including 5/5 Ukrainian-specific tests. The backend article management system is working perfectly with Ukrainian content."
 
+  - task: "Homepage Editor Backend Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/homepage.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: true
+        -agent: "testing"
+        -comment: "HOMEPAGE EDITOR FUNCTIONALITY TESTING COMPLETED WITH 100% SUCCESS RATE! Comprehensive testing of new homepage configuration management endpoints shows all functionality working perfectly: 1) GET /api/homepage/config (authenticated) ✅ - Returns proper homepage configuration with all expected blocks (hero, main, sidebar, trending, featured) with correct maxArticles limits (1, 3, 5, 4, 6 respectively). Properly protected with authentication (403 for unauthenticated requests). 2) PUT /api/homepage/config (authenticated) ✅ - Successfully saves homepage configuration with mock article data. Creates homepage_config database table automatically. Properly protected with authentication. Validates configuration structure (rejects invalid data with 422 errors). 3) GET /api/homepage/public (no auth) ✅ - Returns homepage configuration for public display without authentication required. Works correctly for frontend to load homepage layout. 4) DATABASE PERSISTENCE ✅ - Configuration properly saved and retrieved from database. Same data available through both authenticated and public endpoints. 5) VALIDATION ✅ - Proper validation of configuration structure, rejects invalid data appropriately. 6) TABLE CREATION ✅ - Automatically creates homepage_config table when saving configuration. All 8 homepage tests passed (100% success rate). The homepage editor backend is production-ready and will enable admin to configure which articles appear in different sections of the homepage through drag-and-drop interface."
+
   - task: "SEO Settings Page"
     implemented: true
     working: true
