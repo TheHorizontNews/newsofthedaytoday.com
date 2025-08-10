@@ -1,107 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { HeroSection, MainNews, SidebarNews, TrendingSection, PublicationsSection } from './components';
 
-const HomePage = () => {
-  const [homepageData, setHomepageData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadHomepageData = async () => {
-      try {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-        const response = await fetch(`${backendUrl}/api/homepage/public`);
-        const config = await response.json();
-        
-        if (config && config.blocks && config.blocks.length > 0) {
-          // Convert homepage config to component data format
-          const data = {
-            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || mockNewsData.hero,
-            mainNews: config.blocks.find(b => b.id === 'main')?.articles || mockNewsData.mainNews,
-            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || mockNewsData.sidebarNews,
-            trending: config.blocks.find(b => b.id === 'trending')?.articles || mockNewsData.trending,
-            featured: config.blocks.find(b => b.id === 'featured')?.articles || mockNewsData.publications
-          };
-          setHomepageData(data);
-        } else {
-          // Use mock data if no configuration
-          setHomepageData(mockNewsData);
-        }
-      } catch (error) {
-        console.error('Error loading homepage data:', error);
-        // Fallback to mock data
-        setHomepageData(mockNewsData);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadHomepageData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  const data = homepageData || mockNewsData;
-
-  // Structured data for SEO
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "NewsMediaOrganization",
-    "name": "Science Digest News",
-    "url": "https://sciencedigestnews.com",
-    "logo": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=200&h=200&fit=crop&crop=entropy&fm=webp&q=85",
-    "description": "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.",
-    "mainEntity": {
-      "@type": "NewsArticle",
-      "headline": data.hero.title,
-      "image": data.hero.image,
-      "author": {
-        "@type": "Person",
-        "name": data.hero.author
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Science Digest News"
-      },
-      "datePublished": "2025-06-23T18:15:00Z",
-      "dateModified": "2025-06-23T18:15:00Z"
-    }
-  };
-
+// Simple component implementations for homepage sections
+const HeroSection = ({ heroData }) => {
+  if (!heroData) return null;
+  
   return (
-    <>
-      {/* Structured Data */}
-      <script 
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      
-      {/* Main Content */}
-      <main id="main-content" role="main">
-        <HeroSection heroData={data.hero} />
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <MainNews newsData={data.mainNews} />
-              <TrendingSection trendingData={data.trending} />
-              <PublicationsSection publicationsData={data.publications} />
-            </div>
-            <div className="lg:col-span-1">
-              <SidebarNews sidebarData={data.sidebarNews} />
-            </div>
-          </div>
-        </div>
-      </main>
-    </>
+    <section className="bg-blue-600 text-white py-16">
+      <div className="container mx-auto px-4">
+        <h1 className="text-4xl font-bold mb-4">{heroData.title}</h1>
+        <p className="text-xl mb-4">By {heroData.author} • {heroData.time}</p>
+        <p className="text-lg">{heroData.views} views</p>
+      </div>
+    </section>
   );
 };
 
-// Mock data for fallback (keeping existing mock data)
+const MainNews = ({ newsData }) => {
+  if (!newsData || !Array.isArray(newsData)) return null;
+  
+  return (
+    <section className="py-8">
+      <h2 className="text-2xl font-bold mb-6">Main News</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {newsData.slice(0, 3).map((article, index) => (
+          <article key={article.id || index} className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
+            <p className="text-gray-600 text-sm mb-2">{article.category} • {article.time}</p>
+            <p className="text-gray-500 text-sm">{article.views} views</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const SidebarNews = ({ sidebarData }) => {
+  if (!sidebarData || !Array.isArray(sidebarData)) return null;
+  
+  return (
+    <aside className="bg-gray-50 p-6 rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Sidebar News</h2>
+      <div className="space-y-4">
+        {sidebarData.slice(0, 5).map((article, index) => (
+          <div key={article.id || index} className="border-b pb-2">
+            <h4 className="font-medium text-sm">{article.title}</h4>
+            <p className="text-xs text-gray-500">{article.time} • {article.views} views</p>
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+};
+
+const TrendingSection = ({ trendingData }) => {
+  if (!trendingData || !Array.isArray(trendingData)) return null;
+  
+  return (
+    <section className="py-8">
+      <h2 className="text-2xl font-bold mb-6">Trending</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {trendingData.slice(0, 4).map((article, index) => (
+          <article key={article.id || index} className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="font-semibold mb-2">{article.title}</h3>
+            <p className="text-gray-500 text-sm">{article.time} • {article.views} views</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const PublicationsSection = ({ publicationsData }) => {
+  if (!publicationsData || !Array.isArray(publicationsData)) return null;
+  
+  return (
+    <section className="py-8">
+      <h2 className="text-2xl font-bold mb-6">Featured Publications</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {publicationsData.slice(0, 6).map((article, index) => (
+          <article key={article.id || index} className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
+            <p className="text-gray-600 text-sm mb-2">{article.category} • {article.author}</p>
+            <p className="text-gray-500 text-sm">{article.time} • {article.views} views</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+// Mock data for fallback
 const mockNewsData = {
   hero: {
     id: 'hero-1',
@@ -143,26 +131,6 @@ const mockNewsData = {
       author: "Maxim Borisenko",
       image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
       url: "/article/3"
-    },
-    {
-      id: 4,
-      title: "Climate Solution: New Carbon Capture Technology Removes CO2 at Record Efficiency",
-      category: "Environment",
-      time: "13:45, 23.06.25", 
-      views: 1876,
-      author: "Andrew Petrenko",
-      image: "https://images.unsplash.com/photo-1569163139394-de44cb5cd02c?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
-      url: "/article/4"
-    },
-    {
-      id: 5,
-      title: "Medical Breakthrough: Lab-Grown Organs Successfully Transplanted in Human Patients",
-      category: "Medicine",
-      time: "12:15, 23.06.25",
-      views: 4562,
-      author: "Marina Gavrilenko",
-      image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75",
-      url: "/article/5"
     }
   ],
   sidebarNews: [
@@ -186,34 +154,6 @@ const mockNewsData = {
       time: "01:45, 24.06.25",
       views: 1234,
       url: "/article/sidebar-3"
-    },
-    {
-      id: 4,
-      title: "Space Exploration: New Exoplanet Shows Signs of Atmospheric Water Vapor",
-      time: "01:30, 24.06.25",
-      views: 567,
-      url: "/article/sidebar-4"
-    },
-    {
-      id: 5,
-      title: "Biotech Innovation: 3D-Printed Heart Tissue Successfully Tested in Laboratory",
-      time: "01:15, 24.06.25",
-      views: 789,
-      url: "/article/sidebar-5"
-    },
-    {
-      id: 6,
-      title: "Renewable Energy: Solar Panel Efficiency Reaches New Record of 47%",
-      time: "01:00, 24.06.25",
-      views: 2345,
-      url: "/article/sidebar-6"
-    },
-    {
-      id: 7,
-      title: "AI Research: Machine Learning Algorithm Predicts Protein Folding with 95% Accuracy",
-      time: "00:45, 24.06.25",
-      views: 1567,
-      url: "/article/sidebar-7"
     }
   ],
   trending: [
@@ -232,44 +172,12 @@ const mockNewsData = {
       views: 8765,
       image: "https://images.pexels.com/photos/5702098/pexels-photo-5702098.jpeg",
       url: "/article/trending-2"
-    },
-    {
-      id: 3, 
-      title: "Страхи за наше майбутнє: чому медлич деян воду до парообразних олив",
-      time: "19:22, 23.06.25",
-      views: 6543,
-      image: "https://images.pexels.com/photos/32636715/pexels-photo-32636715.jpeg",
-      url: "/article/trending-3"
-    },
-    {
-      id: 4,
-      title: "Автомобіль був одного разу розвинений програмні частини будинку",
-      time: "18:55, 23.06.25",
-      views: 4321,
-      image: "https://images.unsplash.com/photo-1601132531233-0b5e07c99b57",
-      url: "/article/trending-4"
-    },
-    {
-      id: 5,
-      title: "Лекарства Росія Польща 2 році є тим пікніком крон в пострадання",
-      time: "18:30, 23.06.25",
-      views: 9876,
-      image: "https://images.unsplash.com/photo-1645940516176-895efb443c1f",
-      url: "/article/trending-5"
-    },
-    {
-      id: 6,
-      title: "Астрологічний пореми-метод очілен надмуванням зі Львова",
-      time: "18:15, 23.06.25",
-      views: 5432,
-      image: "https://images.pexels.com/photos/5725589/pexels-photo-5725589.jpeg",
-      url: "/article/trending-6"
     }
   ],
   publications: [
     {
       id: 1,
-      title: "Від партизанщини до військової елітн як \"Азов\" більशого змінив українську армію",
+      title: "Від партизанщини до військової елітн як \"Азов\" більшого змінив українську армію",
       time: "17:30, 23.06.25",
       views: 15000,
       category: "Військо",
@@ -286,18 +194,108 @@ const mockNewsData = {
       author: "Ольга Романенко",
       image: "https://images.pexels.com/photos/32636715/pexels-photo-32636715.jpeg",
       url: "/article/pub-2"
-    },
-    {
-      id: 3,
-      title: "Вчені виявили найстаріший загублений континент на Землі",
-      time: "15:20, 23.06.25", 
-      views: 12300,
-      category: "Наука",
-      author: "Дмитро Ковальчук",
-      image: "https://images.unsplash.com/photo-1601132531233-0b5e07c99b57",
-      url: "/article/pub-3"
     }
   ]
+};
+
+const HomePage = () => {
+  const [homepageData, setHomepageData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHomepageData = async () => {
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        const response = await fetch(`${backendUrl}/api/homepage/public`);
+        const config = await response.json();
+        
+        if (config && config.blocks && config.blocks.length > 0) {
+          // Convert homepage config to component data format
+          const data = {
+            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || mockNewsData.hero,
+            mainNews: config.blocks.find(b => b.id === 'main')?.articles || mockNewsData.mainNews,
+            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || mockNewsData.sidebarNews,
+            trending: config.blocks.find(b => b.id === 'trending')?.articles || mockNewsData.trending,
+            publications: config.blocks.find(b => b.id === 'featured')?.articles || mockNewsData.publications
+          };
+          setHomepageData(data);
+        } else {
+          // Use mock data if no configuration
+          setHomepageData(mockNewsData);
+        }
+      } catch (error) {
+        console.error('Error loading homepage data:', error);
+        // Fallback to mock data
+        setHomepageData(mockNewsData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHomepageData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  const data = homepageData || mockNewsData;
+
+  // Structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "Science Digest News",
+    "url": "https://sciencedigestnews.com",
+    "logo": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=200&h=200&fit=crop&crop=entropy&fm=webp&q=85",
+    "description": "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.",
+    "mainEntity": {
+      "@type": "NewsArticle",
+      "headline": data.hero?.title || "Science News",
+      "image": data.hero?.image || "",
+      "author": {
+        "@type": "Person",
+        "name": data.hero?.author || "Science Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Science Digest News"
+      },
+      "datePublished": "2025-06-23T18:15:00Z",
+      "dateModified": "2025-06-23T18:15:00Z"
+    }
+  };
+
+  return (
+    <>
+      {/* Structured Data */}
+      <script 
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      {/* Main Content */}
+      <main id="main-content" role="main">
+        <HeroSection heroData={data.hero} />
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <MainNews newsData={data.mainNews} />
+              <TrendingSection trendingData={data.trending} />
+              <PublicationsSection publicationsData={data.publications} />
+            </div>
+            <div className="lg:col-span-1">
+              <SidebarNews sidebarData={data.sidebarNews} />
+            </div>
+          </div>
+        </div>
+      </main>
+    </>
+  );
 };
 
 export default HomePage;
