@@ -254,25 +254,37 @@ export const HeroSection = ({ heroData }) => {
 
 // Main News Component
 export const MainNews = ({ newsData }) => {
+  if (!newsData || newsData.length === 0) {
+    return (
+      <section className="modern-card p-8 mb-8">
+        <h2 className="text-2xl font-bold mb-6 modern-heading">Останні наукові відкриття</h2>
+        <div className="text-center py-8 text-gray-500">
+          <p>Новини завантажуються...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">Останні наукові відкриття</h2>
+    <section className="modern-card p-8 mb-8">
+      <h2 className="text-2xl font-bold mb-6 modern-heading">Останні наукові відкриття</h2>
       
       <div className="space-y-8">
         {newsData.map((article, index) => (
-          <Link key={article.id} to={article.url}>
-            <article className={`group cursor-pointer pb-6 ${index !== newsData.length - 1 ? 'border-b border-gray-200' : ''}`}>
-              <div className="flex flex-col md:flex-row gap-4">
+          <Link key={article.id || index} to={article.url || '#'} className="will-change-transform">
+            <article className={`group cursor-pointer pb-6 transition-all duration-300 hover:transform hover:scale-[1.02] ${index !== newsData.length - 1 ? 'border-b border-gray-200' : ''}`}>
+              <div className="flex flex-col md:flex-row gap-6">
                 <div className="md:w-1/3">
-                  <div className="relative overflow-hidden rounded-lg aspect-[4/3]">
+                  <div className="image-container relative overflow-hidden rounded-lg aspect-[4/3]">
                     <img 
-                      src={article.image} 
+                      src={article.image || article.featured_image || 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop'} 
                       alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 gpu-accelerated"
+                      loading="lazy"
                     />
-                    <div className="absolute top-2 left-2">
-                      <span className="text-white text-xs px-2 py-1 rounded" style={{backgroundColor: '#0c61cf'}}>
-                        {article.category}
+                    <div className="absolute top-3 left-3">
+                      <span className="modern-btn text-xs">
+                        {article.category || 'Наука'}
                       </span>
                     </div>
                   </div>
@@ -280,9 +292,14 @@ export const MainNews = ({ newsData }) => {
                 
                 <div className="md:w-2/3 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:opacity-80 transition-colors duration-200" style={{'&:hover': {color: '#0c61cf'}}}>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">
                       {article.title}
                     </h3>
+                    {article.subtitle && (
+                      <p className="text-gray-600 mb-3 leading-relaxed">
+                        {article.subtitle}
+                      </p>
+                    )}
                   </div>
                   
                   <div className="flex items-center justify-between text-sm text-gray-500 mt-4">
@@ -291,7 +308,7 @@ export const MainNews = ({ newsData }) => {
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                         </svg>
-                        {article.time}
+                        {article.time || 'Щойно'}
                       </span>
                       <span className="flex items-center">
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
