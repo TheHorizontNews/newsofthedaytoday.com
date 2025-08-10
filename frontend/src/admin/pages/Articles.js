@@ -159,6 +159,7 @@ const Articles = () => {
             <thead>
               <tr>
                 <th>Title</th>
+                <th>URL</th>
                 <th>Author</th>
                 <th>Category</th>
                 <th>Status</th>
