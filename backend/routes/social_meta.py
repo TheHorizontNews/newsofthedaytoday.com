@@ -3,7 +3,8 @@ Social media meta tags routes
 """
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from database import get_db
 from models import ArticleTable, UserTable, CategoryTable
 import re
@@ -11,7 +12,7 @@ import re
 router = APIRouter(prefix="/api/meta", tags=["social-meta"])
 
 @router.get("/article/{slug}")
-async def get_article_meta(slug: str, request: Request, db: Session = Depends(get_db)):
+async def get_article_meta(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
     """
     Generate HTML with social media meta tags for article pages
     Used by social media bots and crawlers
