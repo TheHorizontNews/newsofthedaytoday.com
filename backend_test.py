@@ -822,11 +822,17 @@ class BackendTester:
         print(f"Failed: {total - passed}")
         print(f"Success Rate: {(passed/total)*100:.1f}%")
         
+        # Separate English slug generation results
+        english_slug_tests = [r for r in self.results if "English Slug" in r["test"] or "Slug Uniqueness" in r["test"] or "URL Compatibility" in r["test"] or "Database Slug" in r["test"]]
+        english_slug_passed = sum(1 for r in english_slug_tests if r["success"])
+        
+        print(f"\n🔤 English Slug Generation Tests: {english_slug_passed}/{len(english_slug_tests)} passed")
+        
         # Separate Ukrainian-specific results
         ukrainian_tests = [r for r in self.results if "Ukrainian" in r["test"] or "Featured Image" in r["test"] or "Database Content" in r["test"]]
         ukrainian_passed = sum(1 for r in ukrainian_tests if r["success"])
         
-        print(f"\n🇺🇦 Ukrainian Article Tests: {ukrainian_passed}/{len(ukrainian_tests)} passed")
+        print(f"🇺🇦 Ukrainian Article Tests: {ukrainian_passed}/{len(ukrainian_tests)} passed")
         
         if total - passed > 0:
             print("\n❌ FAILED TESTS:")
