@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Category Loading Issue in Article Editor
-Tests category endpoints and data structure to debug publish button issue
+Backend API Testing for Homepage Editor Functionality
+Tests new homepage configuration management endpoints:
+- GET /api/homepage/config (authenticated)
+- PUT /api/homepage/config (authenticated) 
+- GET /api/homepage/public (no auth)
 """
 
 import asyncio
