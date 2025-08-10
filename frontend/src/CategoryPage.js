@@ -49,7 +49,7 @@ const CategoryPage = () => {
         setLoading(true);
         
         // Получаем все категории для поиска нужной
-        const categoriesResponse = await fetch(`${backendUrl}/api/categories/admin`);
+        const categoriesResponse = await fetch(`${backendUrl}/api/categories/`);
         const categories = await categoriesResponse.json();
         
         // Находим категорию по slug
