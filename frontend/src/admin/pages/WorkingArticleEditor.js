@@ -42,9 +42,14 @@ const WorkingArticleEditor = () => {
       const categoriesData = response.data || response || [];
       if (categoriesData.length > 0) {
         setCategories(categoriesData);
+        console.log('Loaded categories:', categoriesData);
+      } else {
+        console.warn('No categories received from API');
+        setMessage('Не вдалося завантажити категорії. Зверніться до адміністратора.');
       }
     } catch (error) {
-      console.log('Using fallback categories');
+      console.error('Failed to load categories:', error);
+      setMessage('Помилка завантаження категорій. Перевірте підключення.');
     }
   };
 
