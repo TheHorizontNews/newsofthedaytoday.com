@@ -26,16 +26,23 @@ async def get_article_meta(slug: str, request: Request, db: Session = Depends(ge
     ])
     
     # Query article with related data
-    article = db.query(ArticleTable).options(
-        joinedload(ArticleTable.category),
-        joinedload(ArticleTable.author)
-    ).filter(
+    article = db.query(ArticleTable).filter(
         ArticleTable.slug == slug,
         ArticleTable.status == "PUBLISHED"
     ).first()
     
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
+    
+    # Get category and author separately if needed
+    category = None
+    author = None
+    
+    if article.category_id:
+        category = db.query(CategoryTable).filter(CategoryTable.id == article.category_id).first()
+    
+    if article.author_id:
+        author = db.query(UserTable).filter(UserTable.id == article.author_id).first()
     
     # Clean description for meta tags
     description = article.subtitle or article.seo_description or 'Останні наукові відкриття та дослідження з усього світу'
