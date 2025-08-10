@@ -47,7 +47,9 @@ async def get_article_meta(slug: str, request: Request, db: AsyncSession = Depen
         category = result.scalar_one_or_none()
     
     if article.author_id:
-        author = db.query(UserTable).filter(UserTable.id == article.author_id).first()
+        stmt = select(UserTable).where(UserTable.id == article.author_id)
+        result = await db.execute(stmt)
+        author = result.scalar_one_or_none()
     
     # Clean description for meta tags
     description = article.subtitle or article.seo_description or 'Останні наукові відкриття та дослідження з усього світу'
