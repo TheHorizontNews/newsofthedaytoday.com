@@ -86,12 +86,12 @@ const HomepageEditor = () => {
   const saveHomepageConfig = async () => {
     setLoading(true);
     try {
-      // Здесь будет API вызов для сохранения конфигурации
-      // await api.put('/homepage/config', { blocks });
+      await api.put('/homepage/config', { blocks });
       
       setMessage('✅ Конфігурацію головної сторінки збережено!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
+      console.error('Save error:', error);
       setMessage('❌ Помилка при збереженні конфігурації');
       setTimeout(() => setMessage(''), 3000);
     } finally {
