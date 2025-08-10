@@ -284,16 +284,19 @@ frontend:
         -comment: "All public SEO endpoints working perfectly: 1) /api/seo/sitemap.xml - Returns valid XML sitemap (1609 bytes, application/xml). 2) /api/seo/robots.txt - Returns proper robots.txt (586 bytes, text/plain). 3) /api/seo/llms.txt - Returns LLMS training data file (1029 bytes, text/plain). 4) /api/seo/llms-sitemap.xml - Returns LLMS-specific sitemap (469 bytes, application/xml). All endpoints return correct MIME types and valid content structure."
 
   - task: "English Slug Generation"
-    implemented: false
+    implemented: true
     working: false
     file: "/app/backend/utils.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: false
         -agent: "main"
         -comment: "User reports Ukrainian characters in article URLs. Backend testing shows Ukrainian slugs are generated correctly ('новітні-технології-штучного-інтелекту'), but user wants English slugs. Need to implement transliteration or English-only slug generation."
+        -working: false
+        -agent: "main"
+        -comment: "Implemented Ukrainian to English transliteration in create_slug function. Added comprehensive transliteration mapping to convert Ukrainian characters to English equivalents. Ready for testing."
 
   - task: "Main Photo Functionality"
     implemented: false
