@@ -274,6 +274,81 @@ async def get_tags(
             "total_tags": 51
         }
 
+@router.get("/slug/{slug}", response_model=ArticleResponse)
+async def get_article_by_slug(
+    slug: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get single published article by slug (public endpoint)"""
+    result = await db.execute(
+        select(ArticleTable, UserTable, CategoryTable).join(
+            UserTable, ArticleTable.author_id == UserTable.id
+        ).join(
+            CategoryTable, ArticleTable.category_id == CategoryTable.id
+        ).where(
+            and_(
+                ArticleTable.slug == slug,
+                ArticleTable.status == ArticleStatus.PUBLISHED
+            )
+        )
+    )
+    
+    row = result.first()
+    if not row:
+        raise HTTPException(status_code=404, detail="Article not found")
+    
+    article, author, category = row
+    
+    # Increment views count
+    article.views += 1
+    await db.commit()
+    
+    # Format response
+    author_profile = UserProfile(
+        name=author.name or "",
+        bio=author.bio,
+        avatar=author.avatar
+    )
+    
+    author_response = UserResponse(
+        id=author.id,
+        username=author.username,
+        email=author.email,
+        role=author.role,
+        profile=author_profile,
+        created_at=author.created_at,
+        last_login=author.last_login,
+        is_active=author.is_active
+    )
+    
+    category_response = Category(
+        id=category.id,
+        name=category.name,
+        slug=category.slug,
+        description=category.description,
+        created_at=category.created_at
+    )
+    
+    return ArticleResponse(
+        id=article.id,
+        title=article.title,
+        subtitle=article.subtitle,
+        content=article.content,
+        author=author_response,
+        category=category_response,
+        tags=json_to_tags(article.tags),
+        featured_image=article.featured_image,
+        status=article.status,
+        published_at=article.published_at,
+        created_at=article.created_at,
+        updated_at=article.updated_at,
+        views=article.views,
+        slug=article.slug,
+        seo_title=article.seo_title,
+        seo_description=article.seo_description
+    )
+
+
 @router.get("/{article_id}", response_model=ArticleResponse)
 async def get_article(
     article_id: str,
