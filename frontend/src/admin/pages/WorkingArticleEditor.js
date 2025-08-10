@@ -192,7 +192,6 @@ const WorkingArticleEditor = () => {
   };
 
   const insertImage = () => {
-    // Create a file input for image upload
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -208,7 +207,26 @@ const WorkingArticleEditor = () => {
         const reader = new FileReader();
         reader.onload = (event) => {
           const altText = prompt('Введіть alt-текст для зображення:', file.name.replace(/\.[^/.]+$/, ''));
-          const imageMarkdown = `![${altText || 'Зображення'}](${event.target.result})`;
+          const alignment = prompt('Вирівнювання зображення (center/left/right):', 'center');
+          const size = prompt('Розмір зображення (small/medium/large):', 'medium');
+          
+          let sizeClass = '';
+          switch(size) {
+            case 'small': sizeClass = ' width="300"'; break;
+            case 'medium': sizeClass = ' width="600"'; break;
+            case 'large': sizeClass = ' width="100%"'; break;
+            default: sizeClass = ' width="600"';
+          }
+          
+          let alignmentClass = '';
+          switch(alignment) {
+            case 'center': alignmentClass = ' style="display: block; margin: 0 auto;"'; break;
+            case 'left': alignmentClass = ' style="float: left; margin: 0 20px 20px 0;"'; break;
+            case 'right': alignmentClass = ' style="float: right; margin: 0 0 20px 20px;"'; break;
+            default: alignmentClass = ' style="display: block; margin: 0 auto;"';
+          }
+          
+          const imageMarkdown = `<img src="${event.target.result}" alt="${altText || 'Зображення'}"${sizeClass}${alignmentClass} />`;
           insertText(`\n\n${imageMarkdown}\n\n`);
           setMessage('');
         };
