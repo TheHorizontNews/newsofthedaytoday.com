@@ -631,14 +631,36 @@ export const SocialShare = ({ article }) => {
 
 // Article Content Component
 export const ArticleContent = ({ article }) => {
+  const renderContent = (content) => {
+    if (typeof content === 'string') {
+      // Обрабатываем HTML с markdown-style заголовками
+      return content.split('\n').map((line, index) => {
+        line = line.trim();
+        if (line.startsWith('### ')) {
+          return <h3 key={index} className="text-xl font-bold mt-8 mb-4 text-gray-900">{line.substring(4)}</h3>;
+        } else if (line.startsWith('## ')) {
+          return <h2 key={index} className="text-2xl font-bold mt-10 mb-6 text-gray-900">{line.substring(3)}</h2>;
+        } else if (line.startsWith('# ')) {
+          return <h1 key={index} className="text-3xl font-bold mt-12 mb-8 text-gray-900">{line.substring(2)}</h1>;
+        } else if (line.length > 0) {
+          return <p key={index} className="mb-6 text-gray-800 leading-relaxed text-lg">{line}</p>;
+        }
+        return null;
+      });
+    }
+    
+    // Fallback для массива параграфов
+    return content.map((paragraph, index) => (
+      <p key={index} className="mb-6 text-gray-800 leading-relaxed text-lg">
+        {paragraph}
+      </p>
+    ));
+  };
+
   return (
     <article className="bg-white rounded-lg shadow-sm p-8">
       <div className="prose prose-lg max-w-none">
-        {article.content && article.content.map((paragraph, index) => (
-          <p key={index} className="mb-6 text-gray-800 leading-relaxed text-lg">
-            {paragraph}
-          </p>
-        ))}
+        {article.content && renderContent(article.content)}
       </div>
 
       {/* Tags */}
@@ -666,7 +688,7 @@ export const ArticleContent = ({ article }) => {
             />
             <div>
               <p className="font-semibold text-gray-900">{article.author}</p>
-              <p className="text-sm text-gray-500">Edge Chronicle Reporter</p>
+              <p className="text-sm text-gray-500">Science Digest News Reporter</p>
             </div>
           </div>
           <SocialShare article={article} />
