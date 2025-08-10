@@ -80,12 +80,29 @@
 
 /* Modern Typography */
 .modern-heading {
+  /* Fallback color for mobile devices and older browsers */
+  color: #0c61cf;
   background: linear-gradient(135deg, #0c61cf, #0a52b8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 700;
   line-height: 1.2;
+}
+
+/* Additional fallback for mobile Safari and other browsers that don't support background-clip: text */
+@supports not (-webkit-background-clip: text) {
+  .modern-heading {
+    color: #0c61cf !important;
+    background: none;
+  }
+}
+
+/* Ensure proper color on mobile devices */
+@media (max-width: 768px) {
+  .modern-heading {
+    color: #0c61cf;
+  }
 }
 
 /* Performance Optimizations */
