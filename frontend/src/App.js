@@ -5,6 +5,7 @@ import './App.css';
 import { Header, Footer, SkipToContent } from './components';
 import HomePage from './HomePage';
 import ArticlePage from './ArticlePage';
+import ArticleWrapper from './ArticleWrapper';
 import CategoryPage from './CategoryPage';
 import AdminApp from './admin/AdminApp';  // СИНХРОННЫЙ ИМПОРТ
 import analytics from './utils/analytics';
