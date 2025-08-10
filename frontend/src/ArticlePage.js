@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 function ArticlePage() {
   const { slug } = useParams();
