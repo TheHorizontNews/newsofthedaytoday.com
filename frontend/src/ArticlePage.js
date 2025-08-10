@@ -12,14 +12,19 @@ function ArticlePage() {
       try {
         setLoading(true);
         const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-        const response = await fetch(`${backendUrl}/api/articles?search=${slug}&limit=1`);
-        const data = await response.json();
+        const response = await fetch(`${backendUrl}/api/articles/slug/${slug}`);
         
-        if (data && data.length > 0) {
-          setArticle(data[0]);
-        } else {
+        if (response.status === 404) {
           setError('Статтю не знайдено');
+          return;
         }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const article = await response.json();
+        setArticle(article);
       } catch (err) {
         console.error('Error fetching article:', err);
         setError('Помилка завантаження статті');
