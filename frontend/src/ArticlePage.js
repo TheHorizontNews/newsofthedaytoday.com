@@ -69,9 +69,7 @@ function ArticlePage() {
       // Convert bold and italic
       .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em class="italic text-gray-700">$1</em>')
-      // Convert links
-      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener noreferrer">$1</a>')
-      // Convert images with enhanced styling and lazy loading
+      // Convert images BEFORE links to prevent interference
       .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
         // Check if it's a base64 image or regular URL
         const isBase64 = src.startsWith('data:image/');
