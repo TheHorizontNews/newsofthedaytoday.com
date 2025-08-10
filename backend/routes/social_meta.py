@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
-from models import Article
+from models import ArticleTable, UserTable, CategoryTable
 import re
 
 router = APIRouter(prefix="/meta", tags=["social-meta"])
@@ -26,12 +26,12 @@ async def get_article_meta(slug: str, request: Request, db: Session = Depends(ge
     ])
     
     # Query article with related data
-    article = db.query(Article).options(
-        joinedload(Article.category),
-        joinedload(Article.author)
+    article = db.query(ArticleTable).options(
+        joinedload(ArticleTable.category),
+        joinedload(ArticleTable.author)
     ).filter(
-        Article.slug == slug,
-        Article.status == "PUBLISHED"
+        ArticleTable.slug == slug,
+        ArticleTable.status == "PUBLISHED"
     ).first()
     
     if not article:
