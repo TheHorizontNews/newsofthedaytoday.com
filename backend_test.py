@@ -313,11 +313,237 @@ class BackendTester:
             self.log_result("Authentication Requirements", False, f"Exception: {str(e)}")
             return False
     
+    async def test_ukrainian_article_creation(self):
+        """Test creating article with Ukrainian title and content"""
+        if not self.test_category_id:
+            self.log_result("Ukrainian Article Creation", False, "No valid category ID available")
+            return False
+            
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Ukrainian article data as requested
+            article_data = {
+                "title": "Новітні технології штучного інтелекту",
+                "subtitle": "Революційний прорив у сфері ШІ",
+                "content": "Це тестова стаття для перевірки збереження контенту. Контент має бути збережений після публікації. Штучний інтелект революційний прорив у технологіях.",
+                "category_id": self.test_category_id,
+                "tags": ["штучний інтелект", "технології", "наука", "дослідження"],
+                "featured_image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A",
+                "status": "published",
+                "seo_title": "Новітні технології ШІ - Science Digest News",
+                "seo_description": "Дізнайтеся про найновіші досягнення у сфері штучного інтелекту та їх вплив на майбутнє технологій."
+            }
+            
+            async with self.session.post(f"{BACKEND_URL}/api/articles/", json=article_data, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    self.test_article_id = data.get("id")
+                    if self.test_article_id:
+                        # Check if content was saved properly
+                        saved_content = data.get("content", "")
+                        saved_title = data.get("title", "")
+                        saved_slug = data.get("slug", "")
+                        saved_featured_image = data.get("featured_image", "")
+                        
+                        # Verify content persistence
+                        content_saved = "збереження контенту" in saved_content
+                        title_saved = saved_title == article_data["title"]
+                        featured_image_saved = saved_featured_image == article_data["featured_image"]
+                        
+                        details = f"Article created with ID: {self.test_article_id}, Slug: '{saved_slug}', Content saved: {content_saved}, Title saved: {title_saved}, Featured image saved: {featured_image_saved}"
+                        
+                        self.log_result("Ukrainian Article Creation", True, details)
+                        return True
+                    else:
+                        self.log_result("Ukrainian Article Creation", False, "No article ID in response")
+                        return False
+                else:
+                    error_data = await response.text()
+                    self.log_result("Ukrainian Article Creation", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Ukrainian Article Creation", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_ukrainian_article_retrieval(self):
+        """Test retrieving Ukrainian article to verify content persistence"""
+        if not self.test_article_id:
+            self.log_result("Ukrainian Article Retrieval", False, "No test article ID available")
+            return False
+            
+        try:
+            headers = self.get_auth_headers()
+            async with self.session.get(f"{BACKEND_URL}/api/articles/{self.test_article_id}", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify all fields are properly saved
+                    title = data.get("title", "")
+                    content = data.get("content", "")
+                    slug = data.get("slug", "")
+                    featured_image = data.get("featured_image", "")
+                    tags = data.get("tags", [])
+                    status = data.get("status", "")
+                    seo_title = data.get("seo_title", "")
+                    seo_description = data.get("seo_description", "")
+                    
+                    # Check content persistence
+                    content_persisted = "збереження контенту" in content and "публікації" in content
+                    title_persisted = "Новітні технології" in title
+                    ukrainian_tags = any("штучний" in tag for tag in tags)
+                    
+                    details = f"Retrieved article - Title: '{title}', Slug: '{slug}', Content persisted: {content_persisted}, Ukrainian tags: {ukrainian_tags}, Status: {status}, Featured image present: {bool(featured_image)}"
+                    
+                    if content_persisted and title_persisted:
+                        self.log_result("Ukrainian Article Retrieval", True, details)
+                        return True
+                    else:
+                        self.log_result("Ukrainian Article Retrieval", False, f"Content not properly persisted. {details}")
+                        return False
+                else:
+                    error_data = await response.text()
+                    self.log_result("Ukrainian Article Retrieval", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Ukrainian Article Retrieval", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_slug_generation_with_ukrainian(self):
+        """Test slug generation with Ukrainian characters"""
+        if not self.test_category_id:
+            self.log_result("Ukrainian Slug Generation", False, "No valid category ID available")
+            return False
+            
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Test different Ukrainian titles
+            test_cases = [
+                "Штучний інтелект революційний прорив",
+                "Дивні новини про технології",
+                "Наука і дослідження в Україні"
+            ]
+            
+            slugs_generated = []
+            
+            for i, title in enumerate(test_cases):
+                article_data = {
+                    "title": title,
+                    "content": f"Тестовий контент для статті {i+1}",
+                    "category_id": self.test_category_id,
+                    "tags": ["тест"],
+                    "status": "draft"
+                }
+                
+                async with self.session.post(f"{BACKEND_URL}/api/articles/", json=article_data, headers=headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        slug = data.get("slug", "")
+                        slugs_generated.append(f"'{title}' -> '{slug}'")
+                        
+                        # Clean up test article
+                        article_id = data.get("id")
+                        if article_id:
+                            await self.session.delete(f"{BACKEND_URL}/api/articles/{article_id}", headers=headers)
+                    else:
+                        slugs_generated.append(f"'{title}' -> ERROR {response.status}")
+            
+            details = "Slug generation results: " + "; ".join(slugs_generated)
+            self.log_result("Ukrainian Slug Generation", True, details)
+            return True
+            
+        except Exception as e:
+            self.log_result("Ukrainian Slug Generation", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_featured_image_field(self):
+        """Test featured_image field handling"""
+        if not self.test_article_id:
+            self.log_result("Featured Image Field Test", False, "No test article ID available")
+            return False
+            
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Test updating featured_image
+            test_image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+            
+            update_data = {
+                "featured_image": test_image
+            }
+            
+            async with self.session.put(f"{BACKEND_URL}/api/articles/{self.test_article_id}", json=update_data, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    updated_image = data.get("featured_image", "")
+                    
+                    if updated_image == test_image:
+                        self.log_result("Featured Image Field Test", True, "Featured image field properly updated and retrieved")
+                        return True
+                    else:
+                        self.log_result("Featured Image Field Test", False, f"Featured image not properly saved. Expected: {test_image[:50]}..., Got: {updated_image[:50]}...")
+                        return False
+                else:
+                    error_data = await response.text()
+                    self.log_result("Featured Image Field Test", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Featured Image Field Test", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_database_content_verification(self):
+        """Test database content verification by listing all articles"""
+        try:
+            # Get all articles to verify database content
+            async with self.session.get(f"{BACKEND_URL}/api/articles/") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Look for our Ukrainian article
+                    ukrainian_article = None
+                    for article in data:
+                        if "Новітні технології" in article.get("title", ""):
+                            ukrainian_article = article
+                            break
+                    
+                    if ukrainian_article:
+                        title = ukrainian_article.get("title", "")
+                        content = ukrainian_article.get("content", "")
+                        slug = ukrainian_article.get("slug", "")
+                        status = ukrainian_article.get("status", "")
+                        
+                        # Verify content is properly stored in database
+                        content_in_db = "збереження контенту" in content
+                        published_status = status == "published"
+                        
+                        details = f"Ukrainian article found in database - Title: '{title}', Slug: '{slug}', Content preserved: {content_in_db}, Published: {published_status}"
+                        
+                        if content_in_db:
+                            self.log_result("Database Content Verification", True, details)
+                            return True
+                        else:
+                            self.log_result("Database Content Verification", False, f"Content not preserved in database. {details}")
+                            return False
+                    else:
+                        self.log_result("Database Content Verification", False, f"Ukrainian article not found in database. Found {len(data)} articles total.")
+                        return False
+                else:
+                    error_data = await response.text()
+                    self.log_result("Database Content Verification", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Database Content Verification", False, f"Exception: {str(e)}")
+            return False
+
     async def run_all_tests(self):
         """Run all backend tests"""
-        print(f"🚀 Starting Backend API Tests for Article Management")
+        print(f"🚀 Starting Backend API Tests for Ukrainian Article Creation Workflow")
         print(f"Backend URL: {BACKEND_URL}")
-        print("=" * 60)
+        print("=" * 80)
         
         # Step 1: Authenticate as admin
         if not await self.authenticate_admin():
@@ -329,24 +555,38 @@ class BackendTester:
             print("❌ Cannot proceed without valid category")
             return False
         
-        # Step 3: Test article list endpoint (public)
-        await self.test_articles_list_endpoint()
+        # Step 3: Test Ukrainian article creation workflow
+        print("\n🇺🇦 UKRAINIAN ARTICLE WORKFLOW TESTS")
+        print("-" * 50)
         
-        # Step 4: Test article CRUD operations
+        await self.test_ukrainian_article_creation()
+        await self.test_ukrainian_article_retrieval()
+        await self.test_slug_generation_with_ukrainian()
+        await self.test_featured_image_field()
+        await self.test_database_content_verification()
+        
+        # Step 4: Test basic article operations for comparison
+        print("\n📝 BASIC ARTICLE OPERATIONS")
+        print("-" * 50)
+        
+        await self.test_articles_list_endpoint()
         await self.test_create_article()
         await self.test_get_specific_article()
         await self.test_update_article()
         await self.test_delete_article()
         
         # Step 5: Test error handling
+        print("\n🔍 ERROR HANDLING TESTS")
+        print("-" * 50)
+        
         await self.test_error_handling()
         await self.test_invalid_category_id()
         await self.test_authentication_requirements()
         
         # Summary
-        print("=" * 60)
+        print("=" * 80)
         print("📊 TEST SUMMARY")
-        print("=" * 60)
+        print("=" * 80)
         
         passed = sum(1 for r in self.results if r["success"])
         total = len(self.results)
@@ -355,6 +595,12 @@ class BackendTester:
         print(f"Passed: {passed}")
         print(f"Failed: {total - passed}")
         print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        # Separate Ukrainian-specific results
+        ukrainian_tests = [r for r in self.results if "Ukrainian" in r["test"] or "Featured Image" in r["test"] or "Database Content" in r["test"]]
+        ukrainian_passed = sum(1 for r in ukrainian_tests if r["success"])
+        
+        print(f"\n🇺🇦 Ukrainian Article Tests: {ukrainian_passed}/{len(ukrainian_tests)} passed")
         
         if total - passed > 0:
             print("\n❌ FAILED TESTS:")
