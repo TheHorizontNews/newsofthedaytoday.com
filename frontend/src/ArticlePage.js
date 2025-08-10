@@ -80,9 +80,9 @@ function ArticlePage() {
         <div className="max-w-4xl mx-auto">
           {/* Article Header */}
           <div className="mb-8">
-            {article.image && (
+            {article.featured_image && (
               <img
-                src={article.image}
+                src={article.featured_image}
                 alt={article.title}
                 className="w-full h-64 object-cover rounded-lg mb-6"
               />
@@ -91,11 +91,13 @@ function ArticlePage() {
             <div className="flex items-center space-x-2 mb-4">
               {article.category && (
                 <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">
-                  {article.category}
+                  {article.category.name}
                 </span>
               )}
-              {article.time && (
-                <span className="text-gray-500 text-sm">{article.time}</span>
+              {article.published_at && (
+                <span className="text-gray-500 text-sm">
+                  {new Date(article.published_at).toLocaleDateString('uk-UA')}
+                </span>
               )}
             </div>
 
@@ -112,7 +114,7 @@ function ArticlePage() {
             {article.author && (
               <div className="flex items-center mb-6">
                 <div className="text-sm text-gray-600">
-                  Автор: <span className="font-medium">{article.author}</span>
+                  Автор: <span className="font-medium">{article.author.profile?.name || article.author.username}</span>
                 </div>
                 {article.views && (
                   <div className="ml-4 text-sm text-gray-500">
