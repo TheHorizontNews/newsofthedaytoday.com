@@ -1,0 +1,89 @@
+{
+  "blocks": [
+    {
+      "id": "hero",
+      "name": "Hero Section",
+      "articles": [
+        {
+          "id": "hero-article",
+          "title": "Революція в науці: штучний інтелект змінює світ",
+          "subtitle": "Останні досягнення в галузі ШІ відкривають нові можливості",
+          "category": {"name": "Технології"},
+          "featured_image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=480&fit=crop",
+          "slug": "ai-revolution-2025",
+          "views": 15420,
+          "author": {"username": "Dr. Science"},
+          "published_at": "2025-01-10T18:30:00Z"
+        }
+      ],
+      "maxArticles": 1
+    },
+    {
+      "id": "main",
+      "name": "Main News",
+      "articles": [
+        {
+          "id": "main-1",
+          "title": "Квантові комп'ютери: прорив у обчислювальних технологіях",
+          "subtitle": "Нові досягнення в квантових обчисленнях",
+          "category": {"name": "Технології"},
+          "featured_image": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop",
+          "slug": "quantum-breakthrough-2025",
+          "views": 8950,
+          "author": {"username": "Quantum Lab"},
+          "published_at": "2025-01-10T16:20:00Z"
+        },
+        {
+          "id": "main-2", 
+          "title": "Медичні нанороботи: майбутнє лікування раку",
+          "subtitle": "Революційні технології в медицині",
+          "category": {"name": "Медицина"},
+          "featured_image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+          "slug": "medical-nanorobots-2025",
+          "views": 12340,
+          "author": {"username": "Med Research"},
+          "published_at": "2025-01-10T14:15:00Z"
+        }
+      ],
+      "maxArticles": 3
+    },
+    {
+      "id": "sidebar",
+      "name": "Sidebar News", 
+      "articles": [
+        {
+          "id": "side-1",
+          "title": "Космічний телескоп виявив нові екзопланети",
+          "category": {"name": "Космос"},
+          "slug": "exoplanets-discovery-2025",
+          "views": 5670,
+          "published_at": "2025-01-10T12:00:00Z"
+        },
+        {
+          "id": "side-2",
+          "title": "Відновлювальна енергетика досягла нових висот",
+          "category": {"name": "Екологія"},
+          "slug": "renewable-energy-2025",
+          "views": 4230,
+          "published_at": "2025-01-10T10:30:00Z"
+        }
+      ],
+      "maxArticles": 5
+    },
+    {
+      "id": "trending",
+      "name": "Trending",
+      "articles": [
+        {
+          "id": "trend-1",
+          "title": "ШІ у освіті: персоналізоване навчання",
+          "category": {"name": "Освіта"},
+          "slug": "ai-education-2025",
+          "views": 18500,
+          "published_at": "2025-01-10T08:00:00Z"
+        }
+      ],
+      "maxArticles": 4
+    }
+  ]
+}
