@@ -282,6 +282,44 @@ const mockNewsData = {
 };
 
 function HomePage() {
+  const [homepageData, setHomepageData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHomepageData = async () => {
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+        const response = await fetch(`${backendUrl}/api/homepage/public`);
+        const config = await response.json();
+        
+        if (config && config.blocks && config.blocks.length > 0) {
+          // Convert homepage config to component data format
+          const data = {
+            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || mockNewsData.hero,
+            mainNews: config.blocks.find(b => b.id === 'main')?.articles || mockNewsData.mainNews,
+            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || mockNewsData.sidebarNews,
+            trending: config.blocks.find(b => b.id === 'trending')?.articles || mockNewsData.trending,
+            publications: config.blocks.find(b => b.id === 'featured')?.articles || mockNewsData.publications
+          };
+          setHomepageData(data);
+        } else {
+          // Use mock data if no configuration
+          setHomepageData(mockNewsData);
+        }
+      } catch (error) {
+        console.error('Error loading homepage data:', error);
+        // Fallback to mock data
+        setHomepageData(mockNewsData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHomepageData();
+  }, []);
+
+  const data = homepageData || mockNewsData;
+
   // Structured data for SEO
   const structuredData = {
     "@context": "https://schema.org",
@@ -292,11 +330,11 @@ function HomePage() {
     "description": "Останні наукові відкриття та дослідження з усього світу. Технології, медицина, космос, ШІ та інновації.",
     "mainEntity": {
       "@type": "NewsArticle",
-      "headline": mockNewsData.hero.title,
-      "image": mockNewsData.hero.image,
+      "headline": data.hero.title,
+      "image": data.hero.image,
       "author": {
         "@type": "Person",
-        "name": mockNewsData.hero.author
+        "name": data.hero.author
       },
       "publisher": {
         "@type": "Organization",
@@ -306,6 +344,14 @@ function HomePage() {
       "dateModified": "2025-06-23T18:15:00Z"
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -317,16 +363,16 @@ function HomePage() {
       
       {/* Main Content */}
       <main id="main-content" role="main">
-        <HeroSection heroData={mockNewsData.hero} />
+        <HeroSection heroData={data.hero} />
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <MainNews newsData={mockNewsData.mainNews} />
-              <TrendingSection trendingData={mockNewsData.trending} />
-              <PublicationsSection publicationsData={mockNewsData.publications} />
+              <MainNews newsData={data.mainNews} />
+              <TrendingSection trendingData={data.trending} />
+              <PublicationsSection publicationsData={data.publications} />
             </div>
             <div className="lg:col-span-1">
-              <SidebarNews sidebarData={mockNewsData.sidebarNews} />
+              <SidebarNews sidebarData={data.sidebarNews} />
             </div>
           </div>
         </div>
