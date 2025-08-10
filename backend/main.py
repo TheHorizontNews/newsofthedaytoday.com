@@ -9,9 +9,6 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Import middleware
-from social_media_middleware import social_media_meta_middleware
-
 # Import route modules
 from routes.articles import router as articles_router
 from routes.users import router as users_router
