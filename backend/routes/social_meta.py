@@ -76,8 +76,8 @@ async def get_article_meta(slug: str, request: Request, db: Session = Depends(ge
     
     <!-- Article specific -->
     {f'<meta property="article:published_time" content="{article.published_at.isoformat()}" />' if article.published_at else ''}
-    {f'<meta property="article:author" content="{article.author.username}" />' if article.author else ''}
-    {f'<meta property="article:section" content="{article.category.name}" />' if article.category else ''}
+    {f'<meta property="article:author" content="{author.username}" />' if author else ''}
+    {f'<meta property="article:section" content="{category.name}" />' if category else ''}
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://sciencedigestnews.com/article/{article.slug}" />
