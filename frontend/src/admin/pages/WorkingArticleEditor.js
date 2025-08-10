@@ -232,10 +232,22 @@ const WorkingArticleEditor = () => {
       // Convert bold and italic
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      // Convert links
+      // Convert images BEFORE links - with proper preview for base64
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+        const altText = alt || 'Зображення';
+        
+        // For base64 images, show preview instead of code
+        if (src.startsWith('data:image/')) {
+          return `<div class="my-4 p-3 border border-gray-200 rounded-lg bg-gray-50">
+            <p class="text-sm text-gray-600 mb-2">📷 Зображення: ${altText}</p>
+            <img src="${src}" alt="${altText}" class="max-w-full h-auto rounded border" style="max-height: 200px;" />
+          </div>`;
+        }
+        
+        return `<img src="${src}" alt="${altText}" class="max-w-full h-auto my-4 rounded-lg border" />`;
+      })
+      // Convert links AFTER images
       .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank">$1</a>')
-      // Convert images
-      .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto my-4 rounded-lg border" />')
       // Convert lists
       .replace(/^- (.+$)/gm, '<li class="ml-4">$1</li>')
       // Convert quotes
