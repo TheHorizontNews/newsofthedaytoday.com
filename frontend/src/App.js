@@ -82,7 +82,7 @@ function App() {
             <div className="App min-h-screen bg-gray-100">
               <Header currentTime={currentTime} />
               <main>
-                <HomePage />
+                <CategoryPage />
               </main>
               <Footer />
             </div>
