@@ -13,7 +13,7 @@ import sys
 import uuid
 
 # Get backend URL from environment
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://77b80d3b-08a9-4440-a9ff-928d52268df6.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://d13e79a9-491f-48ad-9444-63d6326a4a5a.preview.emergentagent.com')
 
 class BackendTester:
     def __init__(self):

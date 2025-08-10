@@ -1,18 +1,20 @@
 <analysis>
-The AI engineer successfully transformed Edge Chronicle into Science Digest News, implementing a robust React/FastAPI stack. Key phases included a complex migration from MongoDB to SQLite for simplified deployment, extensive UI/UX rebranding, and comprehensive PageSpeed optimizations targeting a score of 100. Critical issues like the  functionality, admin panel routing, and dynamic SEO metadata for social media previews were tackled. While most features like category editing, Google Search Console integration, and a homepage editor were successfully delivered, persistent challenges with URL slug generation (Ukrainian vs. English), image handling within articles, and content saving after publication remained at the trajectory's end. The engineer demonstrated iterative problem-solving, debugging complex React Router and build-related issues to stabilize the application's core functionality.
+The AI engineer's trajectory began with taking over a React/FastAPI application, Science Digest News, previously rebranded from Edge Chronicle. The initial phase involved understanding existing features, including an admin panel, content management, and SEO integrations. A critical database migration from MongoDB to SQLite had already occurred. The engineer systematically addressed a list of pending tasks, starting with English slug generation for article URLs. This was successfully implemented and verified through backend testing. Subsequently, significant work was done on the  to add main photo and in-text image functionalities, including updating the UI, preview logic, and handling image uploads.
+
+A persistent issue reported by the user was that published article content was being replaced by boilerplate text. The engineer meticulously debugged this, initially suspecting content saving or category selection issues. After multiple iterations of testing and fixing category loading/selection in the frontend, it was discovered that the  responsible for displaying public articles was hardcoded to use mock data instead of dynamically fetching content from the backend API. This was the root cause of the content replacement problem, which the engineer identified and was about to fix when the trajectory ended.
 </analysis>
 
 <product_requirements>
-The project aimed to develop a full-stack news application, initially cloning TSN.ua, then rebranding to Edge Chronicle, and finally to Science Digest News with a specific blue color scheme (#0c61cf) and scientific content focus. It required a comprehensive admin panel (FastAPI/React) for content, user, and category management, including JWT authentication, a rich text editor, image upload, media library, and SEO metadata. Subsequent phases involved SEO & Search Optimization, Google Analytics/Search Console integration, tag management, and automatic sitemap/robots.txt generation.
+The project's primary goal was to develop a comprehensive full-stack news application, initially a TSN.ua clone, then rebranded to Edge Chronicle, and finally Science Digest News with a specific blue color scheme (#0c61cf) and a focus on scientific content. It required a robust FastAPI/React admin panel for managing content, users, and categories, complete with JWT authentication, a rich text editor, image upload, a media library, and SEO metadata. Subsequent phases expanded to include SEO optimization, Google Analytics/Search Console integration, tag management, and automatic sitemap/robots.txt generation.
 
-Current explicit requirements included debugging a 503 Service Unavailable deployment error, leading to a crucial database migration from MongoDB to SQLite. Further, fixes for specific admin panel issues (SEO Analytics: Failed to fetch analytics data, ArticleEditor: still not loading, Tags: not displayed), achieving a PageSpeed score of 100, and full Ukrainian localization for both public and admin interfaces were mandated. Later requests added displaying article URLs in the admin, ensuring H2/H3 tags render correctly, and implementing a homepage content editor.
+Current requirements specified fixing a 503 Service Unavailable deployment error (leading to MongoDB to SQLite migration), resolving specific admin panel issues (SEO Analytics, ArticleEditor, Tags display), achieving a PageSpeed score of 100, and implementing full Ukrainian localization. Later additions included displaying article URLs in the admin panel, ensuring correct H2/H3 tag rendering, and creating a homepage content editor. The ongoing critical issue identified by the user was that entered article content was replaced by test/template content upon publication, and URL slugs were in Ukrainian instead of English.
 </product_requirements>
 
 <key_technical_concepts>
 -   **Frontend:** React, React Router, TailwindCSS, React Helmet Async, react-ga4.
 -   **Backend:** FastAPI, SQLAlchemy, SQLite, JWT authentication, Pydantic.
 -   **Architecture:** Component-based React, RESTful APIs, role-based access control, environment variables.
--   **SEO:** Dynamic sitemap/robots.txt, structured data, Google Analytics/Search Console, Open Graph, PageSpeed optimization (lazy loading, code splitting, critical CSS, Service Worker).
+-   **SEO:** Dynamic sitemap/robots.txt, structured data, Google Analytics/Search Console, Open Graph, PageSpeed optimization.
 -   **Localization:** Multi-language support (Ukrainian).
 </key_technical_concepts>
 
@@ -22,45 +24,32 @@ The application features a full-stack architecture with a React frontend and a F
 
 
 **Key Files and Changes:**
--   ****: The main HTML template. Heavily modified for PageSpeed optimizations (preconnect, preload, critical CSS, async fonts), PWA manifest linking, and initial Open Graph meta tags for Science Digest News.
--   ****: Main React application. Updated to manage public and admin routing, integrate dynamic SEO meta tags using  hook, incorporate  for accessibility, and wrap public routes with  and . Crucially, routing order was fixed to correctly distinguish public and admin paths.
--   ****: Core admin React app. Modified to replace problematic  with , fix React Router v6 nested routing conflicts by ordering routes correctly and adding an  route.  route was removed as per user request. Authentication  was adjusted for correct redirection.
--   ****: Newly created file to provide a functional article editor, replacing the problematic -based one.
--   ****: Articles listing page in admin. Modified to add a URL column with copy and view buttons for each article.
--   ****: Categories management page. Updated to include a functional edit modal for categories, allowing in-place modification of category names and descriptions.
--   ****: Admin login page. Updated for branding (Science Digest News).
--   ****: Admin settings page. Enhanced to include Google Search Console verification fields (HTML file, meta tag, property URL) under the Integrations tab and fully integrated dynamic SEO settings for site name, description, and keywords.
--   ****: New file created for a drag-and-drop homepage content editor, allowing administrators to configure article blocks.
--   ****: Manages authentication state. Updated to ensure consistent user session management and redirection logic after login/logout, fixing  redirect issues.
--   ****: Frontend API client. Pathing for SEO settings and other APIs were corrected to avoid double  prefixes, which caused 404s.
--   ****: Shared React components.  was updated for PageSpeed with optimized images.  was fixed to correctly render H2/H3 tags.  accessibility was improved with ARIA labels.
--   ****: Main site homepage. Updated to use optimized images for the hero section and incorporate structured data (JSON-LD) for SEO.
--   ****: Manages site-wide SEO metadata. Updated to reflect Science Digest News branding, and to dynamically set Open Graph tags based on fetched SEO settings.
--   ****: New custom React hook to fetch global SEO settings from the backend and dynamically update  and meta tags.
--   ****: New utility for lazy loading and delaying scripts (e.g., PostHog) to improve PageSpeed.
--   ****: New file for a Service Worker, enabling caching for offline support and faster subsequent loads.
--   ****: New file for PWA (Progressive Web App) capabilities.
--   ****: New file for SEO crawl management.
--   ****: Backend SEO routes. Extended to include an endpoint for fetching global SEO settings to support dynamic meta tag generation on the frontend.
+-   ****: Replaced problematic . It was significantly enhanced to include main photo upload, in-text image insertion with alt tags, and a more robust markdown preview. Errors related to  definition and syntax issues were fixed. Category selection logic was debugged, including fixing invalid fallback category IDs and improving validation messages for a more user-friendly experience.
+-   ****: Modified to include a  function, which was then used in the  function. This change ensured that article URLs are generated with English characters instead of Ukrainian characters.
+-   ****: Updated to correctly display article URLs in a dedicated column. Initially, it showed hardcoded absolute URLs, which was corrected to use relative paths.
+-   ****: The main public-facing article display page. Critically identified as the source of the content saving issue: it was using hardcoded mock data for article content instead of fetching actual content from the backend API. This file is crucial for public display of articles.
+
 </code_architecture>
 
 <pending_tasks>
--   Ensure article URLs generated in the admin panel are in English (slug generation).
--   Add functionality to attach a main photo to articles.
--   Implement the ability to embed photos with alt text within article content.
--   Resolve the issue where article text content is not saving after publication.
+-   Resolve the core issue where article text content is replaced by template text after publication. (The root cause in  was just identified).
+-   Add functionality to attach a main photo to articles. (Implemented, but pending user verification).
+-   Implement the ability to embed photos with alt text within article content. (Implemented, but pending user verification).
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was working on resolving issues identified in the article creation and display pipeline. The most pressing problems noted by the user were:
-1.  **URL Slug Generation**: Article URLs, despite the app being rebranded to Science Digest News and having Ukrainian localization, were still being generated with Ukrainian characters (e.g., ). The user explicitly requested these to be in English. The AI engineer's last action in the trajectory was initiating the fix for English slug generation.
-2.  **Article Main Photo**: There was no explicit functionality to add a zaглавное фото (main/cover photo) to an article.
-3.  **In-Text Photos**: The ability to add images *within* the article body, along with alt attributes, was missing.
-4.  **Content Saving Issue**: The user reported that the tekst ne dobavilsya (text was not added/saved) after article publication, indicating a critical content persistence bug.
+Immediately prior to this summary, the AI engineer was deep into debugging the critical issue where user-entered article content was being replaced by boilerplate text upon publication. This problem persisted despite earlier successes in getting articles to save and publish correctly in the backend, and generating English slugs.
 
-The current work context is directly focused on these four issues, with the immediate next step being the English slug generation. The  file in the admin panel had just been updated to include a URL column, making the Ukrainian slug visibility more apparent, which led to this new user request.
+The engineer methodically investigated multiple layers:
+1.  **Initial assessment**: Confirmed backend saving was functional, shifting focus to frontend issues.
+2.  **English Slug Generation**: Successfully implemented a transliteration function in  to convert Ukrainian titles into English slugs, and verified its functionality.
+3.  **Image Functionality**: Added main photo upload and in-text image insertion capabilities to , including UI updates and markdown preview enhancements.
+4.  **Category Selection & Publishing Workflow**: Debugged the article publishing process in . This involved fixing issues with category selection (user mistakenly selecting status instead of category), correcting invalid fallback category IDs, and improving frontend validation messages.
+5.  **URL Display in Admin**: Fixed an issue in  where article URLs were hardcoded as absolute paths instead of relative ones.
+
+Despite these fixes, the user continued to report the content replacement issue. Through further dedicated testing, the engineer discovered the root cause: the  (responsible for displaying articles to public users) was hardcoded to show static, mock content instead of dynamically fetching and rendering the actual article text from the backend. The engineer had just identified this  as the source of the boilerplate text and was poised to implement the fix.
 </current_work>
 
 <optional_next_step>
-The next step is to implement the functionality for generating English slugs for article URLs.
+The next step is to modify  to fetch and display actual article content from the backend API instead of mock data.
 </optional_next_step>
