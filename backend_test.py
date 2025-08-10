@@ -1507,7 +1507,7 @@ class BackendTester:
 
     async def run_all_tests(self):
         """Run all backend tests"""
-        print(f"🚀 Starting Backend API Tests for Article Display Fix")
+        print(f"🚀 Starting Backend API Tests for Homepage Editor Functionality")
         print(f"Backend URL: {BACKEND_URL}")
         print("=" * 80)
         
@@ -1521,8 +1521,21 @@ class BackendTester:
             print("❌ Cannot proceed without valid category")
             return False
         
-        # Step 3: Test NEW SLUG ENDPOINT functionality (main focus)
-        print("\n🔗 NEW SLUG ENDPOINT TESTS (MAIN FOCUS)")
+        # Step 3: Test HOMEPAGE EDITOR functionality (MAIN FOCUS)
+        print("\n🏠 HOMEPAGE EDITOR TESTS (MAIN FOCUS)")
+        print("-" * 50)
+        
+        await self.test_homepage_config_get_authenticated()
+        await self.test_homepage_config_get_unauthenticated()
+        await self.test_homepage_config_put_authenticated()
+        await self.test_homepage_config_put_unauthenticated()
+        await self.test_homepage_public_endpoint()
+        await self.test_homepage_config_persistence()
+        await self.test_homepage_database_table_creation()
+        await self.test_homepage_config_validation()
+        
+        # Step 4: Test NEW SLUG ENDPOINT functionality
+        print("\n🔗 NEW SLUG ENDPOINT TESTS")
         print("-" * 50)
         
         await self.test_new_slug_endpoint_basic()
@@ -1531,7 +1544,7 @@ class BackendTester:
         await self.test_slug_endpoint_view_count_increment()
         await self.test_slug_endpoint_with_existing_articles()
         
-        # Step 4: Test English slug generation functionality
+        # Step 5: Test English slug generation functionality
         print("\n🔤 ENGLISH SLUG GENERATION TESTS")
         print("-" * 50)
         
@@ -1540,7 +1553,7 @@ class BackendTester:
         await self.test_url_compatibility()
         await self.test_database_slug_persistence()
         
-        # Step 5: Test Ukrainian article creation workflow
+        # Step 6: Test Ukrainian article creation workflow
         print("\n🇺🇦 UKRAINIAN ARTICLE WORKFLOW TESTS")
         print("-" * 50)
         
@@ -1549,7 +1562,7 @@ class BackendTester:
         await self.test_featured_image_field()
         await self.test_database_content_verification()
         
-        # Step 6: Test basic article operations for comparison
+        # Step 7: Test basic article operations for comparison
         print("\n📝 BASIC ARTICLE OPERATIONS")
         print("-" * 50)
         
@@ -1559,7 +1572,7 @@ class BackendTester:
         await self.test_update_article()
         await self.test_delete_article()
         
-        # Step 7: Test error handling
+        # Step 8: Test error handling
         print("\n🔍 ERROR HANDLING TESTS")
         print("-" * 50)
         
@@ -1580,11 +1593,17 @@ class BackendTester:
         print(f"Failed: {total - passed}")
         print(f"Success Rate: {(passed/total)*100:.1f}%")
         
-        # Separate NEW SLUG ENDPOINT results (main focus)
+        # Separate HOMEPAGE EDITOR results (main focus)
+        homepage_tests = [r for r in self.results if "Homepage" in r["test"]]
+        homepage_passed = sum(1 for r in homepage_tests if r["success"])
+        
+        print(f"\n🏠 Homepage Editor Tests: {homepage_passed}/{len(homepage_tests)} passed")
+        
+        # Separate NEW SLUG ENDPOINT results
         slug_endpoint_tests = [r for r in self.results if "Slug Endpoint" in r["test"]]
         slug_endpoint_passed = sum(1 for r in slug_endpoint_tests if r["success"])
         
-        print(f"\n🔗 NEW Slug Endpoint Tests: {slug_endpoint_passed}/{len(slug_endpoint_tests)} passed")
+        print(f"🔗 NEW Slug Endpoint Tests: {slug_endpoint_passed}/{len(slug_endpoint_tests)} passed")
         
         # Separate English slug generation results
         english_slug_tests = [r for r in self.results if "English Slug" in r["test"] or "Slug Uniqueness" in r["test"] or "URL Compatibility" in r["test"] or "Database Slug" in r["test"]]
