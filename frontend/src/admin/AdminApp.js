@@ -11,6 +11,7 @@ import Users from './pages/Users';
 import Categories from './pages/Categories';
 import Analytics from './pages/Analytics';
 import MediaLibrary from './pages/MediaLibraryPage';
+import HomepageEditor from './pages/HomepageEditor';
 import Settings from './pages/Settings';
 import SEOAnalytics from './components/SEOAnalytics';
 import './Admin.css';
