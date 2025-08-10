@@ -185,6 +185,36 @@ const WorkingArticleEditor = () => {
     }, 0);
   };
 
+  const insertImage = () => {
+    // Create a file input for image upload
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          setMessage('Розмір файлу не повинен перевищувати 5MB');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const altText = prompt('Введіть alt-текст для зображення:', file.name.replace(/\.[^/.]+$/, ''));
+          const imageMarkdown = `![${altText || 'Зображення'}](${event.target.result})`;
+          insertText(`\n\n${imageMarkdown}\n\n`);
+          setMessage('');
+        };
+        reader.onerror = () => {
+          setMessage('Помилка завантаження файлу');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
   const formatButtons = [
     { label: 'H1', action: () => insertText('# '), title: 'Заголовок 1' },
     { label: 'H2', action: () => insertText('## '), title: 'Заголовок 2' },
