@@ -220,6 +220,52 @@
   }
 }
 
+/* Dark theme classes */
+.dark {
+  background-color: #1a202c;
+  color: #e2e8f0;
+}
+
+.dark .bg-white {
+  background-color: #2d3748 !important;
+  color: #e2e8f0;
+}
+
+.dark .text-gray-900 {
+  color: #f7fafc !important;
+}
+
+.dark .text-gray-800 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-gray-700 {
+  color: #cbd5e0 !important;
+}
+
+.dark .text-gray-600 {
+  color: #a0aec0 !important;
+}
+
+.dark .text-gray-500 {
+  color: #718096 !important;
+}
+
+.dark .modern-card {
+  background: rgba(45, 55, 72, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+
+.dark .bg-gray-100 {
+  background-color: #4a5568 !important;
+  color: #e2e8f0;
+}
+
+.dark .border-gray-200 {
+  border-color: #4a5568 !important;
+}
+
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   .modern-card,
