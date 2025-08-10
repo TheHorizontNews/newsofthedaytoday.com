@@ -201,6 +201,7 @@
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .modern-card {
+    background: white !important;
     border-radius: 12px;
     margin: 0 4px;
   }
