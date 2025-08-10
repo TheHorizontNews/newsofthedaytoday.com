@@ -250,7 +250,13 @@ const WorkingArticleEditor = () => {
       // Convert bold and italic
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      // Convert images BEFORE links - with proper preview for base64
+      // Handle HTML img tags (from new insertImage function)
+      .replace(/<img([^>]*)>/g, (match, attributes) => {
+        return `<div class="my-4 flex justify-center">
+          <img${attributes} class="rounded-lg border shadow-sm max-w-full h-auto" style="max-height: 400px;" />
+        </div>`;
+      })
+      // Convert markdown images BEFORE links - with proper preview for base64
       .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
         const altText = alt || 'Зображення';
         
@@ -258,11 +264,13 @@ const WorkingArticleEditor = () => {
         if (src.startsWith('data:image/')) {
           return `<div class="my-4 p-3 border border-gray-200 rounded-lg bg-gray-50">
             <p class="text-sm text-gray-600 mb-2">📷 Зображення: ${altText}</p>
-            <img src="${src}" alt="${altText}" class="max-w-full h-auto rounded border" style="max-height: 200px;" />
+            <div class="flex justify-center">
+              <img src="${src}" alt="${altText}" class="max-w-full h-auto rounded border" style="max-height: 200px;" />
+            </div>
           </div>`;
         }
         
-        return `<img src="${src}" alt="${altText}" class="max-w-full h-auto my-4 rounded-lg border" />`;
+        return `<div class="my-4 flex justify-center"><img src="${src}" alt="${altText}" class="max-w-full h-auto rounded-lg border" /></div>`;
       })
       // Convert links AFTER images
       .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank">$1</a>')
