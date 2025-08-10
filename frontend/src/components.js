@@ -159,6 +159,8 @@ export const Header = ({ currentTime }) => {
 
 // Hero Section Component - Optimized for LCP
 export const HeroSection = ({ heroData }) => {
+  const heroImage = heroData?.image || heroData?.featured_image || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=480&fit=crop';
+  
   return (
     <section className="hero-section relative bg-black text-white overflow-hidden">
       <div className="absolute inset-0">
@@ -166,20 +168,19 @@ export const HeroSection = ({ heroData }) => {
           {/* WebP with responsive sizes */}
           <source 
             media="(min-width: 1024px)"
-            srcSet="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=600&fit=crop&crop=entropy&fm=webp&q=75 1200w,
-                    https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&h=800&fit=crop&crop=entropy&fm=webp&q=75 1600w"
+            srcSet={`${heroImage}&w=1200&h=600&fm=webp&q=75 1200w, ${heroImage}&w=1600&h=800&fm=webp&q=75 1600w`}
             sizes="100vw"
             type="image/webp"
           />
           <source 
             media="(min-width: 768px)"
-            srcSet="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop&crop=entropy&fm=webp&q=75"
+            srcSet={`${heroImage}&w=800&h=400&fm=webp&q=75`}
             type="image/webp"
           />
           <img 
-            src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop&crop=entropy&fm=webp&q=75" 
-            alt="Revolutionary AI Discovery" 
-            className="w-full h-full object-cover opacity-70"
+            src={`${heroImage}&w=400&h=300&fm=webp&q=75`}
+            alt={heroData?.title || "Science News"} 
+            className="w-full h-full object-cover opacity-70 gpu-accelerated"
             width="1200"
             height="600"
             loading="eager"
@@ -193,19 +194,25 @@ export const HeroSection = ({ heroData }) => {
       <div className="relative container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl">
           <div className="flex items-center space-x-2 mb-4">
-            <span className="text-white text-xs px-2 py-1 rounded" style={{backgroundColor: '#0c61cf'}}>
+            <span className="modern-btn text-xs">
               Science Digest News
             </span>
-            <span className="text-white text-xs px-2 py-1 rounded" style={{backgroundColor: '#0c61cf'}}>
+            <span className="modern-btn text-xs">
               BREAKING DISCOVERY
             </span>
           </div>
           
-          <Link to={heroData.url}>
-            <h1 className="text-3xl lg:text-5xl font-bold mb-6 leading-tight hover:opacity-90 transition-colors cursor-pointer">
-              {heroData.title}
+          <Link to={heroData?.url || '#'} className="will-change-transform">
+            <h1 className="text-3xl lg:text-5xl font-bold mb-6 leading-tight hover:opacity-90 transition-all duration-300 cursor-pointer modern-heading">
+              {heroData?.title || 'Завантаження...'}
             </h1>
           </Link>
+          
+          {heroData?.subtitle && (
+            <p className="text-xl text-gray-200 mb-6 leading-relaxed">
+              {heroData.subtitle}
+            </p>
+          )}
           
           <div className="flex flex-wrap items-center text-sm text-gray-300 space-x-6">
             <span className="flex items-center">
