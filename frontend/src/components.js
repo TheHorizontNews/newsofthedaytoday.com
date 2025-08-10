@@ -14,7 +14,7 @@ export const SkipToContent = () => {
 };
 
 // Header Component
-export const Header = ({ currentTime }) => {
+export const Header = ({ currentTime, heroImage, heroTitle, heroSubtitle }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Check for saved theme preference or default to light mode
