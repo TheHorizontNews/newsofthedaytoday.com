@@ -70,8 +70,18 @@ export const Header = ({ currentTime, heroImage, heroTitle, heroSubtitle }) => {
     });
   };
 
+  const headerStyle = heroImage ? {
+    backgroundColor: '#0c61cf',
+    backgroundImage: `linear-gradient(rgba(12, 97, 207, 0.7), rgba(10, 82, 184, 0.7)), url(${heroImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  } : {
+    backgroundColor: '#0c61cf'
+  };
+
   return (
-    <header className="text-white" style={{backgroundColor: '#0c61cf'}} role="banner">
+    <header className="text-white" style={headerStyle} role="banner">
       {/* Top Bar */}
       <div className="py-2" style={{backgroundColor: '#0a52b8'}}>
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
