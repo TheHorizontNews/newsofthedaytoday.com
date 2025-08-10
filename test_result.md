@@ -372,7 +372,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "English Slug Generation"
     - "Main Photo Functionality"
     - "In-Text Photo Integration"
     - "Content Saving Investigation"
