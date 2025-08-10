@@ -1071,6 +1071,440 @@ class BackendTester:
             self.log_result("Slug Endpoint Existing Articles", False, f"Exception: {str(e)}")
             return False
 
+    # ========================================
+    # HOMEPAGE EDITOR FUNCTIONALITY TESTS
+    # ========================================
+
+    async def test_homepage_config_get_authenticated(self):
+        """Test GET /api/homepage/config (authenticated) - should return homepage configuration"""
+        try:
+            headers = self.get_auth_headers()
+            async with self.session.get(f"{BACKEND_URL}/api/homepage/config", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Verify structure
+                    has_blocks = "blocks" in data
+                    blocks = data.get("blocks", [])
+                    
+                    # Check for expected blocks
+                    expected_block_ids = {"hero", "main", "sidebar", "trending", "featured"}
+                    actual_block_ids = {block.get("id") for block in blocks}
+                    has_all_blocks = expected_block_ids.issubset(actual_block_ids)
+                    
+                    # Check block structure
+                    valid_block_structure = True
+                    max_articles_correct = True
+                    
+                    for block in blocks:
+                        if not all(key in block for key in ["id", "name", "articles", "maxArticles"]):
+                            valid_block_structure = False
+                            break
+                        
+                        # Check maxArticles values
+                        block_id = block.get("id")
+                        max_articles = block.get("maxArticles")
+                        expected_max = {
+                            "hero": 1, "main": 3, "sidebar": 5, "trending": 4, "featured": 6
+                        }.get(block_id)
+                        
+                        if expected_max and max_articles != expected_max:
+                            max_articles_correct = False
+                    
+                    details = f"Blocks present: {has_blocks}, All expected blocks: {has_all_blocks}, Valid structure: {valid_block_structure}, Max articles correct: {max_articles_correct}"
+                    success = has_blocks and has_all_blocks and valid_block_structure and max_articles_correct
+                    
+                    self.log_result("Homepage Config GET (Authenticated)", success, details)
+                    return success
+                else:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config GET (Authenticated)", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Homepage Config GET (Authenticated)", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_config_get_unauthenticated(self):
+        """Test GET /api/homepage/config without authentication - should return 403"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}/api/homepage/config") as response:
+                if response.status in [401, 403]:
+                    self.log_result("Homepage Config GET (Unauthenticated)", True, f"Properly protected - HTTP {response.status}")
+                    return True
+                else:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config GET (Unauthenticated)", False, f"Should require authentication - HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Homepage Config GET (Unauthenticated)", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_config_put_authenticated(self):
+        """Test PUT /api/homepage/config (authenticated) - should save homepage configuration"""
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Create test configuration with mock article data
+            test_config = {
+                "blocks": [
+                    {
+                        "id": "hero",
+                        "name": "Hero Section",
+                        "articles": [
+                            {
+                                "id": "test-hero-article-1",
+                                "title": "Breaking: Revolutionary AI Discovery",
+                                "subtitle": "Scientists achieve quantum breakthrough",
+                                "category": {"id": "tech", "name": "Technology"},
+                                "featured_image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A",
+                                "slug": "revolutionary-ai-discovery",
+                                "views": 1250
+                            }
+                        ],
+                        "maxArticles": 1
+                    },
+                    {
+                        "id": "main",
+                        "name": "Main News",
+                        "articles": [
+                            {
+                                "id": "test-main-article-1",
+                                "title": "Climate Change Solutions",
+                                "subtitle": "New renewable energy breakthrough",
+                                "category": {"id": "environment", "name": "Environment"},
+                                "featured_image": None,
+                                "slug": "climate-change-solutions",
+                                "views": 890
+                            },
+                            {
+                                "id": "test-main-article-2", 
+                                "title": "Space Exploration Update",
+                                "subtitle": "Mars mission progress report",
+                                "category": {"id": "space", "name": "Space"},
+                                "featured_image": None,
+                                "slug": "space-exploration-update",
+                                "views": 675
+                            }
+                        ],
+                        "maxArticles": 3
+                    },
+                    {
+                        "id": "sidebar",
+                        "name": "Sidebar News",
+                        "articles": [],
+                        "maxArticles": 5
+                    },
+                    {
+                        "id": "trending",
+                        "name": "Trending",
+                        "articles": [
+                            {
+                                "id": "test-trending-article-1",
+                                "title": "Viral Science Discovery",
+                                "subtitle": "Research goes viral on social media",
+                                "category": {"id": "biology", "name": "Biology"},
+                                "featured_image": None,
+                                "slug": "viral-science-discovery",
+                                "views": 2340
+                            }
+                        ],
+                        "maxArticles": 4
+                    },
+                    {
+                        "id": "featured",
+                        "name": "Featured Articles",
+                        "articles": [],
+                        "maxArticles": 6
+                    }
+                ]
+            }
+            
+            async with self.session.put(f"{BACKEND_URL}/api/homepage/config", json=test_config, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    success_message = "successfully" in data.get("message", "").lower()
+                    
+                    if success_message:
+                        self.log_result("Homepage Config PUT (Authenticated)", True, "Configuration saved successfully")
+                        return True
+                    else:
+                        self.log_result("Homepage Config PUT (Authenticated)", False, f"Unexpected response: {data}")
+                        return False
+                else:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config PUT (Authenticated)", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Homepage Config PUT (Authenticated)", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_config_put_unauthenticated(self):
+        """Test PUT /api/homepage/config without authentication - should return 403"""
+        try:
+            test_config = {
+                "blocks": [
+                    {
+                        "id": "hero",
+                        "name": "Hero Section", 
+                        "articles": [],
+                        "maxArticles": 1
+                    }
+                ]
+            }
+            
+            async with self.session.put(f"{BACKEND_URL}/api/homepage/config", json=test_config) as response:
+                if response.status in [401, 403]:
+                    self.log_result("Homepage Config PUT (Unauthenticated)", True, f"Properly protected - HTTP {response.status}")
+                    return True
+                else:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config PUT (Unauthenticated)", False, f"Should require authentication - HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Homepage Config PUT (Unauthenticated)", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_public_endpoint(self):
+        """Test GET /api/homepage/public (no auth) - should return homepage configuration for public display"""
+        try:
+            async with self.session.get(f"{BACKEND_URL}/api/homepage/public") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Should have blocks structure
+                    has_blocks = "blocks" in data
+                    blocks = data.get("blocks", [])
+                    
+                    # If we saved config earlier, it should be returned
+                    # If no config exists, should return empty blocks array
+                    valid_response = isinstance(blocks, list)
+                    
+                    details = f"Has blocks: {has_blocks}, Valid response: {valid_response}, Blocks count: {len(blocks)}"
+                    success = has_blocks and valid_response
+                    
+                    self.log_result("Homepage Public Endpoint", success, details)
+                    return success
+                else:
+                    error_data = await response.text()
+                    self.log_result("Homepage Public Endpoint", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Homepage Public Endpoint", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_config_persistence(self):
+        """Test that saved homepage configuration persists and can be retrieved"""
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Save a specific configuration
+            unique_title = f"Test Persistence Article {datetime.now().strftime('%H%M%S')}"
+            test_config = {
+                "blocks": [
+                    {
+                        "id": "hero",
+                        "name": "Hero Section",
+                        "articles": [
+                            {
+                                "id": "persistence-test-article",
+                                "title": unique_title,
+                                "subtitle": "Testing configuration persistence",
+                                "category": {"id": "test", "name": "Test Category"},
+                                "featured_image": None,
+                                "slug": "test-persistence-article",
+                                "views": 42
+                            }
+                        ],
+                        "maxArticles": 1
+                    },
+                    {
+                        "id": "main",
+                        "name": "Main News",
+                        "articles": [],
+                        "maxArticles": 3
+                    }
+                ]
+            }
+            
+            # Save configuration
+            async with self.session.put(f"{BACKEND_URL}/api/homepage/config", json=test_config, headers=headers) as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config Persistence", False, f"Failed to save config: {response.status} - {error_data}")
+                    return False
+            
+            # Retrieve configuration via authenticated endpoint
+            async with self.session.get(f"{BACKEND_URL}/api/homepage/config", headers=headers) as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config Persistence", False, f"Failed to retrieve config: {response.status} - {error_data}")
+                    return False
+                
+                auth_data = await response.json()
+                
+                # Check if our test data is present
+                hero_block = None
+                for block in auth_data.get("blocks", []):
+                    if block.get("id") == "hero":
+                        hero_block = block
+                        break
+                
+                if not hero_block:
+                    self.log_result("Homepage Config Persistence", False, "Hero block not found in retrieved config")
+                    return False
+                
+                hero_articles = hero_block.get("articles", [])
+                if not hero_articles:
+                    self.log_result("Homepage Config Persistence", False, "No articles found in hero block")
+                    return False
+                
+                saved_title = hero_articles[0].get("title", "")
+                title_matches = saved_title == unique_title
+                
+                if not title_matches:
+                    self.log_result("Homepage Config Persistence", False, f"Title mismatch: expected '{unique_title}', got '{saved_title}'")
+                    return False
+            
+            # Retrieve configuration via public endpoint
+            async with self.session.get(f"{BACKEND_URL}/api/homepage/public") as response:
+                if response.status != 200:
+                    error_data = await response.text()
+                    self.log_result("Homepage Config Persistence", False, f"Failed to retrieve public config: {response.status} - {error_data}")
+                    return False
+                
+                public_data = await response.json()
+                
+                # Check if same data is available publicly
+                public_hero_block = None
+                for block in public_data.get("blocks", []):
+                    if block.get("id") == "hero":
+                        public_hero_block = block
+                        break
+                
+                public_title_matches = False
+                if public_hero_block and public_hero_block.get("articles"):
+                    public_saved_title = public_hero_block["articles"][0].get("title", "")
+                    public_title_matches = public_saved_title == unique_title
+                
+                details = f"Auth endpoint title match: {title_matches}, Public endpoint title match: {public_title_matches}"
+                success = title_matches and public_title_matches
+                
+                self.log_result("Homepage Config Persistence", success, details)
+                return success
+                
+        except Exception as e:
+            self.log_result("Homepage Config Persistence", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_database_table_creation(self):
+        """Test that homepage_config table is created when saving configuration"""
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Save a minimal configuration to trigger table creation
+            minimal_config = {
+                "blocks": [
+                    {
+                        "id": "hero",
+                        "name": "Hero Section",
+                        "articles": [],
+                        "maxArticles": 1
+                    }
+                ]
+            }
+            
+            async with self.session.put(f"{BACKEND_URL}/api/homepage/config", json=minimal_config, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    success_message = "successfully" in data.get("message", "").lower()
+                    
+                    # If save was successful, table should have been created
+                    if success_message:
+                        # Try to retrieve the config to verify table exists and works
+                        async with self.session.get(f"{BACKEND_URL}/api/homepage/config", headers=headers) as get_response:
+                            if get_response.status == 200:
+                                retrieved_data = await get_response.json()
+                                has_blocks = "blocks" in retrieved_data
+                                
+                                self.log_result("Homepage Database Table Creation", has_blocks, f"Table created and functional: {has_blocks}")
+                                return has_blocks
+                            else:
+                                self.log_result("Homepage Database Table Creation", False, f"Failed to retrieve after save: {get_response.status}")
+                                return False
+                    else:
+                        self.log_result("Homepage Database Table Creation", False, f"Save operation failed: {data}")
+                        return False
+                else:
+                    error_data = await response.text()
+                    self.log_result("Homepage Database Table Creation", False, f"HTTP {response.status}", error_data)
+                    return False
+        except Exception as e:
+            self.log_result("Homepage Database Table Creation", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_homepage_config_validation(self):
+        """Test homepage configuration validation with invalid data"""
+        try:
+            headers = self.get_auth_headers()
+            headers["Content-Type"] = "application/json"
+            
+            # Test with invalid structure (missing required fields)
+            invalid_configs = [
+                # Missing blocks
+                {},
+                # Invalid blocks structure
+                {"blocks": "not_an_array"},
+                # Missing required block fields
+                {
+                    "blocks": [
+                        {
+                            "id": "hero"
+                            # Missing name, articles, maxArticles
+                        }
+                    ]
+                },
+                # Invalid article structure
+                {
+                    "blocks": [
+                        {
+                            "id": "hero",
+                            "name": "Hero Section",
+                            "articles": [
+                                {
+                                    # Missing required fields like id, title, slug
+                                    "invalid": "article"
+                                }
+                            ],
+                            "maxArticles": 1
+                        }
+                    ]
+                }
+            ]
+            
+            validation_results = []
+            
+            for i, invalid_config in enumerate(invalid_configs):
+                async with self.session.put(f"{BACKEND_URL}/api/homepage/config", json=invalid_config, headers=headers) as response:
+                    # Should return 422 (validation error) or 400 (bad request)
+                    if response.status in [400, 422]:
+                        validation_results.append(f"Config {i+1}: Properly rejected ({response.status})")
+                    else:
+                        validation_results.append(f"Config {i+1}: Should have been rejected but got {response.status}")
+            
+            # All invalid configs should be rejected
+            all_rejected = all("Properly rejected" in result for result in validation_results)
+            
+            details = "; ".join(validation_results)
+            self.log_result("Homepage Config Validation", all_rejected, details)
+            return all_rejected
+            
+        except Exception as e:
+            self.log_result("Homepage Config Validation", False, f"Exception: {str(e)}")
+            return False
+
     async def run_all_tests(self):
         """Run all backend tests"""
         print(f"🚀 Starting Backend API Tests for Article Display Fix")
