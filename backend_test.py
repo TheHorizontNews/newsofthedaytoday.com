@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Article Management Functionality
-Tests all article CRUD operations and related endpoints
+Backend API Testing for Category Loading Issue in Article Editor
+Tests category endpoints and data structure to debug publish button issue
 """
 
 import asyncio
@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 import os
 import sys
+import uuid
 
 # Get backend URL from environment
 BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://77b80d3b-08a9-4440-a9ff-928d52268df6.preview.emergentagent.com')
