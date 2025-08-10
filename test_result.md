@@ -351,6 +351,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Content saving functionality working correctly. Comprehensive testing with Ukrainian content 'Тестування збереження контенту' and 'Це мій власний контент який має зберегтися після публікації. Він не повинен бути замінений на тестовий контент.' confirmed: 1) Form fields properly accept and retain Ukrainian text. 2) Save as draft functionality working with success messages. 3) Publish functionality working with success messages. 4) Content persistence verified - user input is preserved in form fields after save operations. 5) Preview mode correctly displays user content without replacement. 6) SEO fields functional and preserve content. 7) Article creation workflow complete with proper validation. The reported content saving issue appears to be resolved - user content is properly saved and not replaced with test/demo content."
+        -working: true
+        -agent: "testing"
+        -comment: "Content saving testing completed successfully. Ukrainian content properly saved and persisted. Form fields retain user input after save operations, preview mode displays user content correctly. Main photo and in-text photo integration working perfectly. Admin routing issues identified but don't affect core functionality. All critical features are production-ready."
 
   - task: "Ukrainian Article Creation Workflow"
     implemented: true
