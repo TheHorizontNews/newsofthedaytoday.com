@@ -147,7 +147,7 @@ function ArticlePage() {
           </div>
 
           {/* Article Content */}
-          <div className="article-content prose max-w-none mb-8 modern-card p-8">
+          <div className="prose max-w-none mb-8 bg-white rounded-lg p-6">
             {article.content && (
               <div 
                 className="text-gray-800 leading-relaxed text-lg"
