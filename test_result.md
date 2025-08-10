@@ -283,6 +283,54 @@ frontend:
         -agent: "testing"
         -comment: "All public SEO endpoints working perfectly: 1) /api/seo/sitemap.xml - Returns valid XML sitemap (1609 bytes, application/xml). 2) /api/seo/robots.txt - Returns proper robots.txt (586 bytes, text/plain). 3) /api/seo/llms.txt - Returns LLMS training data file (1029 bytes, text/plain). 4) /api/seo/llms-sitemap.xml - Returns LLMS-specific sitemap (469 bytes, application/xml). All endpoints return correct MIME types and valid content structure."
 
+  - task: "English Slug Generation"
+    implemented: false
+    working: false
+    file: "/app/backend/utils.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User reports Ukrainian characters in article URLs. Backend testing shows Ukrainian slugs are generated correctly ('новітні-технології-штучного-інтелекту'), but user wants English slugs. Need to implement transliteration or English-only slug generation."
+
+  - task: "Main Photo Functionality"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/admin/pages/WorkingArticleEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User requests 'zaглавное фото' (main/cover photo) functionality. featured_image field exists in backend but UI needs proper main photo upload interface in article editor."
+
+  - task: "In-Text Photo Integration"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/admin/pages/WorkingArticleEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User requests ability to add images within article content with alt text attributes. Current editor only supports markdown text formatting."
+
+  - task: "Content Saving Investigation"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/admin/pages/WorkingArticleEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "User reports 'tekst ne dobavilsya' (text was not added/saved) after article publication. Backend testing shows content saving works correctly, may be frontend issue or user workflow problem."
+
   - task: "Ukrainian Article Creation Workflow"
     implemented: true
     working: true
