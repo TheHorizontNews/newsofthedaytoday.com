@@ -191,8 +191,8 @@ const Articles = () => {
                         </code>
                         <button
                           onClick={() => {
-                            const url = `https://sciencedigestnews.com/article/${article.slug || article.id}`;
-                            navigator.clipboard.writeText(url);
+                            const url = `/article/${article.slug || article.id}`;
+                            navigator.clipboard.writeText(window.location.origin + url);
                             // Можно добавить уведомление о копировании
                           }}
                           className="text-blue-600 hover:text-blue-800"
@@ -201,7 +201,7 @@ const Articles = () => {
                           📋
                         </button>
                         <a
-                          href={`https://sciencedigestnews.com/article/${article.slug || article.id}`}
+                          href={`/article/${article.slug || article.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-800"
