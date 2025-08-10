@@ -73,13 +73,7 @@ function App() {
             </div>
           } />
           <Route path="/article/:slug" element={
-            <div className="App min-h-screen bg-gray-100">
-              <Header currentTime={currentTime} />
-              <main>
-                <ArticlePage />
-              </main>
-              <Footer />
-            </div>
+            <ArticleWrapper currentTime={currentTime} />
           } />
           <Route path="/category/:categorySlug" element={
             <div className="App min-h-screen bg-gray-100">
