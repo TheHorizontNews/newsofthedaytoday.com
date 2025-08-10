@@ -110,7 +110,7 @@ const mockNewsData = {
   ]
 };
 
-const HomePage = () => {
+function HomePage() {
   const [homepageData, setHomepageData] = useState(null);
   const [loading, setLoading] = useState(true);
 
