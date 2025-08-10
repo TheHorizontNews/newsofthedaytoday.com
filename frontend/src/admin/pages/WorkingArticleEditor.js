@@ -215,7 +215,30 @@ const WorkingArticleEditor = () => {
     input.click();
   };
 
-  const formatButtons = [
+  const renderMarkdownPreview = (content) => {
+    if (!content) return 'Немає контенту для відображення.';
+    
+    let html = content
+      // Convert headers
+      .replace(/^### (.+$)/gm, '<h3 class="text-xl font-semibold mb-3 mt-6">$1</h3>')
+      .replace(/^## (.+$)/gm, '<h2 class="text-2xl font-semibold mb-4 mt-8">$1</h2>')
+      .replace(/^# (.+$)/gm, '<h1 class="text-3xl font-bold mb-4 mt-8">$1</h1>')
+      // Convert bold and italic
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Convert links
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank">$1</a>')
+      // Convert images
+      .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto my-4 rounded-lg border" />')
+      // Convert lists
+      .replace(/^- (.+$)/gm, '<li class="ml-4">$1</li>')
+      // Convert quotes
+      .replace(/^> (.+$)/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-700">$1</blockquote>')
+      // Convert line breaks
+      .replace(/\n/g, '<br>');
+    
+    return html;
+  };
     { label: 'H1', action: () => insertText('# '), title: 'Заголовок 1' },
     { label: 'H2', action: () => insertText('## '), title: 'Заголовок 2' },
     { label: 'H3', action: () => insertText('### '), title: 'Заголовок 3' },
