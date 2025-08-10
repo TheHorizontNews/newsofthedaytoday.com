@@ -444,6 +444,8 @@ test_plan:
 
 test_plan:
   current_focus:
+    - "Modern Homepage Design"  
+    - "Article Image Display Fix"
     - "Homepage Editor Frontend Interface"
   stuck_tasks: []
   test_all: false
