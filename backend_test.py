@@ -428,7 +428,7 @@ class BackendTester:
                 },
                 {
                     "title": "Штучний інтелект революційний прорив", 
-                    "expected": "shtuchnyi-intelekt-revolyutsiynyi-proryv"
+                    "expected": "shtuchnyyi-intelekt-revolyutsiyinyyi-proryv"
                 },
                 {
                     "title": "Дивні новини про технології",
