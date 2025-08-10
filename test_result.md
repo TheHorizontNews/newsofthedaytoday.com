@@ -429,27 +429,33 @@ test_plan:
 
   - task: "Modern Homepage Design"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/HomePage.js, /app/frontend/src/components.js, /app/frontend/src/modern-styles.css"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: false
         -agent: "main"
         -comment: "Implemented modern design improvements: loading spinner with gradient background, enhanced hero section with dynamic images from API, improved MainNews component with modern cards and hover effects, new modern-styles.css with animations, gradients, and performance optimizations. Updated HomePage.js to properly convert API data format to component props. Ready for comprehensive testing."
+        -working: true
+        -agent: "testing"
+        -comment: "MODERN HOMEPAGE DESIGN FULLY FUNCTIONAL! Comprehensive testing completed with 100% success rate. All requested features working perfectly: 1) LOADING EXPERIENCE ✅ - Modern gradient loading screen displays initially, no endless loading spinner issues, page loads successfully in ~1400ms. 2) HERO SECTION ✅ - Displays with proper background image and modern styling, hero title 'Революція в науці: штучний інтелект змінює світ', proper metadata (time, views, author). 3) MAINNEWS SECTION ✅ - Card-based layout with 1 modern card found, hover effects working correctly, proper article structure with images and metadata. 4) SIDEBAR & TRENDING ✅ - Sidebar with News Feed section functional, Trending section with 1 trending item, Featured Publications with 2 featured articles. 5) MODERN DESIGN ELEMENTS ✅ - Found 10 gradient elements, 9 box shadows, 6 transforms, 313 transitions, 4 modern buttons with proper styling. 6) RESPONSIVE DESIGN ✅ - 5 grid layouts adapt properly, mobile menu functional (button + visibility), content adapts to mobile/tablet/desktop viewports. 7) PERFORMANCE ✅ - 2 images with lazy loading, smooth animations and hover effects, no console errors detected. The homepage meets all modern design requirements and provides excellent user experience."
 
   - task: "Article Image Display Fix"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/ArticlePage.js, /app/frontend/src/OptimizedImage.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: false
         -agent: "main"
         -comment: "Enhanced markdown rendering with better image handling: improved regex for image parsing, added proper styling with modern-card classes, enhanced error handling for broken images, created OptimizedImage component for better performance. Images in articles should now display properly instead of showing as code."
+        -working: true
+        -agent: "testing"
+        -comment: "CRITICAL ARTICLE IMAGE DISPLAY FIX COMPLETED SUCCESSFULLY! Fixed major markdown processing bug where images were being converted to links instead of img tags. Root cause: Link regex processing was happening before image regex, causing ![alt](src) to be converted to <a href='src'>alt</a> before image processing. SOLUTION IMPLEMENTED: 1) REGEX ORDER FIX ✅ - Moved image processing before link processing in formatContent function. 2) HTML FORMATTING FIX ✅ - Converted multi-line HTML string to single line to prevent React dangerouslySetInnerHTML parsing issues. TESTING RESULTS: Test article 'Тестова стаття з зображенням' now displays embedded SVG image correctly: ✅ Image visible and rendered (402x202 pixels), ✅ Proper base64 SVG source (386 characters), ✅ Correct alt text 'Тестове зображення', ✅ Blue rectangle with text as expected, ✅ All article structure working (title, subtitle, H2/H3 headings, bold/italic formatting), ✅ HTML properly rendered (not displayed as text), ✅ No console errors. The critical issue where embedded images showed as code instead of actual images is completely resolved. Article image functionality is production-ready."
 
   - task: "Homepage Editor Frontend Interface"
     implemented: true
