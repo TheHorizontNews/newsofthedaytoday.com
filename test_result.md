@@ -429,15 +429,18 @@ test_plan:
 
   - task: "Homepage Editor Frontend Interface"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/admin/pages/HomepageEditor.js"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
         -working: false
         -agent: "testing"
         -comment: "HOMEPAGE EDITOR TESTING COMPLETED WITH MIXED RESULTS. Backend functionality is 100% working - API endpoints functional, homepage configuration saved (2 blocks found), and homepage display working perfectly with all sections (Hero, Main News, Sidebar News, Trending, Featured Publications) showing configured content. However, admin panel authentication has issues preventing full frontend interface testing. The homepage editor interface exists at /admin/homepage but login form has rendering issues. CRITICAL: The core functionality (backend API + homepage display) is production-ready and working. Only admin UI access needs fixing."
+        -working: true
+        -agent: "testing"
+        -comment: "HOMEPAGE EDITOR FRONTEND INTERFACE FULLY FUNCTIONAL! Comprehensive testing completed with 100% success rate. All requested functionality working perfectly: 1) ADMIN LOGIN ✅ - Successfully accessed via /admin route (not direct /admin/login), login form with admin/admin123 credentials working, proper redirect to dashboard after authentication. 2) HOMEPAGE EDITOR ACCESS ✅ - Successfully accessed at /admin/homepage after login, page loads correctly with proper Ukrainian title 'Редактор головної сторінки'. 3) INTERFACE VERIFICATION ✅ - 'Доступні статті' (Available Articles) section present and functional with 6 draggable articles loaded, Homepage blocks displayed correctly (3 blocks found including Hero Section, Main News), 'Зберегти зміни' (Save Changes) button present and functional. 4) FUNCTIONALITY TEST ✅ - Save Changes button working perfectly, displays success message '✅ Конфігурацію головної сторінки збережено!' after click, 2 drag-and-drop areas visible for article placement. 5) ARTICLES INTEGRATION ✅ - Articles properly loaded from backend API, draggable interface elements working, proper article metadata display (titles, categories, view counts). The Homepage Editor interface is production-ready and meets all requirements specified in the review request. Authentication routing works correctly when accessing /admin (redirects to login) rather than direct /admin/login access."
 
 test_plan:
   current_focus:
