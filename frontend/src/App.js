@@ -68,7 +68,7 @@ function App() {
               <Footer />
             </div>
           } />
-          <Route path="/article/:id" element={
+          <Route path="/article/:slug" element={
             <div className="App min-h-screen bg-gray-100">
               <Header currentTime={currentTime} />
               <main>
