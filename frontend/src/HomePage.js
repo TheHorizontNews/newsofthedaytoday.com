@@ -123,12 +123,26 @@ function HomePage() {
         
         if (config && config.blocks && config.blocks.length > 0) {
           // Convert homepage config to component data format
+          const convertArticle = (article) => ({
+            id: article.id,
+            title: article.title,
+            subtitle: article.subtitle,
+            category: article.category?.name || article.category,
+            time: article.published_at ? new Date(article.published_at).toLocaleString('uk-UA') : 'Щойно',
+            views: article.views || 0,
+            author: article.author?.profile?.name || article.author?.username || article.author,
+            image: article.featured_image || article.image || 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop',
+            url: `/article/${article.slug}`
+          });
+
           const data = {
-            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] || mockNewsData.hero,
-            mainNews: config.blocks.find(b => b.id === 'main')?.articles || mockNewsData.mainNews,
-            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles || mockNewsData.sidebarNews,
-            trending: config.blocks.find(b => b.id === 'trending')?.articles || mockNewsData.trending,
-            publications: config.blocks.find(b => b.id === 'featured')?.articles || mockNewsData.publications
+            hero: config.blocks.find(b => b.id === 'hero')?.articles[0] ? 
+                  convertArticle(config.blocks.find(b => b.id === 'hero').articles[0]) : 
+                  mockNewsData.hero,
+            mainNews: config.blocks.find(b => b.id === 'main')?.articles.map(convertArticle) || mockNewsData.mainNews,
+            sidebarNews: config.blocks.find(b => b.id === 'sidebar')?.articles.map(convertArticle) || mockNewsData.sidebarNews,
+            trending: config.blocks.find(b => b.id === 'trending')?.articles.map(convertArticle) || mockNewsData.trending,
+            publications: config.blocks.find(b => b.id === 'featured')?.articles.map(convertArticle) || mockNewsData.publications
           };
           setHomepageData(data);
         } else {
