@@ -70,7 +70,16 @@ function ArticlePage() {
       // Convert bold and italic
       .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em class="italic text-gray-700">$1</em>')
-      // Convert images BEFORE links to prevent interference
+      // Handle existing HTML img tags (from admin editor)
+      .replace(/<img([^>]*)>/g, (match, attributes) => {
+        return `<div class="image-container my-6">
+          <img${attributes} class="max-w-full h-auto rounded-lg shadow-lg border gpu-accelerated loading" loading="lazy" onload="this.classList.remove('loading')" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <div style="display: none;" class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+            <p>Не вдалося завантажити зображення</p>
+          </div>
+        </div>`;
+      })
+      // Convert markdown images BEFORE links to prevent interference
       .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
         // Check if it's a base64 image or regular URL
         const isBase64 = src.startsWith('data:image/');
