@@ -20,6 +20,7 @@ from routes.auth import router as auth_router
 from routes.analytics import router as analytics_router
 from routes.seo import router as seo_router_new
 from routes.homepage import router as homepage_router
+from routes.social_meta import router as social_meta_router
 from seo_routes import router as seo_router
 
 # Import database
