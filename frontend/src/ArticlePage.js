@@ -90,6 +90,8 @@ function ArticlePage() {
           </div>
         </div>`;
       })
+      // Convert links AFTER images to avoid interference
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener noreferrer">$1</a>')
       // Convert lists
       .replace(/^- (.+$)/gm, '<li class="ml-4 mb-2">$1</li>')
       // Convert blockquotes
