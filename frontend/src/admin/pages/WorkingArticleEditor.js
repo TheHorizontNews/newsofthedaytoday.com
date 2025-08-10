@@ -574,9 +574,10 @@ const WorkingArticleEditor = () => {
             </div>
 
             <div className="prose prose-lg max-w-none">
-              <div className="whitespace-pre-wrap font-serif leading-relaxed">
-                {formData.content || 'Немає контенту для відображення.'}
-              </div>
+              <div 
+                className="font-serif leading-relaxed"
+                dangerouslySetInnerHTML={{__html: renderMarkdownPreview(formData.content)}}
+              />
             </div>
           </div>
         </div>
