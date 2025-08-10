@@ -27,10 +27,12 @@ async def get_article_meta(slug: str, request: Request, db: AsyncSession = Depen
     ])
     
     # Query article with related data
-    article = db.query(ArticleTable).filter(
+    stmt = select(ArticleTable).where(
         ArticleTable.slug == slug,
         ArticleTable.status == "PUBLISHED"
-    ).first()
+    )
+    result = await db.execute(stmt)
+    article = result.scalar_one_or_none()
     
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
