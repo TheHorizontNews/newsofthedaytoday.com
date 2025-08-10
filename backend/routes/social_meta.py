@@ -8,7 +8,7 @@ from database import get_db
 from models import ArticleTable, UserTable, CategoryTable
 import re
 
-router = APIRouter(prefix="/meta", tags=["social-meta"])
+router = APIRouter(prefix="/api/meta", tags=["social-meta"])
 
 @router.get("/article/{slug}")
 async def get_article_meta(slug: str, request: Request, db: Session = Depends(get_db)):
