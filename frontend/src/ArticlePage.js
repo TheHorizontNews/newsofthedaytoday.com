@@ -160,10 +160,10 @@ function ArticlePage() {
           </div>
 
           {/* Article Content */}
-          <div className="prose max-w-none mb-8">
+          <div className="article-content prose max-w-none mb-8 modern-card p-8">
             {article.content && (
               <div 
-                className="text-gray-800 leading-relaxed"
+                className="text-gray-800 leading-relaxed text-lg"
                 dangerouslySetInnerHTML={{ 
                   __html: formatContent(
                     Array.isArray(article.content) 
@@ -172,6 +172,13 @@ function ArticlePage() {
                   ) 
                 }}
               />
+            )}
+            
+            {!article.content && (
+              <div className="text-center py-12 text-gray-500">
+                <p className="text-xl mb-2">Контент статті недоступний</p>
+                <p>Можливо, стаття ще не була опублікована або видалена.</p>
+              </div>
             )}
           </div>
 
