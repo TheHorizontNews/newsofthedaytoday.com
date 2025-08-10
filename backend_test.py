@@ -773,13 +773,21 @@ class BackendTester:
             print("❌ Cannot proceed without valid category")
             return False
         
-        # Step 3: Test Ukrainian article creation workflow
+        # Step 3: Test English slug generation functionality
+        print("\n🔤 ENGLISH SLUG GENERATION TESTS")
+        print("-" * 50)
+        
+        await self.test_english_slug_generation()
+        await self.test_slug_uniqueness()
+        await self.test_url_compatibility()
+        await self.test_database_slug_persistence()
+        
+        # Step 4: Test Ukrainian article creation workflow
         print("\n🇺🇦 UKRAINIAN ARTICLE WORKFLOW TESTS")
         print("-" * 50)
         
         await self.test_ukrainian_article_creation()
         await self.test_ukrainian_article_retrieval()
-        await self.test_slug_generation_with_ukrainian()
         await self.test_featured_image_field()
         await self.test_database_content_verification()
         
