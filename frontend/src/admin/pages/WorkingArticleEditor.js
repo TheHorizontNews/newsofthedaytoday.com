@@ -348,6 +348,46 @@ const WorkingArticleEditor = () => {
                   />
                   <p className="text-xs text-gray-600 mt-1">Розділіть теги комами</p>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Заглавне фото
+                  </label>
+                  <div className="space-y-3">
+                    {formData.featured_image && (
+                      <div className="relative">
+                        <img 
+                          src={formData.featured_image} 
+                          alt="Заглавне фото статті" 
+                          className="w-full h-32 object-cover rounded-lg border"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleInputChange('featured_image', '')}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                          title="Видалити фото"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex space-x-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="featured-image-upload"
+                      />
+                      <label
+                        htmlFor="featured-image-upload"
+                        className="flex-1 px-3 py-2 bg-blue-500 text-white text-center rounded-lg hover:bg-blue-600 cursor-pointer transition-colors"
+                      >
+                        {formData.featured_image ? 'Замінити фото' : 'Завантажити фото'}
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Action Buttons */}
