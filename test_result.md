@@ -427,6 +427,30 @@ test_plan:
         -agent: "testing"
         -comment: "CRITICAL ARTICLE DISPLAY FIX FULLY VERIFIED! Fixed critical routing issue where App.js used :id parameter but ArticlePage expected :slug. Changed route from '/article/:id' to '/article/:slug' in App.js. Comprehensive testing confirms: 1) REAL CONTENT DISPLAY ✅ - Articles now display actual user content instead of boilerplate text. Tested article 'Тест публікації статті' shows real content: 'Це мій справжній контент який я хочу опублікувати... Основний розділ... точно в такому вигляді... Пункт 1 мого списку... важлива цитата... не повинен заміщуватися тестовими даними!' 2) ENGLISH SLUG GENERATION ✅ - URLs properly use English slugs like 'test-publikatsiyi-statti' and 'novitni-tekhnolohiyi-shtuchnoho-intelektu-2'. 3) ARTICLE METADATA ✅ - Title, author (Science Admin), category (Biology), and date display correctly. 4) MULTIPLE ARTICLES ✅ - Tested multiple existing articles, all display real content properly. 5) BACKEND API ✅ - GET /api/articles/slug/{slug} endpoint working perfectly, returning complete article data. The main user complaint about published article content being replaced by boilerplate text is COMPLETELY RESOLVED. Article display functionality is production-ready."
 
+  - task: "Modern Homepage Design"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/HomePage.js, /app/frontend/src/components.js, /app/frontend/src/modern-styles.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "Implemented modern design improvements: loading spinner with gradient background, enhanced hero section with dynamic images from API, improved MainNews component with modern cards and hover effects, new modern-styles.css with animations, gradients, and performance optimizations. Updated HomePage.js to properly convert API data format to component props. Ready for comprehensive testing."
+
+  - task: "Article Image Display Fix"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/ArticlePage.js, /app/frontend/src/OptimizedImage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: false
+        -agent: "main"
+        -comment: "Enhanced markdown rendering with better image handling: improved regex for image parsing, added proper styling with modern-card classes, enhanced error handling for broken images, created OptimizedImage component for better performance. Images in articles should now display properly instead of showing as code."
+
   - task: "Homepage Editor Frontend Interface"
     implemented: true
     working: true
