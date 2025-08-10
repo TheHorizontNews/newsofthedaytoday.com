@@ -60,18 +60,52 @@ function ArticlePage() {
   const formatContent = (content) => {
     if (!content) return '';
     
-    // Simple markdown parsing
-    return content
-      .replace(/^### (.+$)/gm, '<h3 class="text-xl font-semibold mb-3 mt-6">$1</h3>')
-      .replace(/^## (.+$)/gm, '<h2 class="text-2xl font-semibold mb-4 mt-8">$1</h2>')
-      .replace(/^# (.+$)/gm, '<h1 class="text-3xl font-bold mb-4 mt-8">$1</h1>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank">$1</a>')
-      .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto my-4 rounded-lg" />')
-      .replace(/^- (.+$)/gm, '<li class="ml-4">$1</li>')
-      .replace(/^> (.+$)/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic text-gray-700">$1</blockquote>')
+    // Enhanced markdown parsing with better image handling
+    let html = content
+      // Convert headers with modern styling
+      .replace(/^### (.+$)/gm, '<h3 class="text-xl font-semibold mb-3 mt-6 modern-heading">$1</h3>')
+      .replace(/^## (.+$)/gm, '<h2 class="text-2xl font-semibold mb-4 mt-8 modern-heading">$1</h2>')
+      .replace(/^# (.+$)/gm, '<h1 class="text-3xl font-bold mb-4 mt-8 modern-heading">$1</h1>')
+      // Convert bold and italic
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em class="italic text-gray-700">$1</em>')
+      // Convert links
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener noreferrer">$1</a>')
+      // Convert images with enhanced styling and lazy loading
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+        // Check if it's a base64 image or regular URL
+        const isBase64 = src.startsWith('data:image/');
+        const altText = alt || 'Зображення в статті';
+        
+        return `<div class="image-container my-6">
+          <img 
+            src="${src}" 
+            alt="${altText}" 
+            class="max-w-full h-auto rounded-lg shadow-lg border gpu-accelerated mx-auto block"
+            loading="lazy"
+            style="max-height: 600px; object-fit: contain;"
+            onload="this.classList.remove('loading')"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          />
+          <div style="display: none;" class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+            <p>Не вдалося завантажити зображення: ${altText}</p>
+          </div>
+        </div>`;
+      })
+      // Convert lists
+      .replace(/^- (.+$)/gm, '<li class="ml-4 mb-2">$1</li>')
+      // Convert blockquotes
+      .replace(/^> (.+$)/gm, '<blockquote class="border-l-4 border-blue-500 bg-blue-50 pl-4 py-2 my-4 italic text-gray-700">$1</blockquote>')
+      // Convert line breaks
+      .replace(/\n\n/g, '</p><p class="mb-4">')
       .replace(/\n/g, '<br>');
+
+    // Wrap in paragraphs if not already wrapped
+    if (!html.startsWith('<') && html.trim()) {
+      html = `<p class="mb-4">${html}</p>`;
+    }
+
+    return html;
   };
 
   return (
