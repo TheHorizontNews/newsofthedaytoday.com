@@ -192,8 +192,12 @@ function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="loading-spinner mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">Science Digest News</h2>
+          <p className="text-gray-500">Завантаження останніх наукових новин...</p>
+        </div>
       </div>
     );
   }
