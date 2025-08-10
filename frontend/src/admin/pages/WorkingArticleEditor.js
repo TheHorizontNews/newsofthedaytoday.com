@@ -239,6 +239,8 @@ const WorkingArticleEditor = () => {
     
     return html;
   };
+
+  const formatButtons = [
     { label: 'H1', action: () => insertText('# '), title: 'Заголовок 1' },
     { label: 'H2', action: () => insertText('## '), title: 'Заголовок 2' },
     { label: 'H3', action: () => insertText('### '), title: 'Заголовок 3' },
@@ -248,6 +250,7 @@ const WorkingArticleEditor = () => {
     { label: 'List', action: () => insertText('\n- '), title: 'Список' },
     { label: 'Quote', action: () => insertText('\n> '), title: 'Цитата' },
     { label: '📷', action: insertImage, title: 'Вставити зображення' },
+  ];
   ];
 
   if (loading) {
