@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Complete Phase 4: SEO & Search Optimization Features including: 1. Backend API endpoints for SEO functionality, 2. Google Analytics integration, 3. Google Search Console integration, 4. Admin-only tag management system, 5. SEO metadata injection into head section, 6. Sitemap generation, 7. LLMS.txt and robots.txt generation"
+user_problem_statement: "Fix Critical Article Management Issues: 1. English slug generation instead of Ukrainian characters, 2. Add main photo functionality to articles, 3. Implement in-text photo insertion with alt text, 4. Resolve content saving issues after publication. Previous testing shows backend works correctly with Ukrainian content, issue may be frontend-specific."
 
 backend:
   - task: "SEO Backend API Endpoints"
